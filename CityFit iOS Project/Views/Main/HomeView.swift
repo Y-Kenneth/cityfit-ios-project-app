@@ -13,6 +13,10 @@ struct HomeView: View {
     @State private var coverMission: Mission?
     @State private var showRouteError = false
 
+    // Live route navigation (after "Start This Route").
+    @State private var navigationRoute: RouteResponse?
+    @State private var missionAfterNavigation: Mission?
+
     var body: some View {
         ZStack(alignment: .bottom) {
 
@@ -125,10 +129,27 @@ struct HomeView: View {
             RoutePreviewView(mapViewModel: mapViewModel,
                              route: aiViewModel.routeResult) { mission in
                 showRoutePreview = false
+                // Navigate the route first; the mission starts on arrival.
+                missionAfterNavigation = mission
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                    start(mission)
+                    navigationRoute = aiViewModel.routeResult
                 }
             }
+        }
+        .fullScreenCover(item: $navigationRoute) { route in
+            RouteNavigationView(route: route,
+                                overlays: mapViewModel.routeOverlays,
+                                locationService: locationService) {
+                // Arrived — close nav and start the mission.
+                navigationRoute = nil
+                if let mission = missionAfterNavigation {
+                    missionAfterNavigation = nil
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        start(mission)
+                    }
+                }
+            }
+            .environmentObject(locationService)
         }
         .fullScreenCover(item: $coverMission) { mission in
             if mission.type == .photo {

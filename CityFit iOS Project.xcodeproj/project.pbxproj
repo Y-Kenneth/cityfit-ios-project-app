@@ -45,6 +45,9 @@
 		C0DED303B165256F79D09C8C /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F67BE556968484FA5C5FFA /* CameraViewModel.swift */; };
 		C10DF07C063D53FF2714FAB4 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30263B8435DC1054691E6C57 /* ProfileViewModel.swift */; };
 		C19AE23B4B7EF1E9CB99E272 /* MissionPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EBF84A238E24297B14EB95 /* MissionPinView.swift */; };
+		479DA02FB820FD004705C257 /* NavigationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1F34EB7E2B7C2565F2BD9F /* NavigationMapView.swift */; };
+		0B8A44CF258C4613787F0BD1 /* RouteNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57550143F494483CFD8F89C2 /* RouteNavigationView.swift */; };
+		3615679A60D047AB3F67681A /* RouteNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70986B81B52DCD246AB5A3 /* RouteNavigationViewModel.swift */; };
 		C891A20C78C7E4CB5EA028D8 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330F14186D05E3671B54AC3D /* LeaderboardView.swift */; };
 		C96D89350E0D2D092115BE35 /* CommunityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45DB27E5F37FEAA1EB9B5 /* CommunityView.swift */; };
 		CB31134B2FD924D8007BFF65 /* iOS CityFit Project Background.md in Resources */ = {isa = PBXBuildFile; fileRef = CB31134A2FD924D7007BFF65 /* iOS CityFit Project Background.md */; };
@@ -111,6 +114,9 @@
 		E7675CBDD6F599240DDEE098 /* AIViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIViewModel.swift; sourceTree = "<group>"; };
 		E785CF8C291ACE741704390F /* LeaderboardRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardRowView.swift; sourceTree = "<group>"; };
 		E8EBF84A238E24297B14EB95 /* MissionPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionPinView.swift; sourceTree = "<group>"; };
+		8A1F34EB7E2B7C2565F2BD9F /* NavigationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMapView.swift; sourceTree = "<group>"; };
+		57550143F494483CFD8F89C2 /* RouteNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteNavigationView.swift; sourceTree = "<group>"; };
+		DF70986B81B52DCD246AB5A3 /* RouteNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteNavigationViewModel.swift; sourceTree = "<group>"; };
 		F66A3EDDB98DE2159616B743 /* OnboardingLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingLoadingView.swift; sourceTree = "<group>"; };
 		F9FA70990002ADDF814B5042 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		FCCCBB3C5605F2EF5DF8F257 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
@@ -144,6 +150,7 @@
 				0C13609F7A76FA9BA498AA76 /* PhotoMissionView.swift */,
 				585FB9023590263D376EA474 /* ProfileView.swift */,
 				005F3BEDE4ED370C27B393DF /* RoutePreviewView.swift */,
+				57550143F494483CFD8F89C2 /* RouteNavigationView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -199,6 +206,7 @@
 				E7675CBDD6F599240DDEE098 /* AIViewModel.swift */,
 				73F67BE556968484FA5C5FFA /* CameraViewModel.swift */,
 				022B22D4AA8D3BC491AE13FE /* MapViewModel.swift */,
+				DF70986B81B52DCD246AB5A3 /* RouteNavigationViewModel.swift */,
 				2DB877A605767C2659F19703 /* MissionViewModel.swift */,
 				30263B8435DC1054691E6C57 /* ProfileViewModel.swift */,
 			);
@@ -216,6 +224,7 @@
 				E785CF8C291ACE741704390F /* LeaderboardRowView.swift */,
 				22C5DDE49D0F94B84BED4E90 /* MissionCardView.swift */,
 				E8EBF84A238E24297B14EB95 /* MissionPinView.swift */,
+				8A1F34EB7E2B7C2565F2BD9F /* NavigationMapView.swift */,
 				FE9ABB7CEB99E0967019BE0D /* RouteMapView.swift */,
 			);
 			path = Components;
@@ -377,6 +386,9 @@
 				7B2A21634A06887946274DA5 /* LeaderboardRowView.swift in Sources */,
 				BC751E28DD8A47E3C8F1AE20 /* MissionCardView.swift in Sources */,
 				C19AE23B4B7EF1E9CB99E272 /* MissionPinView.swift in Sources */,
+				479DA02FB820FD004705C257 /* NavigationMapView.swift in Sources */,
+				0B8A44CF258C4613787F0BD1 /* RouteNavigationView.swift in Sources */,
+				3615679A60D047AB3F67681A /* RouteNavigationViewModel.swift in Sources */,
 				188FD41FAAC10B91973EBEFC /* RouteMapView.swift in Sources */,
 				1D75DF4579A4E6E2EE1C136D /* AIChatView.swift in Sources */,
 				30C2C73761BEAE5DA1826487 /* ActiveMissionView.swift in Sources */,

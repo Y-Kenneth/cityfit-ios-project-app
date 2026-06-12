@@ -60,6 +60,14 @@ struct RouteResponse: Decodable {
     let summary: String
 }
 
+// Allows presenting the route via .fullScreenCover(item:). The waypoint
+// sequence + summary uniquely identify a generated route for the UI.
+extension RouteResponse: Identifiable {
+    var id: String {
+        waypoints.map { "\($0.lat),\($0.lng)" }.joined(separator: "|") + summary
+    }
+}
+
 // MARK: - Photo Verification
 
 struct VerifyPhotoRequest: Encodable {
