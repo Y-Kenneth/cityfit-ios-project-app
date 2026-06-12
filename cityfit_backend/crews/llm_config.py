@@ -9,16 +9,19 @@ from crewai import LLM
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 
-# DeepSeek-V4-Flash: cheap, fast, strong — used by all 3 crews
+# deepseek-v4-flash: cheap, fast, strong — used by all 3 crews.
+# NOTE: DeepSeek's API is case-sensitive — the id must be lowercase exactly as
+# returned by GET /models ("deepseek-v4-flash"). The openai/ prefix tells
+# CrewAI/LiteLLM to treat base_url as an OpenAI-compatible endpoint.
 deepseek_llm = LLM(
-    model="openai/DeepSeek-V4-Flash",   # CrewAI uses openai/ prefix for OpenAI-compatible APIs
+    model="openai/deepseek-v4-flash",
     api_key=DEEPSEEK_API_KEY,
     base_url=DEEPSEEK_BASE_URL,
     temperature=0.7,
 )
 
-# Vision model — DeepSeek-V4-Flash also accepts image input via the same API
-DEEPSEEK_VISION_MODEL = "DeepSeek-V4-Flash"
+# Vision model — deepseek-v4-flash also accepts image input via the same API
+DEEPSEEK_VISION_MODEL = "deepseek-v4-flash"
 
 
 def extract_json(text: str) -> dict:

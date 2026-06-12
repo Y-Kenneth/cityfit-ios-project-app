@@ -1,12 +1,12 @@
 # CityFit AI Backend
 
-Flask + CrewAI + Groq backend with 3 endpoints and 4 agents across 3 crews.
+Flask + CrewAI + DeepSeek backend with 3 endpoints and 4 agents across 3 crews.
 
 | Endpoint | Crew | Agents |
 |---|---|---|
 | `POST /chat` | Chat Crew | Personal Coach |
 | `POST /route` | Route Crew | Route Planner → Fitness Calculator (sequential) |
-| `POST /verify-photo` | Vision Crew | Object Detection Specialist (+ Groq Vision model) |
+| `POST /verify-photo` | Vision Crew | Object Detection Specialist (+ DeepSeek Vision model) |
 
 ## Setup (on the AI laptop)
 
@@ -15,7 +15,7 @@ cd cityfit_backend
 python -m venv venv
 venv\Scripts\activate          # Windows
 pip install -r requirements.txt
-copy .env.example .env          # then paste your GROQ_API_KEY into .env
+copy .env.example .env          # then paste your DEEPSEEK_API_KEY into .env
 ```
 
 ## Run
@@ -29,8 +29,10 @@ ngrok http 5000
 # -> https://abc123.ngrok-free.app
 ```
 
-Paste the Ngrok URL into the iOS app: `CityFitMapTest/Utils/Constants.swift`
-(`backendURL`). The free-tier URL changes on every Ngrok restart.
+Paste the Ngrok URL into the iOS app: `CityFit iOS Project/Utils/Constants.swift`
+(`backendURL`). The free-tier URL changes on every Ngrok restart — or use a
+reserved static domain (`ngrok http --domain=your-name.ngrok-free.app 5000`)
+so it never changes.
 
 ## Quick test
 
