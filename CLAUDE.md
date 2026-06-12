@@ -44,3 +44,25 @@ Simulator GPS: Features → Location → City Run. Steps auto-mock on simulator.
 `ActivityClassifier.mlmodel` is trained in CreateML (Activity Classification
 template, CSV columns `accel_x..gyro_z`, window 50) and dragged into the
 project, the service auto-detects and uses it — no code change needed.
+
+## Photo-mission model (CoreML / Vision)
+
+`VisionService` works today with Apple's built-in image classifier
+(`VNClassifyImageRequest`) — photo missions detect common objects untrained,
+fully on-device (no backend; the old DeepSeek/Groq "Snap" path was removed
+because DeepSeek is text-only). Tier 2 "Snap" re-runs the same classifier at a
+higher confidence bar.
+
+To use your own trained model (the project's "train real data" deliverable):
+
+1. In **CreateML** → **Image Classification** template.
+2. Collect labeled photos: one folder per object class (e.g. `bottle/`,
+   `bicycle/`, `plant/`, `bench/`), ~25+ images each, shot on the iPhone.
+   Class folder names should match the mission `targetObject` values (or add
+   the trained labels to `VisionService.synonyms`).
+3. Train, then **export** → drag the resulting `ImageClassifier.mlmodel` into
+   the Xcode project (check "Copy items" + the app target). Xcode compiles it
+   to `ImageClassifier.mlmodelc` in the bundle.
+4. That's it — `VisionService` auto-detects the bundled model and uses it
+   instead of the built-in classifier. No code change. Confirm at runtime via
+   `VisionService.isUsingTrainedModel`.

@@ -76,7 +76,10 @@ final class AIViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Photo verification (Tier 2 — Groq Vision)
+    // MARK: - Photo verification (legacy cloud path — UNUSED)
+    // Photo missions now verify fully on-device via VisionService (DeepSeek is
+    // text-only and can't accept images). Kept only so the /verify-photo
+    // backend endpoint has a client if a vision-capable provider is added later.
 
     func verifyPhoto(base64: String, target: String, userID: String) async -> VerifyPhotoResponse? {
         let request = VerifyPhotoRequest(image_base64: base64,

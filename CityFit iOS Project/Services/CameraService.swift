@@ -43,7 +43,10 @@ final class CameraService: NSObject, ObservableObject {
         }
     }
 
-    /// JPEG base64 of the most recent frame — sent to Groq Vision on "Snap".
+    /// The most recent camera frame, for an on-device Vision re-check on "Snap".
+    func latestPixelBuffer() -> CVPixelBuffer? { latestFrame }
+
+    /// JPEG base64 of the most recent frame (kept for optional cloud verification).
     func snapBase64() -> String? {
         guard let frame = latestFrame else { return nil }
         let ciImage = CIImage(cvPixelBuffer: frame).oriented(.right)

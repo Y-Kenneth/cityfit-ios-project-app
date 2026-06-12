@@ -1,9 +1,12 @@
 import Foundation
 import SwiftUI
 
-/// Drives the two-tier photo mission detection:
-/// Tier 1 — Apple Vision live classification (auto-complete at high confidence)
-/// Tier 2 — Groq Vision verification when the user taps "Snap" on a medium-confidence hit.
+/// Drives the two-tier photo mission detection — fully on-device:
+/// Tier 1 — Apple Vision live classification (auto-complete at high confidence).
+/// Tier 2 — a deliberate, higher-bar Vision re-check of the captured frame when
+///          the user taps "Snap" on a medium-confidence hit. No network/cloud
+///          dependency (works offline; GFW-safe). Uses the same VisionService,
+///          which automatically prefers a trained CreateML model when bundled.
 final class CameraViewModel: ObservableObject {
 
     enum DetectionState: Equatable {
@@ -62,33 +65,37 @@ final class CameraViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Tier 2: Groq Vision verification
+    // MARK: - Tier 2: deliberate on-device verification
 
+    /// Confidence the captured frame must clear to confirm a "Snap".
+    private let snapConfirmThreshold: Float = 0.65
+
+    /// `aiViewModel` is accepted for source compatibility with the view but is
+    /// no longer used — verification is fully on-device.
     @MainActor
     func snap(userID: String, aiViewModel: AIViewModel) async {
-        guard let base64 = camera.snapBase64() else {
+        guard let buffer = camera.latestPixelBuffer() else {
             statusMessage = "Couldn't capture a photo — try again"
             return
         }
         state = .verifying
-        statusMessage = "Verifying with AI…"
+        statusMessage = "Verifying…"
 
-        guard let result = await aiViewModel.verifyPhoto(base64: base64,
-                                                         target: targetObject,
-                                                         userID: userID) else {
-            state = .scanning
-            statusMessage = "AI verification unavailable — keep scanning"
-            return
+        let target = targetObject
+        let confidence: Float = await withCheckedContinuation { continuation in
+            vision.detect(target: target, in: buffer) { value in
+                continuation.resume(returning: value)
+            }
         }
 
-        if result.detected {
+        if confidence >= snapConfirmThreshold {
             state = .detected
-            statusMessage = "✅ Confirmed: \(result.description)"
+            statusMessage = "✅ \(target.capitalized) confirmed!"
             onObjectFound?()
             beginCooldown(4)
         } else {
             state = .rejected
-            statusMessage = "Not quite, try again"
+            statusMessage = "Not quite — try getting closer"
             beginCooldown(2)
         }
     }
