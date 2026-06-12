@@ -6,14 +6,23 @@ enum AIService {
 
     enum AIServiceError: LocalizedError {
         case invalidURL
-        case badResponse
-        case unreachable
+        case badResponse(status: Int)
+        case tunnelOffline
+        case backendError(message: String)
+        case unreachable(underlying: String)
 
         var errorDescription: String? {
             switch self {
-            case .invalidURL:  return "Backend URL is invalid — check Constants.swift."
-            case .badResponse: return "The AI backend returned an unexpected response."
-            case .unreachable: return "AI is unavailable right now — check your connection."
+            case .invalidURL:
+                return "Backend URL is invalid — check Constants.swift."
+            case .badResponse(let status):
+                return "The AI backend returned an unexpected response (HTTP \(status))."
+            case .tunnelOffline:
+                return "The ngrok tunnel is offline — restart ngrok and update Constants.swift with the new URL."
+            case .backendError(let message):
+                return "The AI backend reported an error: \(message)"
+            case .unreachable(let underlying):
+                return "Couldn't reach the AI backend (\(underlying)). Check Ngrok and your connection."
             }
         }
     }
@@ -52,16 +61,36 @@ enum AIService {
         do {
             (data, response) = try await URLSession.shared.data(for: urlRequest)
         } catch {
-            throw AIServiceError.unreachable
+            throw AIServiceError.unreachable(underlying: error.localizedDescription)
         }
 
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw AIServiceError.badResponse
+        guard let http = response as? HTTPURLResponse else {
+            throw AIServiceError.badResponse(status: -1)
+        }
+
+        // Ngrok returns its own HTML error page (HTTP 404, ERR_NGROK_3200) when the
+        // tunnel is offline — i.e. the URL in Constants.swift is stale. Detect it so
+        // the failure is actionable instead of a generic "bad response".
+        if let body = String(data: data, encoding: .utf8), body.contains("ERR_NGROK") {
+            throw AIServiceError.tunnelOffline
+        }
+
+        // Flask surfaces crew failures as 503 {"error": "..."}.
+        if let errorBody = try? JSONDecoder().decode(BackendError.self, from: data) {
+            throw AIServiceError.backendError(message: errorBody.error)
+        }
+
+        guard (200..<300).contains(http.statusCode) else {
+            throw AIServiceError.badResponse(status: http.statusCode)
         }
         do {
             return try JSONDecoder().decode(Response.self, from: data)
         } catch {
-            throw AIServiceError.badResponse
+            throw AIServiceError.badResponse(status: http.statusCode)
         }
+    }
+
+    private struct BackendError: Decodable {
+        let error: String
     }
 }

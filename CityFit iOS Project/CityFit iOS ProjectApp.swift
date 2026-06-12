@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct CityFit_iOS_ProjectApp: App {
+struct CityFitApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()

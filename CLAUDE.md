@@ -13,11 +13,13 @@ Full spec: `iOS CityFit Project Background.md`.
 - Backend URL lives in `Utils/Constants.swift` (`backendURL`) — update on every Ngrok restart.
 - `PedometerService` keeps its `#if targetEnvironment(simulator)` mock block.
 - All AI features degrade gracefully when the backend is unreachable.
-- External LLM calls go to Groq only (GFW — no OpenAI/Google APIs).
+- External LLM calls go to DeepSeek (OpenAI-compatible API, `api.deepseek.com`).
+  Model id is case-sensitive — use lowercase `deepseek-v4-flash` exactly as
+  returned by `GET /models`. (No OpenAI/Google APIs — GFW.)
 
 ## Project layout
 
-- iOS app target folder: `CityFitMapTest/` (Models, ViewModels, Views/{Auth,Onboarding,Main,Components}, Services, Utils).
+- iOS app target folder: `CityFit iOS Project/` (Models, ViewModels, Views/{Auth,Onboarding,Main,Components}, Services, Utils).
 - AI backend: `cityfit_backend/` (Flask, 3 endpoints, 3 crews / 4 agents — see its README).
 
 ## Adding new Swift files
@@ -31,7 +33,7 @@ registered — prefer Xcode's "Add Files…" for one-off additions).
 ## Build / run
 
 ```bash
-xcodebuild -scheme CityFitMapTest -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build
+xcodebuild -scheme "CityFit iOS Project" -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build
 ```
 
 Simulator GPS: Features → Location → City Run. Steps auto-mock on simulator.

@@ -38,6 +38,8 @@ final class AIViewModel: ObservableObject {
             let reply = try await AIService.chat(request)
             chatMessages.append(ChatMessage(role: .assistant, text: reply))
         } catch {
+            // User sees a friendly message; the developer sees the real cause in the console.
+            print("⚠️ AI chat failed: \(error.localizedDescription)")
             chatMessages.append(ChatMessage(role: .assistant,
                                             text: "I'm offline right now 😴 — but keep moving! Walking any mission still earns you EXP."))
         }
@@ -69,7 +71,8 @@ final class AIViewModel: ObservableObject {
         do {
             routeResult = try await AIService.generateRoute(request)
         } catch {
-            routeError = "AI route generator is unavailable. Check your connection and try again."
+            print("⚠️ AI route generation failed: \(error.localizedDescription)")
+            routeError = error.localizedDescription
         }
     }
 
