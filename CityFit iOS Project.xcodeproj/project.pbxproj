@@ -46,6 +46,8 @@
 		C10DF07C063D53FF2714FAB4 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30263B8435DC1054691E6C57 /* ProfileViewModel.swift */; };
 		C19AE23B4B7EF1E9CB99E272 /* MissionPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EBF84A238E24297B14EB95 /* MissionPinView.swift */; };
 		479DA02FB820FD004705C257 /* NavigationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1F34EB7E2B7C2565F2BD9F /* NavigationMapView.swift */; };
+		F6841E532748EF9563A81516 /* MissionMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED861EA2C9079E3DE3A51E4 /* MissionMapView.swift */; };
+		7A15CE2A45F84DA45595A535 /* MissionTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32229D6F7A08A0BE4235CF05 /* MissionTracker.swift */; };
 		0B8A44CF258C4613787F0BD1 /* RouteNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57550143F494483CFD8F89C2 /* RouteNavigationView.swift */; };
 		3615679A60D047AB3F67681A /* RouteNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70986B81B52DCD246AB5A3 /* RouteNavigationViewModel.swift */; };
 		C891A20C78C7E4CB5EA028D8 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330F14186D05E3671B54AC3D /* LeaderboardView.swift */; };
@@ -115,6 +117,8 @@
 		E785CF8C291ACE741704390F /* LeaderboardRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardRowView.swift; sourceTree = "<group>"; };
 		E8EBF84A238E24297B14EB95 /* MissionPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionPinView.swift; sourceTree = "<group>"; };
 		8A1F34EB7E2B7C2565F2BD9F /* NavigationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMapView.swift; sourceTree = "<group>"; };
+		BED861EA2C9079E3DE3A51E4 /* MissionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionMapView.swift; sourceTree = "<group>"; };
+		32229D6F7A08A0BE4235CF05 /* MissionTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTracker.swift; sourceTree = "<group>"; };
 		57550143F494483CFD8F89C2 /* RouteNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteNavigationView.swift; sourceTree = "<group>"; };
 		DF70986B81B52DCD246AB5A3 /* RouteNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteNavigationViewModel.swift; sourceTree = "<group>"; };
 		F66A3EDDB98DE2159616B743 /* OnboardingLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingLoadingView.swift; sourceTree = "<group>"; };
@@ -207,6 +211,7 @@
 				73F67BE556968484FA5C5FFA /* CameraViewModel.swift */,
 				022B22D4AA8D3BC491AE13FE /* MapViewModel.swift */,
 				DF70986B81B52DCD246AB5A3 /* RouteNavigationViewModel.swift */,
+				32229D6F7A08A0BE4235CF05 /* MissionTracker.swift */,
 				2DB877A605767C2659F19703 /* MissionViewModel.swift */,
 				30263B8435DC1054691E6C57 /* ProfileViewModel.swift */,
 			);
@@ -225,6 +230,7 @@
 				22C5DDE49D0F94B84BED4E90 /* MissionCardView.swift */,
 				E8EBF84A238E24297B14EB95 /* MissionPinView.swift */,
 				8A1F34EB7E2B7C2565F2BD9F /* NavigationMapView.swift */,
+				BED861EA2C9079E3DE3A51E4 /* MissionMapView.swift */,
 				FE9ABB7CEB99E0967019BE0D /* RouteMapView.swift */,
 			);
 			path = Components;
@@ -387,6 +393,8 @@
 				BC751E28DD8A47E3C8F1AE20 /* MissionCardView.swift in Sources */,
 				C19AE23B4B7EF1E9CB99E272 /* MissionPinView.swift in Sources */,
 				479DA02FB820FD004705C257 /* NavigationMapView.swift in Sources */,
+				F6841E532748EF9563A81516 /* MissionMapView.swift in Sources */,
+				7A15CE2A45F84DA45595A535 /* MissionTracker.swift in Sources */,
 				0B8A44CF258C4613787F0BD1 /* RouteNavigationView.swift in Sources */,
 				3615679A60D047AB3F67681A /* RouteNavigationViewModel.swift in Sources */,
 				188FD41FAAC10B91973EBEFC /* RouteMapView.swift in Sources */,

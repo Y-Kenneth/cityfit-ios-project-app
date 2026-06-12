@@ -1,7 +1,10 @@
 import SwiftUI
+import MapKit
 
-/// Live tracking screen for step + distance missions:
-/// real pedometer/GPS on device, mock timer on the Simulator.
+/// Live, map-based tracking for active step + distance missions (Pokémon-GO
+/// style): the user's location moves on the map in real time, with a compact
+/// progress overlay. Real pedometer/GPS on device; a mock walk drives both on
+/// the Simulator.
 struct ActiveMissionView: View {
     let mission: Mission
 
@@ -10,6 +13,7 @@ struct ActiveMissionView: View {
     @EnvironmentObject private var locationService: LocationService
     @StateObject private var pedometer = PedometerService()
     @StateObject private var activityService = ActivityService()
+    @StateObject private var tracker: MissionTracker
     @Environment(\.dismiss) private var dismiss
 
     @State private var elapsedSeconds = 0
@@ -20,82 +24,21 @@ struct ActiveMissionView: View {
 
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
+    init(mission: Mission) {
+        self.mission = mission
+        _tracker = StateObject(wrappedValue: MissionTracker(mission: mission))
+    }
+
     var body: some View {
-        ZStack {
-            Color.cityBackground.ignoresSafeArea()
+        ZStack(alignment: .bottom) {
+            // Live map fills the screen — the user's dot moves as they walk.
+            MissionMapView(userLocation: tracker.userLocation,
+                           trail: tracker.trail,
+                           destination: mission.coordinate)
+                .ignoresSafeArea()
 
-            VStack(spacing: 24) {
-                // Header
-                HStack {
-                    Button {
-                        showGiveUpConfirm = true
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(.citySubtext)
-                            .padding(10)
-                            .background(Color.cityCard)
-                            .clipShape(Circle())
-                    }
-                    .accessibilityLabel("Give up mission")
-                    Spacer()
-                    Text(timeText)
-                        .font(.system(size: 15, weight: .bold).monospacedDigit())
-                        .foregroundColor(mission.timeLimit != nil ? .cityYellow : .citySubtext)
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 10)
-
-                Text(mission.title)
-                    .font(.system(size: 24, weight: .heavy))
-                    .foregroundColor(.white)
-
-                // Progress ring
-                ZStack {
-                    Circle()
-                        .stroke(Color.cityCard, lineWidth: 16)
-                    Circle()
-                        .trim(from: 0, to: CGFloat(min(progressValue / mission.targetValue, 1)))
-                        .stroke(Color.cityGreen,
-                                style: StrokeStyle(lineWidth: 16, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
-                        .animation(.easeOut(duration: 0.4), value: progressValue)
-                    VStack(spacing: 4) {
-                        Text("\(Int(progressValue))")
-                            .font(.system(size: 44, weight: .heavy).monospacedDigit())
-                            .foregroundColor(.white)
-                        Text("of \(Int(mission.targetValue)) \(mission.type.unit)")
-                            .font(.system(size: 14))
-                            .foregroundColor(.citySubtext)
-                    }
-                }
-                .frame(width: 220, height: 220)
-                .padding(.vertical, 10)
-
-                // Activity + multiplier badge (CoreML / heuristic)
-                HStack(spacing: 8) {
-                    Image(systemName: activityIcon)
-                    Text(activityService.activity.label)
-                    Text("×\(activityService.expMultiplier, specifier: "%.0f") EXP")
-                        .foregroundColor(.cityYellow)
-                }
-                .font(.system(size: 15, weight: .bold))
-                .foregroundColor(.white)
-                .padding(.horizontal, 18)
-                .padding(.vertical, 10)
-                .background(Color.cityCard)
-                .cornerRadius(12)
-
-                // Live stats
-                HStack(spacing: 12) {
-                    statBox(value: "\(pedometer.stepCount)", label: "Steps")
-                    statBox(value: String(format: "%.0fm", distanceValue), label: "Distance")
-                    statBox(value: "+\(mission.expReward)", label: "Reward")
-                }
-                .padding(.horizontal, 20)
-
-                Spacer()
-            }
+            topBar
+            progressPanel
 
             if failed {
                 failedOverlay
@@ -111,11 +54,13 @@ struct ActiveMissionView: View {
             pedometer.startTracking()
             activityService.start()
             locationService.startDistanceTracking()
+            tracker.start(locationService: locationService)
         }
         .onDisappear {
             pedometer.stopTracking()
             activityService.stop()
             locationService.stopDistanceTracking()
+            tracker.stop()
         }
         .onReceive(timer) { _ in
             tick()
@@ -127,6 +72,84 @@ struct ActiveMissionView: View {
             }
             Button("Keep Going", role: .cancel) {}
         }
+    }
+
+    // MARK: - Overlays
+
+    private var topBar: some View {
+        VStack {
+            HStack {
+                Button {
+                    showGiveUpConfirm = true
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(12)
+                        .background(Color.cityCard.opacity(0.9))
+                        .clipShape(Circle())
+                }
+                .accessibilityLabel("Give up mission")
+                Spacer()
+                Text(timeText)
+                    .font(.system(size: 15, weight: .bold).monospacedDigit())
+                    .foregroundColor(mission.timeLimit != nil ? .cityYellow : .white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(Color.cityCard.opacity(0.9))
+                    .cornerRadius(20)
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 12)
+            Spacer()
+        }
+    }
+
+    private var progressPanel: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(mission.title)
+                .font(.system(size: 20, weight: .heavy))
+                .foregroundColor(.white)
+
+            // Progress bar (replaces the ring; map is now the focus).
+            VStack(alignment: .leading, spacing: 6) {
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color.cityCard)
+                        Capsule().fill(Color.cityGreen)
+                            .frame(width: geo.size.width * CGFloat(min(progressValue / mission.targetValue, 1)))
+                            .animation(.easeOut(duration: 0.4), value: progressValue)
+                    }
+                }
+                .frame(height: 12)
+                Text("\(Int(progressValue)) of \(Int(mission.targetValue)) \(mission.type.unit)")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.citySubtext)
+            }
+
+            HStack(spacing: 8) {
+                Image(systemName: activityIcon)
+                Text(activityService.activity.label)
+                Text("×\(activityService.expMultiplier, specifier: "%.0f") EXP")
+                    .foregroundColor(.cityYellow)
+                Spacer()
+                Text("+\(mission.expReward)")
+                    .foregroundColor(.cityGreen)
+            }
+            .font(.system(size: 14, weight: .bold))
+            .foregroundColor(.white)
+
+            HStack(spacing: 12) {
+                statBox(value: "\(pedometer.stepCount)", label: "Steps")
+                statBox(value: String(format: "%.0fm", distanceValue), label: "Distance")
+            }
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.cityBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .padding(.horizontal, 12)
+        .padding(.bottom, 12)
     }
 
     // MARK: - Live values
@@ -178,6 +201,7 @@ struct ActiveMissionView: View {
         pedometer.stopTracking()
         activityService.stop()
         locationService.stopDistanceTracking()
+        tracker.stop()
 
         let exp = missionViewModel.completeActiveMission(multiplier: activityService.expMultiplier)
         profileViewModel.addEXP(exp)
