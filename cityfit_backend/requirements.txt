@@ -1,0 +1,4 @@
+flask
+crewai
+openai
+python-dotenv

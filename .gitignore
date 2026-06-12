@@ -1,0 +1,8 @@
+.DS_Store
+xcuserdata/
+*.xcuserstate
+DerivedData/
+__pycache__/
+*.pyc
+cityfit_backend/.env
+cityfit_backend/venv/
