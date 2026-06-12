@@ -6,3 +6,6 @@ __pycache__/
 *.pyc
 cityfit_backend/.env
 cityfit_backend/venv/
+
+# Claude Code local memory (machine-local, not shared)
+memory/
