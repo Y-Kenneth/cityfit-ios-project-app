@@ -34,11 +34,11 @@ enum MockData {
                 coordinate: CLLocationCoordinate2D(latitude: 32.0590, longitude: 118.7950)),
 
         // Photo missions
-        Mission(id: "m5", title: "Nature Spotter",
-                description: "Find and photograph a plant or tree",
-                type: .photo, targetValue: 1, currentValue: 0,
-                expReward: 200, difficulty: .easy, status: .available,
-                timeLimit: nil, targetObject: "plant", coordinate: nil),
+        Mission(id: "m5", title: "Bottle Hunter",
+                description: "Find 2 bottles anywhere around you",
+                type: .photo, targetValue: 2, currentValue: 0,
+                expReward: 180, difficulty: .easy, status: .available,
+                timeLimit: nil, targetObject: "bottle", coordinate: nil),
 
         Mission(id: "m6", title: "Cyclist Tracker",
                 description: "Spot a bicycle anywhere in the city",
@@ -46,11 +46,47 @@ enum MockData {
                 expReward: 250, difficulty: .easy, status: .available,
                 timeLimit: nil, targetObject: "bicycle", coordinate: nil),
 
-        Mission(id: "m7", title: "Bottle Hunter",
-                description: "Find 2 bottles anywhere around you",
+        Mission(id: "m7", title: "Nature Spotter",
+                description: "Photograph a plant, flower, or tree nearby",
+                type: .photo, targetValue: 1, currentValue: 0,
+                expReward: 150, difficulty: .easy, status: .available,
+                timeLimit: nil, targetObject: "plant", coordinate: nil),
+
+        Mission(id: "m8", title: "Seat Finder",
+                description: "Find and snap a bench or seat nearby",
+                type: .photo, targetValue: 1, currentValue: 0,
+                expReward: 120, difficulty: .easy, status: .available,
+                timeLimit: nil, targetObject: "seat", coordinate: nil),
+
+        Mission(id: "m9", title: "People Watcher",
+                description: "Photograph a person you spot on your walk",
+                type: .photo, targetValue: 1, currentValue: 0,
+                expReward: 200, difficulty: .medium, status: .available,
+                timeLimit: nil, targetObject: "person", coordinate: nil),
+
+        Mission(id: "m10", title: "Clean City",
+                description: "Find 2 trash bins on your route",
                 type: .photo, targetValue: 2, currentValue: 0,
                 expReward: 180, difficulty: .easy, status: .available,
-                timeLimit: nil, targetObject: "bottle", coordinate: nil),
+                timeLimit: nil, targetObject: "trashbin", coordinate: nil),
+
+        Mission(id: "m11", title: "Parking Lot Patrol",
+                description: "Spot and photograph a car",
+                type: .photo, targetValue: 1, currentValue: 0,
+                expReward: 150, difficulty: .easy, status: .available,
+                timeLimit: nil, targetObject: "car", coordinate: nil),
+
+        Mission(id: "m12", title: "Tech Spotter",
+                description: "Find someone's laptop or computer and take a picture of it",
+                type: .photo, targetValue: 1, currentValue: 0,
+                expReward: 200, difficulty: .medium, status: .available,
+                timeLimit: nil, targetObject: "computer", coordinate: nil),
+
+        Mission(id: "m13", title: "Cat Spotter",
+                description: "Find a cat hiding somewhere in the city",
+                type: .photo, targetValue: 1, currentValue: 0,
+                expReward: 300, difficulty: .hard, status: .available,
+                timeLimit: nil, targetObject: "cat", coordinate: nil),
     ]
 
     // MARK: - Leaderboard (current user at rank 5)

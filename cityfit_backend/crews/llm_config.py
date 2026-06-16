@@ -10,11 +10,10 @@ DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 
 # deepseek-v4-flash: cheap, fast, strong — used by all 3 crews.
-# NOTE: DeepSeek's API is case-sensitive — the id must be lowercase exactly as
-# returned by GET /models ("deepseek-v4-flash"). The openai/ prefix tells
-# CrewAI/LiteLLM to treat base_url as an OpenAI-compatible endpoint.
+# NOTE: model id is case-sensitive — must be lowercase exactly as returned by
+# GET /models. The "deepseek/" prefix is CrewAI's native provider — no litellm needed.
 deepseek_llm = LLM(
-    model="openai/deepseek-v4-flash",
+    model="deepseek/deepseek-v4-flash",
     api_key=DEEPSEEK_API_KEY,
     base_url=DEEPSEEK_BASE_URL,
     temperature=0.7,

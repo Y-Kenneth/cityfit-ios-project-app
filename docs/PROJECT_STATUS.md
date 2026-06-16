@@ -1,6 +1,6 @@
 # CityFit — Project Status
 
-_Last updated: 2026-06-12. This file is the hand-off so you can resume on any machine._
+_Last updated: 2026-06-13. This file is the hand-off so you can resume on any machine._
 
 CityFit is a gamified, Pokémon-GO-style fitness app: walk/run real-world routes,
 complete missions, earn EXP, level up an avatar, climb leaderboards, and chat
@@ -63,10 +63,14 @@ with an AI coach. **iOS app** (SwiftUI, MVVM, iOS 16 SDK) + **Python AI backend*
   via its `/models`), so it cannot verify images. Tier 2 was moved on-device.
   DECISION PENDING: keep on-device, OR add a Groq vision model for free-form
   descriptions, OR add a second on-device CoreML detector. (See `AI_AND_ML.md`.)
-- **No trained CoreML models yet.** Both `ActivityClassifier.mlmodel` (activity
-  detection) and `ImageClassifier.mlmodel` (photo missions) are still TODO — the
-  app uses heuristic/built-in fallbacks until trained. This is the project's
-  "train real data" deliverable.
+- **`ImageClassifier.mlmodel` not yet trained.** Photo missions fall back to
+  Apple's built-in `VNClassifyImageRequest` until a trained model is dropped in.
+  Collecting ~25+ photos per class (bottle, bicycle, plant, bench) and training
+  in CreateML is the project's "real data" deliverable.
+- **`ActivityClassifier.mlmodel` — intentionally not planned.** Activity
+  detection uses the motion-magnitude heuristic permanently. The EXP multiplier
+  works correctly without a trained model; collecting labeled sensor data is out
+  of scope.
 - **No real auth/persistence backend.** Login/SignUp are UI flows over mock data;
   there's no user account server. Data is local (UserDefaults-style).
 - **Real device testing pending.** Camera (Tier 1 live + Snap) and real GPS/
@@ -103,8 +107,8 @@ xcodebuild -scheme "CityFit iOS Project" -sdk iphonesimulator \
 ## Suggested next steps (brainstorm list)
 
 1. **Decide Tier 2 verification direction** (on-device vs Groq vs 2nd CoreML).
-2. **Collect data + train** `ImageClassifier.mlmodel` (photo) and
-   `ActivityClassifier.mlmodel` (activity) in CreateML, then drop in.
+2. **Collect data + train** `ImageClassifier.mlmodel` (photo) in CreateML, then drop in.
+   (~25+ photos each for: bottle, bicycle, plant, bench)
 3. **Test on a real iPhone** — camera + GPS + pedometer.
 4. **Optional:** "complete on arrival at pin" geofence for distance missions.
 5. **Optional:** real auth + persistence backend.

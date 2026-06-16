@@ -14,8 +14,9 @@ Full spec: `iOS CityFit Project Background.md`.
 - `PedometerService` keeps its `#if targetEnvironment(simulator)` mock block.
 - All AI features degrade gracefully when the backend is unreachable.
 - External LLM calls go to DeepSeek (OpenAI-compatible API, `api.deepseek.com`).
-  Model id is case-sensitive — use lowercase `deepseek-v4-flash` exactly as
-  returned by `GET /models`. (No OpenAI/Google APIs — GFW.)
+  Model id is case-sensitive — use `deepseek/deepseek-v4-flash` (the `deepseek/`
+  prefix is CrewAI's native provider; do NOT use `openai/` prefix — that requires
+  litellm which is not installed). (No OpenAI/Google APIs — GFW.)
 
 ## Project layout
 
@@ -38,12 +39,12 @@ xcodebuild -scheme "CityFit iOS Project" -sdk iphonesimulator -destination 'gene
 
 Simulator GPS: Features → Location → City Run. Steps auto-mock on simulator.
 
-## Phase 2 still manual (CoreML)
+## Activity detection (heuristic — permanent, no CoreML training)
 
-`ActivityService` works today with a motion heuristic. Once
-`ActivityClassifier.mlmodel` is trained in CreateML (Activity Classification
-template, CSV columns `accel_x..gyro_z`, window 50) and dragged into the
-project, the service auto-detects and uses it — no code change needed.
+`ActivityService` uses a motion-magnitude heuristic to classify walking /
+running / stationary. This is the final implementation. **Do NOT plan or suggest
+training an `ActivityClassifier.mlmodel`** — that decision was explicitly dropped.
+The CoreML slot in the code exists for future extensibility only.
 
 ## Photo-mission model (CoreML / Vision)
 

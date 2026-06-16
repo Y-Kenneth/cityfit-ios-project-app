@@ -20,10 +20,15 @@ final class VisionService {
     /// model's label vocabulary onto our mission targets. Add the exact labels
     /// you trained in CreateML here if they differ from the target word.
     private static let synonyms: [String: [String]] = [
-        "bottle":  ["bottle", "flask", "jug", "water bottle"],
-        "bicycle": ["bicycle", "bike", "cycle", "tandem"],
-        "plant":   ["plant", "tree", "flower", "foliage", "vegetation", "leaf", "shrub", "grass"],
-        "bench":   ["bench", "seat"],
+        "bottle":   ["bottle", "flask", "jug", "water bottle", "plastic bottle"],
+        "bicycle":  ["bicycle", "bike", "cycle", "tandem"],
+        "plant":    ["plant", "flower", "blossom", "bloom", "petal", "rose", "daisy", "tree", "leaf", "shrub", "bush"],
+        "seat":     ["seat", "bench", "chair", "stool", "armchair", "sofa"],
+        "person":   ["person", "man", "woman", "boy", "girl", "human", "male", "female"],
+        "trashbin": ["trash can", "bin", "garbage", "waste bin", "dustbin", "rubbish", "trashbin", "trash bin"],
+        "car":      ["car", "vehicle", "automobile", "sedan", "suv", "truck"],
+        "computer": ["computer", "laptop", "monitor", "desktop", "notebook computer", "macbook", "pc", "screen"],
+        "cat":      ["cat", "kitten", "feline", "tabby"],
     ]
 
     /// Loaded once. nil means "no trained model bundled — use the built-in."

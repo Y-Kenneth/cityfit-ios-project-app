@@ -1,7 +1,7 @@
 # CityFit — AI & ML Architecture
 
 _Everything about the AI/ML parts: what runs where, what's trained vs.
-pre-trained, and the open decisions. Last updated: 2026-06-12._
+pre-trained, and the open decisions. Last updated: 2026-06-13._
 
 ---
 
@@ -12,7 +12,7 @@ pre-trained, and the open decisions. Last updated: 2026-06-12._
 | AI Coach (chat) | Cloud LLM (DeepSeek) | Backend → DeepSeek API | ✅ Working |
 | AI Route Generator | Cloud LLM (DeepSeek, 2-agent crew) | Backend → DeepSeek API | ✅ Working |
 | Photo Verification | On-device computer vision (Apple Vision / CoreML) | On the iPhone | ✅ Working (untrained fallback) |
-| Activity detection | On-device CoreML (planned) / heuristic now | On the iPhone | ⚠️ Heuristic until trained |
+| Activity detection | On-device heuristic (final — no CoreML training planned) | On the iPhone | ✅ Heuristic is permanent |
 | Photo classifier | On-device CoreML (planned) / built-in now | On the iPhone | ⚠️ Built-in until trained |
 
 **Key distinction:**
@@ -77,19 +77,44 @@ The app is wired so a trained model **auto-loads with no code change**.
 
 ### Photo classifier — `ImageClassifier.mlmodel`
 1. CreateML → **Image Classification** template.
-2. One folder per object class (`bottle/`, `bicycle/`, `plant/`, `bench/`),
-   ~25+ iPhone photos each. Folder names should match mission `targetObject`
-   values (or add labels to `VisionService.synonyms`).
+2. One folder per object class, ~25–100+ images each (mix of Kaggle/internet
+   images + your own iPhone photos for best accuracy). Folder names must exactly
+   match the `targetObject` keys used in missions:
+
+   | Folder name     | What to photograph |
+   |---|---|
+   | `bottle`        | Water bottles, plastic bottles, flasks |
+   | `bicycle`       | Bikes, cycles (parked or ridden) |
+   | `flower`        | Flowers, blooming plants |
+   | `chair`         | Chairs, stools, seats |
+   | `backpack`      | Backpacks, school bags |
+   | `book`          | Books, textbooks, notebooks |
+   | `person_male`   | Men / boys (varied angles, campus setting) |
+   | `person_female` | Women / girls (varied angles, campus setting) |
+   | `trash_can`     | Bins, trash cans, dustbins |
+   | `car`           | Cars, sedans, SUVs |
+   | `laptop`        | Laptops, computers, MacBooks |
+   | `phone`         | Smartphones, mobile phones |
+
 3. Train → export → drag `ImageClassifier.mlmodel` into Xcode (Copy items + app
    target). Xcode compiles it to `ImageClassifier.mlmodelc` in the bundle.
 4. `VisionService` auto-detects it and uses it instead of the built-in classifier.
    Confirm at runtime via `VisionService.isUsingTrainedModel`.
 
-### Activity classifier — `ActivityClassifier.mlmodel`
-1. CreateML → **Activity Classification** template.
-2. CSV columns `accel_x..gyro_z`, window 50.
-3. Train → export → drag into the project.
-4. `ActivityService` auto-detects and uses it (heuristic fallback until then).
+**Data collection tip:** Kaggle and Google Images work great for bulk data.
+Add 10–15 of your own iPhone photos per class (shot in your actual campus
+environment) for better real-world accuracy during the demo.
+
+### Activity classifier — **NOT planned (heuristic is permanent)**
+
+`ActivityService` uses a motion-magnitude heuristic to classify walking /
+running / stationary. This is the final implementation — no `ActivityClassifier.mlmodel`
+will be trained. The heuristic performs well enough for the EXP multiplier
+feature, and collecting labeled sensor data requires sustained device sessions
+that are out of scope for this project phase.
+
+The CoreML slot still exists in the code for future extensibility but will
+never be populated in this project.
 
 ---
 
