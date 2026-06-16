@@ -56,7 +56,7 @@ enum MockData {
                 description: "Find and snap a bench or seat nearby",
                 type: .photo, targetValue: 1, currentValue: 0,
                 expReward: 120, difficulty: .easy, status: .available,
-                timeLimit: nil, targetObject: "seat", coordinate: nil),
+                timeLimit: nil, targetObject: "chair", coordinate: nil),
 
         Mission(id: "m9", title: "People Watcher",
                 description: "Photograph a person you spot on your walk",

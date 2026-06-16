@@ -23,7 +23,7 @@ final class VisionService {
         "bottle":   ["bottle", "flask", "jug", "water bottle", "plastic bottle"],
         "bicycle":  ["bicycle", "bike", "cycle", "tandem"],
         "plant":    ["plant", "flower", "blossom", "bloom", "petal", "rose", "daisy", "tree", "leaf", "shrub", "bush"],
-        "seat":     ["seat", "bench", "chair", "stool", "armchair", "sofa"],
+        "chair":    ["chair", "seat", "bench", "stool", "armchair", "sofa"],
         "person":   ["person", "man", "woman", "boy", "girl", "human", "male", "female"],
         "trashbin": ["trash can", "bin", "garbage", "waste bin", "dustbin", "rubbish", "trashbin", "trash bin"],
         "car":      ["car", "vehicle", "automobile", "sedan", "suv", "truck"],
