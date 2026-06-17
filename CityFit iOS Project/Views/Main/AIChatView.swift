@@ -87,10 +87,12 @@ struct AIChatView: View {
         let text = input
         input = ""
         Task {
-            await aiViewModel.sendChat(text,
-                                       profile: profileViewModel.profile,
-                                       activeMission: missionViewModel.activeMission,
-                                       stepsToday: profileViewModel.profile?.weeklySteps.first ?? 0)
+            await aiViewModel.sendChat(
+                text,
+                profile: profileViewModel.profile,
+                activeMission: missionViewModel.activeMission,
+                stepsToday: profileViewModel.profile?.weeklySteps.first ?? 0,
+                missionsCompleted: profileViewModel.profile?.missionsCompleted ?? 0)
         }
     }
 

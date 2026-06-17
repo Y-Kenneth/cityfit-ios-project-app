@@ -8,10 +8,12 @@ final class MissionViewModel: ObservableObject {
 
     init() {
         load()
+        expireCooldowns()
     }
 
     var availableMissions: [Mission] { missions.filter { $0.status == .available } }
     var completedMissions: [Mission] { missions.filter { $0.status == .completed } }
+    var cooldownMissions: [Mission] { missions.filter { $0.status == .cooldown } }
 
     /// Missions with a map pin that are still playable.
     var pinnedMissions: [Mission] {
@@ -40,6 +42,42 @@ final class MissionViewModel: ObservableObject {
         update(mission)
     }
 
+    /// Passive walking missions — all available step/distance missions that the
+    /// user is NOT actively tracking but whose progress can advance in the background.
+    var passiveWalkingMissions: [Mission] {
+        missions.filter {
+            $0.status == .available &&
+            ($0.type == .steps || $0.type == .distance) &&
+            $0.id != activeMission?.id
+        }
+    }
+
+    /// Updates every passive walking mission with the current pedometer/GPS value.
+    /// Completes any that cross the target and returns the total EXP earned.
+    @discardableResult
+    func updatePassiveProgress(steps: Int, distance: Double, multiplier: Double = 1.0) -> [(mission: Mission, exp: Int)] {
+        var earned: [(Mission, Int)] = []
+        for index in missions.indices {
+            guard missions[index].status == .available,
+                  missions[index].id != activeMission?.id else { continue }
+            let type = missions[index].type
+            guard type == .steps || type == .distance else { continue }
+
+            let value = type == .steps ? Double(steps) : distance
+            missions[index].currentValue = min(value, missions[index].targetValue)
+
+            if missions[index].currentValue >= missions[index].targetValue {
+                let exp = Int(Double(missions[index].expReward) * max(multiplier, 1.0))
+                missions[index].status = .cooldown
+                missions[index].cooldownUntil = Date().addingTimeInterval(
+                    Constants.missionCooldownHours * 3600)
+                earned.append((missions[index], exp))
+            }
+        }
+        save()
+        return earned
+    }
+
     func incrementPhotoProgress() {
         guard var mission = activeMission, mission.type == .photo else { return }
         mission.currentValue = min(mission.currentValue + 1, mission.targetValue)
@@ -47,16 +85,33 @@ final class MissionViewModel: ObservableObject {
         update(mission)
     }
 
-    /// Marks the active mission completed and returns the EXP to award
-    /// (base reward × activity multiplier, minimum 1×).
+    /// Marks the active mission completed, starts its cooldown, and returns the EXP to award.
     @discardableResult
     func completeActiveMission(multiplier: Double = 1.0) -> Int {
         guard var mission = activeMission else { return 0 }
-        mission.status = .completed
+        mission.status = .cooldown
         mission.currentValue = mission.targetValue
+        mission.cooldownUntil = Date().addingTimeInterval(
+            Constants.missionCooldownHours * 3600)
         update(mission)
         activeMission = nil
         return Int(Double(mission.expReward) * max(multiplier, 1.0))
+    }
+
+    /// Moves any cooldown mission whose timer has expired back to available.
+    func expireCooldowns() {
+        let now = Date()
+        var changed = false
+        for index in missions.indices {
+            guard missions[index].status == .cooldown,
+                  let until = missions[index].cooldownUntil,
+                  now >= until else { continue }
+            missions[index].status = .available
+            missions[index].currentValue = 0
+            missions[index].cooldownUntil = nil
+            changed = true
+        }
+        if changed { save() }
     }
 
     func failActiveMission() {

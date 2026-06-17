@@ -18,6 +18,7 @@ struct ChatRequest: Encodable {
     let steps_today: Int
     let active_mission: String
     let streak: Int
+    let missions_completed: Int
 }
 
 struct ChatResponse: Decodable {

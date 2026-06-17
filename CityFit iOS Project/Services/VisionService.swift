@@ -22,7 +22,7 @@ final class VisionService {
     private static let synonyms: [String: [String]] = [
         "bottle":   ["bottle", "flask", "jug", "water bottle", "plastic bottle"],
         "bicycle":  ["bicycle", "bike", "cycle", "tandem"],
-        "plant":    ["plant", "flower", "blossom", "bloom", "petal", "rose", "daisy", "tree", "leaf", "shrub", "bush"],
+        "plant":    ["plants", "plant", "flower", "blossom", "bloom", "petal", "rose", "daisy", "tree", "leaf", "shrub", "bush"],
         "chair":    ["chair", "seat", "bench", "stool", "armchair", "sofa"],
         "person":   ["person", "man", "woman", "boy", "girl", "human", "male", "female"],
         "trashbin": ["trash can", "bin", "garbage", "waste bin", "dustbin", "rubbish", "trashbin", "trash bin"],

@@ -83,16 +83,14 @@ struct RoutePreviewView: View {
         return meters / 1000
     }
 
-    /// Missions on the route activate in waypoint order — start the first one.
+    /// Dismiss the preview and hand off to the route navigation flow.
+    /// The AI generates its own waypoint titles that don't match mission titles,
+    /// so we pick the first available mission to start on arrival.
     private func startRoute(_ route: RouteResponse) {
-        let titles = route.waypoints.map(\.title)
-        let first = missionViewModel.missions.first { mission in
-            mission.status == .available && titles.contains(mission.title)
-        }
+        let first = missionViewModel.missions.first { $0.status == .available }
+        dismiss()
         if let first {
             onStartMission(first)
-        } else {
-            dismiss()
         }
     }
 }

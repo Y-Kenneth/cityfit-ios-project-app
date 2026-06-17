@@ -1,10 +1,6 @@
 import SwiftUI
 import MapKit
 
-/// Live, map-based tracking for active step + distance missions (Pokémon-GO
-/// style): the user's location moves on the map in real time, with a compact
-/// progress overlay. Real pedometer/GPS on device; a mock walk drives both on
-/// the Simulator.
 struct ActiveMissionView: View {
     let mission: Mission
 
@@ -21,6 +17,8 @@ struct ActiveMissionView: View {
     @State private var leveledUp = false
     @State private var failed = false
     @State private var showGiveUpConfirm = false
+    @State private var showMissionsTray = false
+    @State private var passiveBonusEXP: Int?
 
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -31,7 +29,6 @@ struct ActiveMissionView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            // Live map fills the screen — the user's dot moves as they walk.
             MissionMapView(userLocation: tracker.userLocation,
                            trail: tracker.trail,
                            destination: mission.coordinate)
@@ -40,13 +37,28 @@ struct ActiveMissionView: View {
             topBar
             progressPanel
 
-            if failed {
-                failedOverlay
-            }
+            if failed { failedOverlay }
 
             if let exp = completionEXP {
                 MissionCompleteView(expAwarded: exp, leveledUp: leveledUp) {
                     dismiss()
+                }
+            }
+
+            // Passive bonus toast
+            if let bonus = passiveBonusEXP {
+                VStack {
+                    Spacer()
+                    Text("+\(bonus) EXP — Bonus mission complete!")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .background(Color.cityGreen)
+                        .cornerRadius(20)
+                        .shadow(color: .cityGreen.opacity(0.4), radius: 8)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .padding(.bottom, 260)
                 }
             }
         }
@@ -62,9 +74,7 @@ struct ActiveMissionView: View {
             locationService.stopDistanceTracking()
             tracker.stop()
         }
-        .onReceive(timer) { _ in
-            tick()
-        }
+        .onReceive(timer) { _ in tick() }
         .confirmationDialog("Give up this mission?", isPresented: $showGiveUpConfirm, titleVisibility: .visible) {
             Button("Give Up", role: .destructive) {
                 missionViewModel.cancelActiveMission()
@@ -72,13 +82,17 @@ struct ActiveMissionView: View {
             }
             Button("Keep Going", role: .cancel) {}
         }
+        .sheet(isPresented: $showMissionsTray) {
+            MissionsTrayView(steps: pedometer.stepCount, distance: distanceValue)
+        }
     }
 
-    // MARK: - Overlays
+    // MARK: - Top bar
 
     private var topBar: some View {
         VStack {
             HStack {
+                // Quit
                 Button {
                     showGiveUpConfirm = true
                 } label: {
@@ -90,7 +104,10 @@ struct ActiveMissionView: View {
                         .clipShape(Circle())
                 }
                 .accessibilityLabel("Give up mission")
+
                 Spacer()
+
+                // Timer
                 Text(timeText)
                     .font(.system(size: 15, weight: .bold).monospacedDigit())
                     .foregroundColor(mission.timeLimit != nil ? .cityYellow : .white)
@@ -98,6 +115,35 @@ struct ActiveMissionView: View {
                     .padding(.vertical, 8)
                     .background(Color.cityCard.opacity(0.9))
                     .cornerRadius(20)
+
+                Spacer()
+
+                // Missions tray
+                Button {
+                    showMissionsTray = true
+                } label: {
+                    ZStack(alignment: .topTrailing) {
+                        Image(systemName: "list.bullet.clipboard.fill")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                            .padding(12)
+                            .background(Color.cityAccent.opacity(0.9))
+                            .clipShape(Circle())
+
+                        // Badge: count of passive missions in progress
+                        let passiveCount = missionViewModel.passiveWalkingMissions.count
+                        if passiveCount > 0 {
+                            Text("\(passiveCount)")
+                                .font(.system(size: 10, weight: .black))
+                                .foregroundColor(.black)
+                                .padding(4)
+                                .background(Color.cityGreen)
+                                .clipShape(Circle())
+                                .offset(x: 4, y: -4)
+                        }
+                    }
+                }
+                .accessibilityLabel("View all missions")
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
@@ -105,13 +151,14 @@ struct ActiveMissionView: View {
         }
     }
 
+    // MARK: - Progress panel
+
     private var progressPanel: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(mission.title)
                 .font(.system(size: 20, weight: .heavy))
                 .foregroundColor(.white)
 
-            // Progress bar (replaces the ring; map is now the focus).
             VStack(alignment: .leading, spacing: 6) {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
@@ -152,10 +199,9 @@ struct ActiveMissionView: View {
         .padding(.bottom, 12)
     }
 
-    // MARK: - Live values
+    // MARK: - Computed values
 
     private var distanceValue: Double {
-        // GPS distance on device; the pedometer mock feeds distance on the Simulator
         max(locationService.trackedDistance, pedometer.distance)
     }
 
@@ -190,6 +236,21 @@ struct ActiveMissionView: View {
         elapsedSeconds += 1
         missionViewModel.updateActiveProgress(progressValue)
 
+        // Passive missions: update all available walking/distance missions
+        let bonuses = missionViewModel.updatePassiveProgress(
+            steps: pedometer.stepCount,
+            distance: distanceValue,
+            multiplier: activityService.expMultiplier)
+
+        if !bonuses.isEmpty {
+            let totalBonus = bonuses.reduce(0) { $0 + $1.1 }
+            bonuses.forEach { profileViewModel.addEXP($0.1) }
+            withAnimation { passiveBonusEXP = totalBonus }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                withAnimation { passiveBonusEXP = nil }
+            }
+        }
+
         if progressValue >= mission.targetValue {
             complete()
         } else if let limit = mission.timeLimit, elapsedSeconds >= limit * 60 {
@@ -202,7 +263,6 @@ struct ActiveMissionView: View {
         activityService.stop()
         locationService.stopDistanceTracking()
         tracker.stop()
-
         let exp = missionViewModel.completeActiveMission(multiplier: activityService.expMultiplier)
         profileViewModel.addEXP(exp)
         leveledUp = profileViewModel.justLeveledUp
@@ -255,6 +315,112 @@ struct ActiveMissionView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.cityBackground.opacity(0.95))
         .ignoresSafeArea()
+    }
+}
+
+// MARK: - Missions tray sheet
+
+private struct MissionsTrayView: View {
+    @EnvironmentObject private var missionViewModel: MissionViewModel
+    let steps: Int
+    let distance: Double
+
+    var body: some View {
+        ZStack {
+            Color.cityBackground.ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 0) {
+                // Header
+                HStack {
+                    Image(systemName: "figure.walk")
+                        .foregroundColor(.cityAccent)
+                    Text("Active Walking Missions")
+                        .font(.system(size: 17, weight: .heavy))
+                        .foregroundColor(.white)
+                    Spacer()
+                }
+                .padding(20)
+
+                Text("These missions progress automatically while you walk.")
+                    .font(.system(size: 13))
+                    .foregroundColor(.citySubtext)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 16)
+
+                Divider().background(Color.cityCard)
+
+                ScrollView {
+                    VStack(spacing: 12) {
+                        // The primary active mission
+                        if let active = missionViewModel.activeMission {
+                            trayRow(mission: active, steps: steps, distance: distance, isPrimary: true)
+                        }
+                        // All passive walking missions
+                        ForEach(missionViewModel.passiveWalkingMissions) { mission in
+                            trayRow(mission: mission, steps: steps, distance: distance, isPrimary: false)
+                        }
+                        if missionViewModel.passiveWalkingMissions.isEmpty &&
+                           missionViewModel.activeMission == nil {
+                            Text("No walking missions available.")
+                                .font(.system(size: 14))
+                                .foregroundColor(.citySubtext)
+                                .padding(24)
+                        }
+                    }
+                    .padding(16)
+                }
+            }
+        }
+    }
+
+    private func trayRow(mission: Mission, steps: Int, distance: Double, isPrimary: Bool) -> some View {
+        let current: Double = mission.type == .steps ? Double(steps) : distance
+        let progress = min(current / mission.targetValue, 1.0)
+
+        return VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Image(systemName: mission.type.icon)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(isPrimary ? .cityAccent : .cityGreen)
+                Text(mission.title)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white)
+                Spacer()
+                if isPrimary {
+                    Text("Primary")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(Color.cityAccent)
+                        .cornerRadius(6)
+                }
+                Text("+\(mission.expReward) EXP")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.cityYellow)
+            }
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.cityCard)
+                    Capsule()
+                        .fill(isPrimary ? Color.cityAccent : Color.cityGreen)
+                        .frame(width: geo.size.width * CGFloat(progress))
+                        .animation(.easeOut(duration: 0.4), value: progress)
+                }
+            }
+            .frame(height: 8)
+
+            Text("\(Int(min(current, mission.targetValue))) / \(Int(mission.targetValue)) \(mission.type.unit)")
+                .font(.system(size: 12))
+                .foregroundColor(.citySubtext)
+        }
+        .padding(14)
+        .background(Color.cityCard)
+        .cornerRadius(14)
+        .overlay(
+            RoundedRectangle(cornerRadius: 14)
+                .strokeBorder(isPrimary ? Color.cityAccent.opacity(0.4) : Color.cityGreen.opacity(0.2), lineWidth: 1)
+        )
     }
 }
 

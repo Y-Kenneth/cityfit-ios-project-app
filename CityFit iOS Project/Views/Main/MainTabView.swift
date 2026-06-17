@@ -27,26 +27,26 @@ struct MainTabView: View {
             }
             .tint(.cityAccent)
 
-            // Floating AI coach button, visible on every tab
+            // Floating AI coach button — top-right, clear of the Start button
             VStack {
-                Spacer()
                 HStack {
                     Spacer()
                     Button {
                         showChat = true
                     } label: {
                         Image(systemName: "bubble.left.fill")
-                            .font(.system(size: 24))
+                            .font(.system(size: 18))
                             .foregroundColor(.black)
-                            .padding(16)
+                            .padding(12)
                             .background(Color.cityAccent)
                             .clipShape(Circle())
-                            .shadow(color: .cityAccent.opacity(0.5), radius: 10)
+                            .shadow(color: .cityAccent.opacity(0.5), radius: 8)
                     }
                     .accessibilityLabel("AI Coach chat")
                     .padding(.trailing, 20)
-                    .padding(.bottom, 90)
+                    .padding(.top, 56)
                 }
+                Spacer()
             }
         }
         .sheet(isPresented: $showChat) {

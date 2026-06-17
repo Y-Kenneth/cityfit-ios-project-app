@@ -12,6 +12,7 @@ struct HomeView: View {
     @State private var showRoutePreview = false
     @State private var coverMission: Mission?
     @State private var showRouteError = false
+    @State private var selectedEvent: GameEvent?
 
     // Live route navigation (after "Start This Route").
     @State private var navigationRoute: RouteResponse?
@@ -26,7 +27,12 @@ struct HomeView: View {
                 annotationItems: mapViewModel.pins(missions: missionViewModel.pinnedMissions,
                                                    events: MockData.gameEvents)) { pin in
                 MapAnnotation(coordinate: pin.coordinate) {
-                    MissionPinView(pin: pin)
+                    MissionPinView(pin: pin) {
+                        if pin.kind == .event,
+                           let event = MockData.gameEvents.first(where: { "event-\($0.id)" == pin.id }) {
+                            selectedEvent = event
+                        }
+                    }
                 }
             }
             .ignoresSafeArea(edges: .top)
@@ -162,6 +168,9 @@ struct HomeView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(aiViewModel.routeError ?? "Something went wrong.")
+        }
+        .sheet(item: $selectedEvent) { event in
+            GameEventDetailView(event: event)
         }
     }
 

@@ -20,7 +20,7 @@ final class AIViewModel: ObservableObject {
 
     // MARK: - Chat
 
-    func sendChat(_ text: String, profile: UserProfile?, activeMission: Mission?, stepsToday: Int) async {
+    func sendChat(_ text: String, profile: UserProfile?, activeMission: Mission?, stepsToday: Int, missionsCompleted: Int = 0) async {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
@@ -33,7 +33,8 @@ final class AIViewModel: ObservableObject {
                                   exp: profile?.currentEXP ?? 0,
                                   steps_today: stepsToday,
                                   active_mission: activeMission?.title ?? "none",
-                                  streak: profile?.streak ?? 0)
+                                  streak: profile?.streak ?? 0,
+                                  missions_completed: missionsCompleted)
         do {
             let reply = try await AIService.chat(request)
             chatMessages.append(ChatMessage(role: .assistant, text: reply))

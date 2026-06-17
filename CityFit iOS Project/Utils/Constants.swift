@@ -6,6 +6,7 @@ enum Constants {
     static let backendURL = "https://lustrous-donor-cavalier.ngrok-free.dev"
 
     static let requestTimeout: TimeInterval = 20
+    static let missionCooldownHours: Double = 8
 
     enum EXP {
         static let perLevel = 500

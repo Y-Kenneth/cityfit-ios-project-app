@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// Custom SwiftUI pin used inside MapAnnotation (iOS 14-16 MapKit API).
 struct MissionPinView: View {
     let pin: MapPinItem
+    var onTap: (() -> Void)? = nil
+
     @State private var isPressed = false
 
     var body: some View {
@@ -22,8 +23,9 @@ struct MissionPinView: View {
             .animation(.spring(response: 0.3), value: isPressed)
             .onTapGesture {
                 isPressed = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                     isPressed = false
+                    onTap?()
                 }
             }
 

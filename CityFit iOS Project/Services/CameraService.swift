@@ -8,6 +8,7 @@ final class CameraService: NSObject, ObservableObject {
     let session = AVCaptureSession()
 
     @Published var isAuthorized = false
+    private var currentPosition: AVCaptureDevice.Position = .back
 
     #if targetEnvironment(simulator)
     let isAvailable = false
@@ -56,12 +57,29 @@ final class CameraService: NSObject, ObservableObject {
         return image.jpegData(compressionQuality: 0.6)?.base64EncodedString()
     }
 
+    func switchCamera() {
+        guard isAvailable else { return }
+        sessionQueue.async { self.performCameraSwitch() }
+    }
+
+    private func performCameraSwitch() {
+        session.beginConfiguration()
+        session.inputs.forEach { session.removeInput($0) }
+        currentPosition = (currentPosition == .back) ? .front : .back
+        if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition),
+           let input = try? AVCaptureDeviceInput(device: device),
+           session.canAddInput(input) {
+            session.addInput(input)
+        }
+        session.commitConfiguration()
+    }
+
     private func configureSession() {
         guard session.inputs.isEmpty else { return }
         session.beginConfiguration()
-        session.sessionPreset = .vga640x480 // small frames are plenty for classification
+        session.sessionPreset = .vga640x480
 
-        if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+        if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition),
            let input = try? AVCaptureDeviceInput(device: device),
            session.canAddInput(input) {
             session.addInput(input)

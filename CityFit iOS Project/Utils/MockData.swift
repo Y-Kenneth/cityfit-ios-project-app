@@ -35,15 +35,15 @@ enum MockData {
 
         // Photo missions
         Mission(id: "m5", title: "Bottle Hunter",
-                description: "Find 2 bottles anywhere around you",
-                type: .photo, targetValue: 2, currentValue: 0,
-                expReward: 180, difficulty: .easy, status: .available,
+                description: "Find a bottle anywhere around you",
+                type: .photo, targetValue: 1, currentValue: 0,
+                expReward: 120, difficulty: .easy, status: .available,
                 timeLimit: nil, targetObject: "bottle", coordinate: nil),
 
         Mission(id: "m6", title: "Cyclist Tracker",
                 description: "Spot a bicycle anywhere in the city",
                 type: .photo, targetValue: 1, currentValue: 0,
-                expReward: 250, difficulty: .easy, status: .available,
+                expReward: 200, difficulty: .easy, status: .available,
                 timeLimit: nil, targetObject: "bicycle", coordinate: nil),
 
         Mission(id: "m7", title: "Nature Spotter",
@@ -58,16 +58,16 @@ enum MockData {
                 expReward: 120, difficulty: .easy, status: .available,
                 timeLimit: nil, targetObject: "chair", coordinate: nil),
 
-        Mission(id: "m9", title: "People Watcher",
-                description: "Photograph a person you spot on your walk",
+        Mission(id: "m9", title: "Selfie Challenge",
+                description: "Take a selfie — switch to front camera and smile!",
                 type: .photo, targetValue: 1, currentValue: 0,
-                expReward: 200, difficulty: .medium, status: .available,
+                expReward: 150, difficulty: .easy, status: .available,
                 timeLimit: nil, targetObject: "person", coordinate: nil),
 
-        Mission(id: "m10", title: "Clean City",
-                description: "Find 2 trash bins on your route",
-                type: .photo, targetValue: 2, currentValue: 0,
-                expReward: 180, difficulty: .easy, status: .available,
+        Mission(id: "m10", title: "Eco Warrior",
+                description: "Find a trash bin — every bit of awareness counts",
+                type: .photo, targetValue: 1, currentValue: 0,
+                expReward: 150, difficulty: .easy, status: .available,
                 timeLimit: nil, targetObject: "trashbin", coordinate: nil),
 
         Mission(id: "m11", title: "Parking Lot Patrol",
@@ -87,6 +87,37 @@ enum MockData {
                 type: .photo, targetValue: 1, currentValue: 0,
                 expReward: 300, difficulty: .hard, status: .available,
                 timeLimit: nil, targetObject: "cat", coordinate: nil),
+
+        Mission(id: "m14", title: "Urban Safari",
+                description: "Photograph a plant AND a cat on your walk",
+                type: .photo, targetValue: 2, currentValue: 0,
+                expReward: 400, difficulty: .hard, status: .available,
+                timeLimit: 30, targetObject: "plant", coordinate: nil),
+
+        Mission(id: "m15", title: "Street Snapshot",
+                description: "Capture a bicycle out in the wild",
+                type: .photo, targetValue: 1, currentValue: 0,
+                expReward: 180, difficulty: .medium, status: .available,
+                timeLimit: 20, targetObject: "bicycle",
+                coordinate: CLLocationCoordinate2D(latitude: 32.0610, longitude: 118.7970)),
+
+        Mission(id: "m16", title: "Green Thumb",
+                description: "Find 2 different plants on your route",
+                type: .photo, targetValue: 2, currentValue: 0,
+                expReward: 250, difficulty: .medium, status: .available,
+                timeLimit: nil, targetObject: "plant", coordinate: nil),
+
+        Mission(id: "m17", title: "Face the Day",
+                description: "Start your mission with a selfie — front camera, big smile!",
+                type: .photo, targetValue: 1, currentValue: 0,
+                expReward: 100, difficulty: .easy, status: .available,
+                timeLimit: nil, targetObject: "person", coordinate: nil),
+
+        Mission(id: "m18", title: "Rush Hour",
+                description: "Spot 2 cars during your city walk",
+                type: .photo, targetValue: 2, currentValue: 0,
+                expReward: 200, difficulty: .easy, status: .available,
+                timeLimit: nil, targetObject: "car", coordinate: nil),
     ]
 
     // MARK: - Leaderboard (current user at rank 5)

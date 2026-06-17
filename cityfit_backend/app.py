@@ -35,6 +35,7 @@ def chat():
             steps_today=data.get("steps_today", 0),
             active_mission=data.get("active_mission", "none"),
             streak=data.get("streak", 0),
+            missions_completed=data.get("missions_completed", 0),
         )
         return jsonify({"response": reply})
     except Exception as exc:  # noqa: BLE001 — surface any crew failure as 503

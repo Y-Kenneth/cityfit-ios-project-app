@@ -15,6 +15,7 @@ struct Mission: Identifiable, Codable {
     var targetObject: String?    // for .photo type: "bottle", "bicycle", etc.
     var latitude: Double?        // optional pin location
     var longitude: Double?
+    var cooldownUntil: Date?     // nil = no cooldown active
 
     // CLLocationCoordinate2D is not Codable, so the pin is stored as lat/lng
     var coordinate: CLLocationCoordinate2D? {
@@ -77,5 +78,5 @@ enum Difficulty: String, Codable {
 }
 
 enum MissionStatus: String, Codable {
-    case available, active, completed, failed
+    case available, active, completed, failed, cooldown
 }

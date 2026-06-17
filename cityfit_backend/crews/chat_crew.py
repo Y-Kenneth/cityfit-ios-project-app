@@ -16,13 +16,15 @@ chat_agent = Agent(
 
 
 def run_chat_crew(user_message: str, level: int, exp: int,
-                  steps_today: int, active_mission: str, streak: int) -> str:
+                  steps_today: int, active_mission: str, streak: int,
+                  missions_completed: int = 0) -> str:
     task = Task(
         description=f"""The user's current stats:
 - Level: {level} ({exp} EXP)
 - Steps today: {steps_today}
 - Active mission: {active_mission}
 - Streak: {streak} days
+- Missions completed: {missions_completed}
 
 The user says: "{user_message}"
 
