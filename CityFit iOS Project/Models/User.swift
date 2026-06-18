@@ -12,8 +12,8 @@ struct UserProfile: Codable {
     var weeklySteps: [Int]       // [today, yesterday, ...6 days ago]
     var streak: Int
 
-    static func new(username: String, character: CharacterType) -> UserProfile {
-        UserProfile(id: UUID().uuidString,
+    static func new(id: String = UUID().uuidString, username: String, character: CharacterType) -> UserProfile {
+        UserProfile(id: id,
                     username: username,
                     character: character,
                     level: 1,

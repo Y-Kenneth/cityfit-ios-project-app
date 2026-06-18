@@ -11,6 +11,8 @@
 		04F2EAB1BA29D4246912197C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FA70990002ADDF814B5042 /* User.swift */; };
 		0702EE93C254FC6D3CE989C2 /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EB8E893656B915E2B723445 /* Mission.swift */; };
 		070D6F541D58C94BC971BB01 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D8FBAD343E659F8A1820C /* CameraService.swift */; };
+		BF4B7B6B476AD282BE1D4B04 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077BD74AA0BAD72537558463 /* AuthService.swift */; };
+		F570C55C8D42EF6820C211F0 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6F20F01EDF30BC06424975 /* FirestoreService.swift */; };
 		0AA36FB6E684938ED0668278 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5944BFC41AFEA569273BCC93 /* LocationService.swift */; };
 		0B8A44CF258C4613787F0BD1 /* RouteNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57550143F494483CFD8F89C2 /* RouteNavigationView.swift */; };
 		14E7288DEEE7E2DA28B7683A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC390F3BEC7C603CEF4CDDD /* HomeView.swift */; };
@@ -31,7 +33,10 @@
 		479DA02FB820FD004705C257 /* NavigationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1F34EB7E2B7C2565F2BD9F /* NavigationMapView.swift */; };
 		48C33DBC5F2D1F3388FB8167 /* EXPCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D5824B65AB2320894FD570 /* EXPCalculator.swift */; };
 		4BB47A1FA6AAB2F2D88DFA91 /* CommunityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7110186AAA145C2596B61A81 /* CommunityDetailView.swift */; };
-		A1B2C3D4E5F6A7B8C9D0E1F2 /* GameEventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* GameEventDetailView.swift */; };
+		51B161532FE45B9000BF83AA /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 51B161522FE45B9000BF83AA /* FirebaseAuth */; };
+		51B161552FE45B9000BF83AA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 51B161542FE45B9000BF83AA /* FirebaseFirestore */; };
+		51B161572FE462A200BF83AA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51B161562FE462A200BF83AA /* GoogleService-Info.plist */; };
+		51B1615B2FE4690B00BF83AA /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 51B1615A2FE4690B00BF83AA /* GoogleSignIn */; };
 		532669D0673DEB011C847F3F /* RoutePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005F3BEDE4ED370C27B393DF /* RoutePreviewView.swift */; };
 		682E98EA1D3C9D4E225AB5EF /* LeaderboardEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BB3729533A8A1F9E397EC2 /* LeaderboardEntry.swift */; };
 		6984CC8F3108C4EDDECD237F /* MissionCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DB732D7FAC9BCDB8F6A4F5 /* MissionCompleteView.swift */; };
@@ -45,6 +50,7 @@
 		95B04328EFCBDC6137A6D84C /* MissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB877A605767C2659F19703 /* MissionViewModel.swift */; };
 		9662CD9961E583CC0ECD7F34 /* VisionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAC9959B4EA727A19447F80 /* VisionService.swift */; };
 		9D4009F220F9C438F0439E8E /* CharacterSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271293DF6F5B76921A3D4CA3 /* CharacterSelectView.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* GameEventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* GameEventDetailView.swift */; };
 		BC751E28DD8A47E3C8F1AE20 /* MissionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C5DDE49D0F94B84BED4E90 /* MissionCardView.swift */; };
 		BFFDD57CF8C2F0B670AD403A /* EXPBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD41A8489CDB13B01874645C /* EXPBarView.swift */; };
 		C0DED303B165256F79D09C8C /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F67BE556968484FA5C5FFA /* CameraViewModel.swift */; };
@@ -89,9 +95,13 @@
 		4C47CE076E02865157B24DC7 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		4DFFDE8C71940E99700C64D7 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		4EB8E893656B915E2B723445 /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mission.swift; sourceTree = "<group>"; };
+		51B161562FE462A200BF83AA /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		51B161582FE4630800BF83AA /* CityFit-iOS-Project-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CityFit-iOS-Project-Info.plist"; sourceTree = SOURCE_ROOT; };
 		57550143F494483CFD8F89C2 /* RouteNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteNavigationView.swift; sourceTree = "<group>"; };
 		585FB9023590263D376EA474 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		5944BFC41AFEA569273BCC93 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		077BD74AA0BAD72537558463 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		9E6F20F01EDF30BC06424975 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		596FC42890A16FA282A6C3FE /* AIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModels.swift; sourceTree = "<group>"; };
 		59E1AF993523E1F44C15E433 /* DetectionBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionBannerView.swift; sourceTree = "<group>"; };
 		5FF2C3F4BBAEE70AEF371BB8 /* PedometerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerService.swift; sourceTree = "<group>"; };
@@ -99,7 +109,6 @@
 		67DD42335AC5DA8C7EA69C3D /* ActiveMissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveMissionView.swift; sourceTree = "<group>"; };
 		6E8D360840B5F2CF40BB2F8F /* MissionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionDetailView.swift; sourceTree = "<group>"; };
 		7110186AAA145C2596B61A81 /* CommunityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityDetailView.swift; sourceTree = "<group>"; };
-		B2C3D4E5F6A7B8C9D0E1F2A3 /* GameEventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEventDetailView.swift; sourceTree = "<group>"; };
 		72EE03271385CD5012F5B720 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		73F67BE556968484FA5C5FFA /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		7657EE23CC8EEB739B6ECF6F /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -110,6 +119,7 @@
 		8A1F34EB7E2B7C2565F2BD9F /* NavigationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMapView.swift; sourceTree = "<group>"; };
 		93AB27DA0C6C4C8B4A8C2118 /* CommunityCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityCardView.swift; sourceTree = "<group>"; };
 		9DC1A6565F7151E22E03C1E5 /* ActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityService.swift; sourceTree = "<group>"; };
+		B2C3D4E5F6A7B8C9D0E1F2A3 /* GameEventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEventDetailView.swift; sourceTree = "<group>"; };
 		BAC390F3BEC7C603CEF4CDDD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		BEAC9959B4EA727A19447F80 /* VisionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionService.swift; sourceTree = "<group>"; };
 		BED861EA2C9079E3DE3A51E4 /* MissionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionMapView.swift; sourceTree = "<group>"; };
@@ -136,6 +146,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51B161532FE45B9000BF83AA /* FirebaseAuth in Frameworks */,
+				51B161552FE45B9000BF83AA /* FirebaseFirestore in Frameworks */,
+				51B1615B2FE4690B00BF83AA /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,7 +204,9 @@
 			children = (
 				FCCCBB3C5605F2EF5DF8F257 /* AIService.swift */,
 				9DC1A6565F7151E22E03C1E5 /* ActivityService.swift */,
+				077BD74AA0BAD72537558463 /* AuthService.swift */,
 				632D8FBAD343E659F8A1820C /* CameraService.swift */,
+				9E6F20F01EDF30BC06424975 /* FirestoreService.swift */,
 				5944BFC41AFEA569273BCC93 /* LocationService.swift */,
 				5FF2C3F4BBAEE70AEF371BB8 /* PedometerService.swift */,
 				BEAC9959B4EA727A19447F80 /* VisionService.swift */,
@@ -273,6 +288,8 @@
 		CB44AA9E2FD8044100D3D7D7 /* CityFit iOS Project */ = {
 			isa = PBXGroup;
 			children = (
+				51B161582FE4630800BF83AA /* CityFit-iOS-Project-Info.plist */,
+				51B161562FE462A200BF83AA /* GoogleService-Info.plist */,
 				CBDDB6422FE26DBB001BED25 /* ImageClassifier.mlmodel */,
 				CB31134A2FD924D7007BFF65 /* iOS CityFit Project Background.md */,
 				CB44AA9F2FD8044100D3D7D7 /* CityFit iOS ProjectApp.swift */,
@@ -348,6 +365,10 @@
 				Base,
 			);
 			mainGroup = CB44AA932FD8044100D3D7D7;
+			packageReferences = (
+				51B161512FE45B9000BF83AA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				51B161592FE4690B00BF83AA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			productRefGroup = CB44AA9D2FD8044100D3D7D7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -363,6 +384,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB44AAA72FD8044300D3D7D7 /* Preview Assets.xcassets in Resources */,
+				51B161572FE462A200BF83AA /* GoogleService-Info.plist in Resources */,
 				CB44AAA42FD8044300D3D7D7 /* Assets.xcassets in Resources */,
 				CB31134B2FD924D8007BFF65 /* iOS CityFit Project Background.md in Resources */,
 			);
@@ -424,7 +446,9 @@
 				162D836C7C50E6AD190F4643 /* RootView.swift in Sources */,
 				2F296EF03508BBD647723717 /* AIService.swift in Sources */,
 				151F27663DE9C9B2692443EC /* ActivityService.swift in Sources */,
+				BF4B7B6B476AD282BE1D4B04 /* AuthService.swift in Sources */,
 				070D6F541D58C94BC971BB01 /* CameraService.swift in Sources */,
+				F570C55C8D42EF6820C211F0 /* FirestoreService.swift in Sources */,
 				0AA36FB6E684938ED0668278 /* LocationService.swift in Sources */,
 				6D7C063C1E74F585B9627E06 /* PedometerService.swift in Sources */,
 				9662CD9961E583CC0ECD7F34 /* VisionService.swift in Sources */,
@@ -559,9 +583,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CityFit iOS Project/Preview Content\"";
-				DEVELOPMENT_TEAM = AKWAN7LLB7;
+				DEVELOPMENT_TEAM = 9F2TJU8B45;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CityFit-iOS-Project-Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "CityFit uses the camera to detect objects for photo missions.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "CityFit reads your step data from Apple Health.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CityFit saves workout data to Apple Health after missions.";
@@ -578,7 +603,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = njxzc.edu.cn.CityFit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yakhekenneth.CityFit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -594,9 +619,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CityFit iOS Project/Preview Content\"";
-				DEVELOPMENT_TEAM = AKWAN7LLB7;
+				DEVELOPMENT_TEAM = 9F2TJU8B45;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CityFit-iOS-Project-Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "CityFit uses the camera to detect objects for photo missions.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "CityFit reads your step data from Apple Health.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CityFit saves workout data to Apple Health after missions.";
@@ -613,7 +639,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = njxzc.edu.cn.CityFit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yakhekenneth.CityFit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -643,6 +669,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		51B161512FE45B9000BF83AA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.18.0;
+			};
+		};
+		51B161592FE4690B00BF83AA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = exactVersion;
+				version = 7.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		51B161522FE45B9000BF83AA /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 51B161512FE45B9000BF83AA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		51B161542FE45B9000BF83AA /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 51B161512FE45B9000BF83AA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		51B1615A2FE4690B00BF83AA /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 51B161592FE4690B00BF83AA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CB44AA942FD8044100D3D7D7 /* Project object */;
 }

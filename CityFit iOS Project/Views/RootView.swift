@@ -1,12 +1,11 @@
 import SwiftUI
 
-/// App entry flow: Splash → (Login / SignUp / Onboarding) → MainTabView.
-/// Owns the shared view models injected into the environment.
 struct RootView: View {
     @StateObject private var profileViewModel = ProfileViewModel()
     @StateObject private var missionViewModel = MissionViewModel()
     @StateObject private var aiViewModel = AIViewModel()
     @StateObject private var locationService = LocationService()
+    @ObservedObject private var authService = AuthService.shared
 
     @State private var showSplash = true
 
@@ -18,6 +17,12 @@ struct RootView: View {
             } else if profileViewModel.isLoggedIn {
                 MainTabView()
                     .transition(.opacity)
+            } else if authService.isSignedIn && !profileViewModel.isLoading {
+                // Firebase user exists but no local profile = first-time user, pick character
+                NavigationStack {
+                    SignUpView(username: authService.displayName ?? "CityFitter")
+                }
+                .transition(.opacity)
             } else {
                 NavigationStack {
                     LoginView()

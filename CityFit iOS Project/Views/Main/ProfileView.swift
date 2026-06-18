@@ -41,12 +41,19 @@ struct ProfileView: View {
                                 .font(.system(size: 12))
                                 .foregroundColor(.citySubtext)
 
-                            Button(role: .destructive) {
+                            Button {
                                 showLogOutConfirm = true
                             } label: {
-                                Text("Log Out")
-                                    .font(.system(size: 15, weight: .semibold))
-                                    .foregroundColor(.red)
+                                HStack(spacing: 8) {
+                                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    Text("Sign Out")
+                                }
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundColor(.red.opacity(0.85))
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 12)
+                                .background(Color.red.opacity(0.1))
+                                .cornerRadius(12)
                             }
                             .padding(.bottom, 90)
                         }
