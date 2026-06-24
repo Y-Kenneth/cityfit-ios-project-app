@@ -37,30 +37,6 @@ struct CommunityDetailView: View {
                             .background(community.isJoined ? Color.red.opacity(0.15) : Color.cityAccent)
                             .cornerRadius(12)
                     }
-
-                    Text("Recent Posts")
-                        .font(.system(size: 18, weight: .heavy))
-                        .foregroundColor(.white)
-
-                    ForEach(Array(MockData.communityPosts.enumerated()), id: \.offset) { _, post in
-                        VStack(alignment: .leading, spacing: 6) {
-                            HStack {
-                                Text(post.author)
-                                    .font(.system(size: 14, weight: .bold))
-                                    .foregroundColor(.cityAccent)
-                                Spacer()
-                                Text(post.time)
-                                    .font(.system(size: 11))
-                                    .foregroundColor(.citySubtext)
-                            }
-                            Text(post.text)
-                                .font(.system(size: 14))
-                                .foregroundColor(.white)
-                        }
-                        .padding(14)
-                        .background(Color.cityCard)
-                        .cornerRadius(14)
-                    }
                 }
                 .padding(20)
             }
@@ -71,6 +47,6 @@ struct CommunityDetailView: View {
 
 struct CommunityDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        CommunityDetailView(community: MockData.communities[0]) {}
+        CommunityDetailView(community: MockData.communities[0], onJoinToggle: {})
     }
 }

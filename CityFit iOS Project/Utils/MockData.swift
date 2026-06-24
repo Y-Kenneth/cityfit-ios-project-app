@@ -135,22 +135,24 @@ enum MockData {
     static let currentUserRank = 5
 
     // MARK: - Communities
+    // The catalog itself is just mock content — only "which ones did I join" is
+    // real (saved on the user's own profile, see ProfileViewModel.toggleCommunity).
     static let communities: [Community] = [
         Community(id: "c1", name: "Morning Runners",
                   description: "Early birds who run before sunrise",
-                  memberCount: 1243, isJoined: false, tags: ["running", "morning"]),
+                  tags: ["running", "morning"], memberCount: 1243, isJoined: false),
         Community(id: "c2", name: "Weekend Warriors",
                   description: "Make every weekend count",
-                  memberCount: 892, isJoined: true, tags: ["weekend", "casual"]),
+                  tags: ["weekend", "casual"], memberCount: 892, isJoined: false),
         Community(id: "c3", name: "City Explorers",
                   description: "Discover hidden gems on foot",
-                  memberCount: 567, isJoined: false, tags: ["walking", "exploration"]),
+                  tags: ["walking", "exploration"], memberCount: 567, isJoined: false),
         Community(id: "c4", name: "Step Counter Squad",
                   description: "Daily step challenges and accountability",
-                  memberCount: 2104, isJoined: false, tags: ["steps", "challenge"]),
+                  tags: ["steps", "challenge"], memberCount: 2104, isJoined: false),
         Community(id: "c5", name: "Campus Walkers",
                   description: "Students walking beyond class",
-                  memberCount: 431, isJoined: false, tags: ["student", "campus"]),
+                  tags: ["student", "campus"], memberCount: 431, isJoined: false),
     ]
 
     // MARK: - Mock Map Events (Nanjing coordinates)
@@ -167,12 +169,5 @@ enum MockData {
                   description: "Walk the historic Qinhuai River route",
                   coordinate: CLLocationCoordinate2D(latitude: 32.0176, longitude: 118.7975),
                   expReward: 350, eventType: .walk),
-    ]
-
-    // MARK: - Community posts (CommunityDetailView)
-    static let communityPosts: [(author: String, text: String, time: String)] = [
-        ("SpeedKing99", "Crushed a 5K around Xuanwu Lake this morning! 🏃", "2h ago"),
-        ("RunnerGirl", "Anyone up for a weekend walk along the Qinhuai River?", "5h ago"),
-        ("CityWalker", "Hit my 10,000 step streak — day 14! 🔥", "1d ago"),
     ]
 }

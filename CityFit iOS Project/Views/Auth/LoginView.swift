@@ -5,7 +5,6 @@ struct LoginView: View {
     @ObservedObject private var authService = AuthService.shared
 
     @State private var appeared = false
-    @State private var logoPulse = false
 
     var body: some View {
         ZStack {
@@ -17,45 +16,14 @@ struct LoginView: View {
                 Spacer()
 
                 // MARK: Hero
-                VStack(spacing: 20) {
-                    ZStack {
-                        // Outer glow ring
-                        Circle()
-                            .fill(Color.cityAccent.opacity(0.08))
-                            .frame(width: 160, height: 160)
-                            .scaleEffect(logoPulse ? 1.15 : 1.0)
-                            .animation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true), value: logoPulse)
-
-                        Circle()
-                            .fill(Color.cityAccent.opacity(0.15))
-                            .frame(width: 120, height: 120)
-                            .blur(radius: 12)
-
-                        // Icon
-                        Image(systemName: "map.fill")
-                            .font(.system(size: 58, weight: .medium))
-                            .foregroundColor(.cityAccent)
-                            .shadow(color: .cityAccent.opacity(0.8), radius: 18, x: 0, y: 0)
-                    }
+                Image("AppLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 320)
+                    .frame(maxWidth: .infinity)
                     .opacity(appeared ? 1 : 0)
                     .scaleEffect(appeared ? 1 : 0.6)
                     .animation(.spring(response: 0.7, dampingFraction: 0.65).delay(0.05), value: appeared)
-
-                    VStack(spacing: 10) {
-                        Text("CityFit")
-                            .font(.system(size: 44, weight: .heavy, design: .rounded))
-                            .foregroundColor(.white)
-                            .shadow(color: .cityAccent.opacity(0.4), radius: 10)
-
-                        Text("Explore your city. Level up your life.")
-                            .font(.system(size: 15, weight: .medium))
-                            .foregroundColor(.citySubtext)
-                            .multilineTextAlignment(.center)
-                    }
-                    .opacity(appeared ? 1 : 0)
-                    .offset(y: appeared ? 0 : 24)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.18), value: appeared)
-                }
 
                 Spacer()
 
@@ -84,6 +52,15 @@ struct LoginView: View {
                         .font(.system(size: 11))
                         .foregroundColor(.citySubtext.opacity(0.5))
                         .multilineTextAlignment(.center)
+
+                    #if DEBUG
+                    Button("Skip Login (Debug)") {
+                        profileViewModel.debugSkipLogin()
+                    }
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.cityAccent.opacity(0.7))
+                    .padding(.top, 6)
+                    #endif
                 }
                 .padding(.horizontal, 28)
                 .padding(.bottom, 52)
@@ -95,9 +72,6 @@ struct LoginView: View {
         .navigationBarHidden(true)
         .onAppear {
             appeared = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                logoPulse = true
-            }
         }
     }
 
@@ -130,7 +104,7 @@ private struct GoogleSignInButton: View {
 
                 Text(isLoading ? "Signing in…" : "Continue with Google")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(Color(.label))
+                    .foregroundColor(Color(red: 0.235, green: 0.247, blue: 0.263)) // fixed dark gray — .label resolves to white under the app's forced dark scheme
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)

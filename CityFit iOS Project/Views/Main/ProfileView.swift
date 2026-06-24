@@ -5,6 +5,7 @@ struct ProfileView: View {
     @EnvironmentObject private var missionViewModel: MissionViewModel
 
     @State private var showLogOutConfirm = false
+    @State private var showEditProfile = false
 
     var body: some View {
         NavigationStack {
@@ -14,13 +15,31 @@ struct ProfileView: View {
                 if let profile = profileViewModel.profile {
                     ScrollView {
                         VStack(spacing: 20) {
-                            // Character + level
-                            CharacterAvatarView(character: profile.character, size: 100)
-                                .padding(.top, 10)
+                            // Character + level — tap to edit
+                            Button {
+                                showEditProfile = true
+                            } label: {
+                                VStack(spacing: 8) {
+                                    ZStack(alignment: .bottomTrailing) {
+                                        CharacterAvatarView(character: profile.character, size: 100)
+                                        Image(systemName: "pencil.circle.fill")
+                                            .font(.system(size: 22))
+                                            .foregroundColor(.cityAccent)
+                                            .background(Color.cityBackground, in: Circle())
+                                    }
 
-                            Text(profile.username)
-                                .font(.system(size: 24, weight: .heavy))
-                                .foregroundColor(.white)
+                                    HStack(spacing: 6) {
+                                        Text(profile.username)
+                                            .font(.system(size: 24, weight: .heavy))
+                                            .foregroundColor(.white)
+                                        Image(systemName: "pencil")
+                                            .font(.system(size: 13, weight: .semibold))
+                                            .foregroundColor(.citySubtext)
+                                    }
+                                }
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.top, 10)
 
                             EXPBarView(level: profile.level, currentEXP: profile.currentEXP)
                                 .padding(.horizontal, 30)
@@ -69,6 +88,11 @@ struct ProfileView: View {
                 profileViewModel.logOut()
             }
             Button("Cancel", role: .cancel) {}
+        }
+        .sheet(isPresented: $showEditProfile) {
+            if let profile = profileViewModel.profile {
+                EditProfileView(profile: profile)
+            }
         }
     }
 

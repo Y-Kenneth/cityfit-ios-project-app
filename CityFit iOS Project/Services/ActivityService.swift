@@ -87,8 +87,26 @@ final class ActivityService: ObservableObject {
 
     private func update(_ newActivity: Activity) {
         DispatchQueue.main.async {
+            let previous = self.activity
             self.activity = newActivity
             self.expMultiplier = newActivity.multiplier
+            self.announce(from: previous, to: newActivity)
+        }
+    }
+
+    /// Only the transitions worth interrupting the user for: speeding up to a
+    /// run (bonus EXP kicks in) and dropping back out of one (it ends). Plain
+    /// stationary <-> walking transitions stay silent so it doesn't nag every
+    /// time the user pauses at a crossing.
+    private func announce(from previous: Activity, to current: Activity) {
+        guard previous != current else { return }
+        switch current {
+        case .running:
+            VoiceCoachService.shared.speak("Nice, you're running now — double EXP.")
+        case .walking where previous == .running:
+            VoiceCoachService.shared.speak("Pace dropped to walking — back to normal EXP.")
+        default:
+            break
         }
     }
 }

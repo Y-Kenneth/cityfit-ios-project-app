@@ -37,9 +37,26 @@ final class MissionViewModel: ObservableObject {
 
     func updateActiveProgress(_ value: Double) {
         guard var mission = activeMission else { return }
+        let previousFraction = mission.targetValue > 0 ? mission.currentValue / mission.targetValue : 0
         mission.currentValue = value
         activeMission = mission
         update(mission)
+        announceProgress(mission: mission, previousFraction: previousFraction)
+    }
+
+    /// One-time callout every 10% an active mission's progress crosses — not on
+    /// every tick, just the moment it crosses into a new decile. 100% is left to
+    /// the completion/EXP callout instead of being announced here too.
+    private func announceProgress(mission: Mission, previousFraction: Double) {
+        guard mission.targetValue > 0 else { return }
+        let fraction = min(mission.currentValue / mission.targetValue, 1.0)
+        guard fraction < 1.0 else { return }
+
+        let previousDecile = Int(previousFraction * 10)
+        let currentDecile = Int(fraction * 10)
+        guard currentDecile > previousDecile else { return }
+
+        VoiceCoachService.shared.speak("\(currentDecile * 10) percent through \(mission.title).")
     }
 
     /// Passive walking missions — all available step/distance missions that the

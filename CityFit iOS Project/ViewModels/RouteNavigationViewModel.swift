@@ -24,9 +24,26 @@ final class RouteNavigationViewModel: ObservableObject {
     /// How close (meters) counts as reaching a waypoint.
     private let arrivalRadius: Double = 25
 
+    /// Straight-line length of the whole route, for the one-time halfway callout.
+    private let totalDistance: Double
+    private var announcedHalfway = false
+
     init(waypoints: [RouteResponse.Waypoint], locationService: LocationService) {
         self.waypoints = waypoints
         self.locationService = locationService
+        self.totalDistance = Self.totalLegDistance(waypoints)
+    }
+
+    private static func totalLegDistance(_ waypoints: [RouteResponse.Waypoint]) -> Double {
+        guard waypoints.count > 1 else { return 0 }
+        var total = 0.0
+        for index in 0..<(waypoints.count - 1) {
+            let a = waypoints[index].coordinate
+            let b = waypoints[index + 1].coordinate
+            total += CLLocation(latitude: a.latitude, longitude: a.longitude)
+                .distance(from: CLLocation(latitude: b.latitude, longitude: b.longitude))
+        }
+        return total
     }
 
     var nextWaypointTitle: String {
@@ -73,16 +90,24 @@ final class RouteNavigationViewModel: ObservableObject {
 
         // Advance when within arrival radius.
         if distanceToNext <= arrivalRadius {
+            let justReached = waypoints[nextWaypointIndex].title
             nextWaypointIndex += 1
             if nextWaypointIndex >= waypoints.count {
                 arrived = true
                 distanceToNext = 0
                 distanceRemaining = 0
+                VoiceCoachService.shared.speakNow("You've arrived — route complete!")
                 return
             }
+            VoiceCoachService.shared.speak("Reached \(justReached). Next stop: \(waypoints[nextWaypointIndex].title).")
         }
 
         recomputeRemaining(from: coordinate)
+
+        if !announcedHalfway, totalDistance > 0, distanceRemaining <= totalDistance / 2 {
+            announcedHalfway = true
+            VoiceCoachService.shared.speak("Halfway through your route.")
+        }
     }
 
     /// Remaining = distance to the next waypoint + straight-line legs between

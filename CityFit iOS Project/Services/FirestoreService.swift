@@ -20,7 +20,8 @@ final class FirestoreService {
             "missionsCompleted": profile.missionsCompleted,
             "joinDate": Timestamp(date: profile.joinDate),
             "weeklySteps": profile.weeklySteps,
-            "streak": profile.streak
+            "streak": profile.streak,
+            "joinedCommunityIds": profile.joinedCommunityIds
         ]
         try await db.collection("users").document(profile.id).setData(data, merge: true)
     }
@@ -42,7 +43,8 @@ final class FirestoreService {
             missionsCompleted: d["missionsCompleted"] as? Int ?? 0,
             joinDate: joinDate,
             weeklySteps: d["weeklySteps"] as? [Int] ?? [0, 0, 0, 0, 0, 0, 0],
-            streak: d["streak"] as? Int ?? 0
+            streak: d["streak"] as? Int ?? 0,
+            joinedCommunityIds: d["joinedCommunityIds"] as? [String] ?? []
         )
     }
 

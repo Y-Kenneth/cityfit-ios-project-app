@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Mock communities — join state toggles locally only.
 struct CommunityView: View {
-    @State private var communities = MockData.communities
+    @EnvironmentObject private var profileViewModel: ProfileViewModel
+    @StateObject private var viewModel = CommunityViewModel()
     @State private var selectedCommunity: Community?
 
     var body: some View {
@@ -12,7 +12,7 @@ struct CommunityView: View {
 
                 ScrollView {
                     VStack(spacing: 12) {
-                        ForEach(communities) { community in
+                        ForEach(viewModel.communities) { community in
                             Button {
                                 selectedCommunity = community
                             } label: {
@@ -29,23 +29,26 @@ struct CommunityView: View {
             }
             .navigationTitle("Communities")
         }
+        .onAppear {
+            viewModel.refresh(joinedIds: profileViewModel.profile?.joinedCommunityIds ?? [])
+        }
         .sheet(item: $selectedCommunity) { community in
             CommunityDetailView(
-                community: communities.first { $0.id == community.id } ?? community
-            ) {
-                toggleJoin(community)
-            }
+                community: viewModel.communities.first { $0.id == community.id } ?? community,
+                onJoinToggle: { toggleJoin(community) }
+            )
         }
     }
 
     private func toggleJoin(_ community: Community) {
-        guard let index = communities.firstIndex(where: { $0.id == community.id }) else { return }
-        communities[index].isJoined.toggle()
+        profileViewModel.toggleCommunity(community.id)
+        viewModel.refresh(joinedIds: profileViewModel.profile?.joinedCommunityIds ?? [])
     }
 }
 
 struct CommunityView_Previews: PreviewProvider {
     static var previews: some View {
         CommunityView()
+            .environmentObject(ProfileViewModel())
     }
 }

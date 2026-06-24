@@ -26,11 +26,17 @@ final class CameraViewModel: ObservableObject {
     private(set) var targetObject = ""
     private var cooldownUntil = Date.distantPast
 
+    /// When the current `state` was entered — used to tell a sustained "not
+    /// finding it" from a one-off noisy frame before speaking a voice hint.
+    private var stateEnteredAt = Date()
+    private var voiceCooldownUntil = Date.distantPast
+
     /// Wired to MissionViewModel.incrementPhotoProgress by the view.
     var onObjectFound: (() -> Void)?
 
     func start(target: String) {
         targetObject = target
+        stateEnteredAt = Date()
         camera.frameHandler = { [weak self] buffer in
             guard let self else { return }
             // VisionService calls back on the main queue
@@ -50,6 +56,7 @@ final class CameraViewModel: ObservableObject {
 
     func handle(confidence: Float) {
         guard Date() >= cooldownUntil, state != .verifying else { return }
+        let previousState = state
         switch confidence {
         case 0.85...1.0:
             state = .detected
@@ -62,6 +69,30 @@ final class CameraViewModel: ObservableObject {
         default:
             state = .scanning
             statusMessage = nil
+        }
+        if state != previousState { stateEnteredAt = Date() }
+        announceFramingHintIfNeeded()
+    }
+
+    /// Speaks a framing hint once a confidence band has been sustained for a
+    /// bit — a one-off noisy frame shouldn't trigger a voice line, but a real
+    /// "can't quite see it" should. Confidence here has no notion of distance
+    /// (it's a single whole-frame score, not a bounding box), so this is a
+    /// best-effort proxy: sustained medium confidence usually means the object
+    /// is there but small/angled/partial; sustained zero match usually means
+    /// it's just not in frame.
+    private func announceFramingHintIfNeeded() {
+        guard Date() >= voiceCooldownUntil else { return }
+        let sustained = Date().timeIntervalSince(stateEnteredAt)
+        switch state {
+        case .possible where sustained >= 1.5:
+            VoiceCoachService.shared.speak("Try getting a little closer.")
+            voiceCooldownUntil = Date().addingTimeInterval(4)
+        case .scanning where sustained >= 4:
+            VoiceCoachService.shared.speak("Point the camera at a \(targetObject).")
+            voiceCooldownUntil = Date().addingTimeInterval(6)
+        default:
+            break
         }
     }
 
