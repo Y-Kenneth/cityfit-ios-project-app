@@ -3,6 +3,7 @@ import SwiftUI
 struct CommunityCardView: View {
     let community: Community
     let onJoinToggle: () -> Void
+    let onDetail: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -44,6 +45,16 @@ struct CommunityCardView: View {
                         .cornerRadius(6)
                 }
             }
+
+            Button(action: onDetail) {
+                Text("Detail")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.cityAccent)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .background(Color.cityAccent.opacity(0.12))
+                    .cornerRadius(10)
+            }
         }
         .padding(14)
         .background(Color.cityCard)
@@ -53,7 +64,7 @@ struct CommunityCardView: View {
 
 struct CommunityCardView_Previews: PreviewProvider {
     static var previews: some View {
-        CommunityCardView(community: MockData.communities[0], onJoinToggle: {})
+        CommunityCardView(community: MockData.communities[0], onJoinToggle: {}, onDetail: {})
             .padding()
             .background(Color.cityBackground)
     }

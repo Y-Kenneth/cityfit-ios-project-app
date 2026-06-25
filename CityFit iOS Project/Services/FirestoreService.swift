@@ -60,4 +60,59 @@ final class FirestoreService {
         ]
         try await db.collection("leaderboard").document(uid).setData(data, merge: true)
     }
+
+    // MARK: - Community Chat
+
+    /// Starts a live listener on a community's chat, capped to the most recent
+    /// 200 messages (oldest-first for display). The caller MUST hold the
+    /// returned registration and call `.remove()` when done (e.g. ViewModel
+    /// stop()) — letting it fall out of scope without removing it leaks the
+    /// listener and keeps streaming reads indefinitely.
+    func listenToMessages(
+        communityId: String,
+        onChange: @escaping ([CommunityMessage]) -> Void
+    ) -> ListenerRegistration {
+        db.collection("communities").document(communityId).collection("messages")
+            .order(by: "sentAt", descending: true)
+            .limit(to: 200)
+            .addSnapshotListener { snapshot, error in
+                guard let documents = snapshot?.documents else {
+                    if let error {
+                        print("⚠️ FirestoreService: chat listener error — \(error.localizedDescription)")
+                    }
+                    return
+                }
+                let messages: [CommunityMessage] = documents.compactMap { doc in
+                    let d = doc.data()
+                    guard
+                        let senderId = d["senderId"] as? String,
+                        let senderUsername = d["senderUsername"] as? String,
+                        let characterRaw = d["senderCharacter"] as? String,
+                        let character = CharacterType(rawValue: characterRaw),
+                        let text = d["text"] as? String
+                    else { return nil }
+                    let sentAt = (d["sentAt"] as? Timestamp)?.dateValue() ?? Date()
+                    return CommunityMessage(id: doc.documentID, senderId: senderId,
+                                             senderUsername: senderUsername,
+                                             senderCharacter: character, text: text, sentAt: sentAt)
+                }
+                // Query is newest-first (required for `.limit` to keep the most
+                // recent 200, not the oldest 200) — reverse for chronological
+                // top-to-bottom display.
+                onChange(messages.reversed())
+            }
+    }
+
+    func sendMessage(communityId: String, senderId: String, senderUsername: String,
+                      senderCharacter: CharacterType, text: String) async throws {
+        let data: [String: Any] = [
+            "senderId": senderId,
+            "senderUsername": senderUsername,
+            "senderCharacter": senderCharacter.rawValue,
+            "text": text,
+            "sentAt": FieldValue.serverTimestamp()
+        ]
+        try await db.collection("communities").document(communityId)
+            .collection("messages").addDocument(data: data)
+    }
 }

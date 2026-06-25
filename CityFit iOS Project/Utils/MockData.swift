@@ -140,18 +140,67 @@ enum MockData {
     static let communities: [Community] = [
         Community(id: "c1", name: "Morning Runners",
                   description: "Early birds who run before sunrise",
+                  longDescription: """
+                  Morning Runners is for early risers who believe the best miles happen before \
+                  the city wakes up. Every session starts in the quiet hour just before sunrise — \
+                  empty streets, cool air, and a pace that's whatever you bring that day.
+
+                  Whether you're chasing a 5K personal best or just want company for an easy jog, \
+                  this group keeps things low-pressure: no minimum pace, no mandatory distance. \
+                  Show up, run, and watch the city wake up around you.
+                  """,
+                  imageURL: URL(string: "https://picsum.photos/seed/c1/800/450"),
                   tags: ["running", "morning"], memberCount: 1243, isJoined: false),
         Community(id: "c2", name: "Weekend Warriors",
                   description: "Make every weekend count",
+                  longDescription: """
+                  Weekday schedules are chaos, so Weekend Warriors saves all the momentum for \
+                  Saturday and Sunday. Expect longer routes, group photo stops, and a much more \
+                  social pace than your average training run.
+
+                  This is the community for people who'd rather do one great two-hour outing a \
+                  week than squeeze in five rushed ones. Bring snacks, bring friends, bring a \
+                  camera — the weekend is the whole point.
+                  """,
+                  imageURL: URL(string: "https://picsum.photos/seed/c2/800/450"),
                   tags: ["weekend", "casual"], memberCount: 892, isJoined: false),
         Community(id: "c3", name: "City Explorers",
                   description: "Discover hidden gems on foot",
+                  longDescription: """
+                  City Explorers turns walking into a treasure hunt. Members swap routes that \
+                  pass murals, hole-in-the-wall cafes, pocket parks, and the kind of side streets \
+                  that never show up on a tourist map.
+
+                  There's no pace requirement and no distance goal — the only rule is to notice \
+                  something new every time you go out. Great for anyone who finds a familiar \
+                  neighborhood boring on a treadmill but endlessly interesting on foot.
+                  """,
+                  imageURL: URL(string: "https://picsum.photos/seed/c3/800/450"),
                   tags: ["walking", "exploration"], memberCount: 567, isJoined: false),
         Community(id: "c4", name: "Step Counter Squad",
                   description: "Daily step challenges and accountability",
+                  longDescription: """
+                  Step Counter Squad is built around one simple idea: showing your numbers to \
+                  other people makes you actually hit them. Members compare daily step counts, \
+                  set weekly targets, and call each other out (kindly) when the count slips.
+
+                  No running shoes required — this is for people who get their movement in \
+                  errands, dog walks, and pacing around during phone calls, and want a reason \
+                  to make today's total a little higher than yesterday's.
+                  """,
+                  imageURL: URL(string: "https://picsum.photos/seed/c4/800/450"),
                   tags: ["steps", "challenge"], memberCount: 2104, isJoined: false),
         Community(id: "c5", name: "Campus Walkers",
                   description: "Students walking beyond class",
+                  longDescription: """
+                  Campus Walkers is for students who want to turn the walk between classes — or \
+                  the study break that's overdue — into something more intentional. Members trade \
+                  favorite routes around campus, organize casual group walks between lectures, \
+                  and use movement as a study-break reset instead of another scroll session.
+
+                  Open to anyone studying anywhere; the "campus" is wherever you're based.
+                  """,
+                  imageURL: URL(string: "https://picsum.photos/seed/c5/800/450"),
                   tags: ["student", "campus"], memberCount: 431, isJoined: false),
     ]
 

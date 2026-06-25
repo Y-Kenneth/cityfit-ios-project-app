@@ -13,14 +13,11 @@ struct CommunityView: View {
                 ScrollView {
                     VStack(spacing: 12) {
                         ForEach(viewModel.communities) { community in
-                            Button {
-                                selectedCommunity = community
-                            } label: {
-                                CommunityCardView(community: community) {
-                                    toggleJoin(community)
-                                }
-                            }
-                            .buttonStyle(.plain)
+                            CommunityCardView(
+                                community: community,
+                                onJoinToggle: { toggleJoin(community) },
+                                onDetail: { selectedCommunity = community }
+                            )
                         }
                     }
                     .padding(16)

@@ -79,6 +79,9 @@
 		F6841E532748EF9563A81516 /* MissionMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED861EA2C9079E3DE3A51E4 /* MissionMapView.swift */; };
 		FB3493CE8608BB08CB524DC6 /* MissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0883373FBAF140538D041D56 /* MissionsView.swift */; };
 		FBE39953B07B9DAECCAD3E97 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022B22D4AA8D3BC491AE13FE /* MapViewModel.swift */; };
+		221ADD4381434270B2540BCA /* CommunityMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFD7B4286E64F6BBC61C1EB /* CommunityMessage.swift */; };
+		2DA241F7C7E5415CBAC64F9A /* CommunityChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3FA1FFD6A485185CFFB01 /* CommunityChatViewModel.swift */; };
+		D98070E5C2684008957AC36F /* CommunityChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC3D908DE11472C925D2178 /* CommunityChatView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -153,6 +156,9 @@
 		FCCCBB3C5605F2EF5DF8F257 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
 		FE9ABB7CEB99E0967019BE0D /* RouteMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteMapView.swift; sourceTree = "<group>"; };
 		E1BD85EA8B594DBB9B5DAA11 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Config/Shared.xcconfig"; sourceTree = "<group>"; };
+		FDFD7B4286E64F6BBC61C1EB /* CommunityMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityMessage.swift; sourceTree = "<group>"; };
+		42A3FA1FFD6A485185CFFB01 /* CommunityChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityChatViewModel.swift; sourceTree = "<group>"; };
+		0AC3D908DE11472C925D2178 /* CommunityChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityChatView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +195,7 @@
 				59EFB679F0D14B02BE37554A /* EditProfileView.swift */,
 				005F3BEDE4ED370C27B393DF /* RoutePreviewView.swift */,
 				57550143F494483CFD8F89C2 /* RouteNavigationView.swift */,
+				0AC3D908DE11472C925D2178 /* CommunityChatView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -252,6 +259,7 @@
 				32229D6F7A08A0BE4235CF05 /* MissionTracker.swift */,
 				2DB877A605767C2659F19703 /* MissionViewModel.swift */,
 				30263B8435DC1054691E6C57 /* ProfileViewModel.swift */,
+				42A3FA1FFD6A485185CFFB01 /* CommunityChatViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -286,6 +294,7 @@
 				21BB3729533A8A1F9E397EC2 /* LeaderboardEntry.swift */,
 				4EB8E893656B915E2B723445 /* Mission.swift */,
 				F9FA70990002ADDF814B5042 /* User.swift */,
+				FDFD7B4286E64F6BBC61C1EB /* CommunityMessage.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -487,6 +496,9 @@
 				006331BFD72E50EABCF57081 /* Constants.swift in Sources */,
 				48C33DBC5F2D1F3388FB8167 /* EXPCalculator.swift in Sources */,
 				E3361072932E8990138BB4EB /* MockData.swift in Sources */,
+				221ADD4381434270B2540BCA /* CommunityMessage.swift in Sources */,
+				2DA241F7C7E5415CBAC64F9A /* CommunityChatViewModel.swift in Sources */,
+				D98070E5C2684008957AC36F /* CommunityChatView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
