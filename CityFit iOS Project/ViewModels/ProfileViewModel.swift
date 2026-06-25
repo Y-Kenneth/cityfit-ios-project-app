@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import UIKit
 
 final class ProfileViewModel: ObservableObject {
     @Published var profile: UserProfile?
@@ -61,7 +62,15 @@ final class ProfileViewModel: ObservableObject {
         isLoading = true
         Task { @MainActor in
             defer { isLoading = false }
-            if let remote = try? await FirestoreService.shared.fetchUserProfile(uid: uid) {
+            // If this device already has a local profile for this exact user,
+            // treat it as authoritative — it's where mutations land first, so
+            // pushing it up is safer than pulling remote and risking clobbering
+            // newer local progress with a stale (e.g. previously failed-to-sync)
+            // cloud copy. Only pull from remote on a device that has nothing
+            // cached yet for this user.
+            if let local = profile, local.id == uid {
+                _ = await syncToFirestore()
+            } else if let remote = try? await FirestoreService.shared.fetchUserProfile(uid: uid) {
                 profile = remote
                 saveLocal()
             } else if profile == nil {
@@ -75,11 +84,7 @@ final class ProfileViewModel: ObservableObject {
         let newProfile = UserProfile.new(id: uid, username: username, character: character)
         profile = newProfile
         saveLocal()
-        Task {
-            try? await FirestoreService.shared.saveUserProfile(newProfile)
-            try? await FirestoreService.shared.updateLeaderboardEntry(
-                uid: uid, username: username, xp: 0, level: 1)
-        }
+        scheduleSync()
     }
 
     func logOut() {
@@ -102,7 +107,7 @@ final class ProfileViewModel: ObservableObject {
         current.character = character
         profile = current
         saveLocal()
-        syncToFirestore()
+        scheduleSync()
     }
 
     // MARK: - EXP & stats
@@ -115,7 +120,7 @@ final class ProfileViewModel: ObservableObject {
         profile = current
         justLeveledUp = current.level > oldLevel
         saveLocal()
-        syncToFirestore()
+        scheduleSync()
 
         if justLeveledUp {
             VoiceCoachService.shared.speakNow("Level up! You're now level \(current.level).")
@@ -134,7 +139,7 @@ final class ProfileViewModel: ObservableObject {
         current.streak = updatedStreak(previous: current.streak)
         profile = current
         saveLocal()
-        syncToFirestore()
+        scheduleSync()
     }
 
     // MARK: - Communities
@@ -150,18 +155,43 @@ final class ProfileViewModel: ObservableObject {
         }
         profile = current
         saveLocal()
-        syncToFirestore()
+        scheduleSync()
     }
 
-    private func syncToFirestore() {
-        guard let profile else { return }
+    /// Pushes `profile` to Firestore on a background-extended Task so a sync
+    /// in flight when the user backgrounds the app (e.g. right after finishing
+    /// a mission) gets a few extra seconds to complete instead of being cut off
+    /// immediately. Errors are logged, not swallowed — check the console if
+    /// progress stops showing up across devices.
+    private func scheduleSync() {
+        guard profile != nil else { return }
+        var taskId: UIBackgroundTaskIdentifier = .invalid
+        taskId = UIApplication.shared.beginBackgroundTask(withName: "ProfileSync") {
+            UIApplication.shared.endBackgroundTask(taskId)
+            taskId = .invalid
+        }
         Task {
-            try? await FirestoreService.shared.saveUserProfile(profile)
-            try? await FirestoreService.shared.updateLeaderboardEntry(
+            defer {
+                if taskId != .invalid { UIApplication.shared.endBackgroundTask(taskId) }
+            }
+            _ = await syncToFirestore()
+        }
+    }
+
+    @discardableResult
+    private func syncToFirestore() async -> Bool {
+        guard let profile else { return false }
+        do {
+            try await FirestoreService.shared.saveUserProfile(profile)
+            try await FirestoreService.shared.updateLeaderboardEntry(
                 uid: profile.id,
                 username: profile.username,
                 xp: profile.currentEXP,
                 level: profile.level)
+            return true
+        } catch {
+            print("⚠️ ProfileViewModel: Firestore sync failed for \(profile.id) — \(error.localizedDescription)")
+            return false
         }
     }
 
