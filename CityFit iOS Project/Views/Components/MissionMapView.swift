@@ -8,12 +8,24 @@ struct MissionMapView: UIViewRepresentable {
     let userLocation: CLLocationCoordinate2D?
     let trail: [CLLocationCoordinate2D]
     let destination: CLLocationCoordinate2D?
+    /// Bumped by the parent's recenter button to re-engage tracking after the
+    /// user has panned away — panning the map is a standard MapKit gesture
+    /// that drops `userTrackingMode` back to `.none`, same as Apple/Google Maps.
+    var recenterTrigger: Int = 0
 
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = true
         mapView.showsCompass = true
+        // .follow hands the "wait for the first GPS fix, then zoom/center on
+        // the user" sequence to MapKit itself — the same mechanism Apple Maps
+        // and Google Maps use, including their brief default view before the
+        // first fix arrives. A previous version of this code seeded a
+        // hardcoded fallback center instead, which made the user's own blue
+        // dot disappear off-screen on real devices far from that point —
+        // don't reintroduce a fake center here.
+        mapView.userTrackingMode = .follow
         return mapView
     }
 
@@ -36,18 +48,17 @@ struct MissionMapView: UIViewRepresentable {
             mapView.addAnnotation(pin)
         }
 
-        // Follow the user at a navigation-style zoom.
-        if let userLocation {
-            let region = MKCoordinateRegion(
-                center: userLocation,
-                span: MKCoordinateSpan(latitudeDelta: 0.004, longitudeDelta: 0.004))
-            mapView.setRegion(region, animated: true)
+        if context.coordinator.lastRecenterTrigger != recenterTrigger {
+            context.coordinator.lastRecenterTrigger = recenterTrigger
+            mapView.setUserTrackingMode(.follow, animated: true)
         }
     }
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
     final class Coordinator: NSObject, MKMapViewDelegate {
+        var lastRecenterTrigger = 0
+
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             guard let polyline = overlay as? MKPolyline else {
                 return MKOverlayRenderer(overlay: overlay)

@@ -24,6 +24,7 @@ struct ActiveMissionView: View {
     @State private var showPhotoMissionPicker = false
     @State private var capturePhotoMission: Mission?
     @State private var passiveBonusEXP: Int?
+    @State private var recenterTrigger = 0
 
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -36,10 +37,12 @@ struct ActiveMissionView: View {
         ZStack(alignment: .bottom) {
             MissionMapView(userLocation: tracker.userLocation,
                            trail: tracker.trail,
-                           destination: mission?.coordinate)
+                           destination: mission?.coordinate,
+                           recenterTrigger: recenterTrigger)
                 .ignoresSafeArea()
 
             topBar
+            recenterButton
             progressPanel
 
             if failed { failedOverlay }
@@ -132,6 +135,31 @@ struct ActiveMissionView: View {
             .padding(.horizontal, 16)
             .padding(.top, 12)
             Spacer()
+        }
+    }
+
+    // MARK: - Recenter button
+
+    private var recenterButton: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                Button {
+                    recenterTrigger += 1
+                } label: {
+                    Image(systemName: "location.fill")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(.cityAccent)
+                        .padding(12)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
+                        .shadow(color: .black.opacity(0.3), radius: 6)
+                }
+                .accessibilityLabel("Center map on my location")
+                .padding(.trailing, 16)
+                .padding(.bottom, 260)
+            }
         }
     }
 
