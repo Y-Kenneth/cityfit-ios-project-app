@@ -1,10 +1,25 @@
 import SwiftUI
 
+/// Filters the Missions tab between walking/running missions (steps + distance,
+/// which auto-progress during a Home-started walk) and photo-capture missions
+/// (picked from the camera icon during a walk).
+private enum MissionTypeFilter: String, CaseIterable {
+    case walking = "Walk / Run"
+    case photo = "Photo"
+
+    func matches(_ type: MissionType) -> Bool {
+        switch self {
+        case .walking: return type == .steps || type == .distance
+        case .photo:   return type == .photo
+        }
+    }
+}
+
 struct MissionsView: View {
     @EnvironmentObject private var missionViewModel: MissionViewModel
 
+    @State private var selectedTab: MissionTypeFilter = .walking
     @State private var selectedMission: Mission?
-    @State private var coverMission: Mission?
     @State private var now = Date()
 
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -14,18 +29,30 @@ struct MissionsView: View {
             ZStack {
                 Color.cityBackground.ignoresSafeArea()
 
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 18) {
-                        if let active = missionViewModel.activeMission {
-                            section("In Progress", missions: [active])
-                        }
-                        section("Available", missions: missionViewModel.availableMissions)
-                        if !missionViewModel.cooldownMissions.isEmpty {
-                            cooldownSection
+                VStack(spacing: 0) {
+                    Picker("Mission type", selection: $selectedTab) {
+                        ForEach(MissionTypeFilter.allCases, id: \.self) { tab in
+                            Text(tab.rawValue).tag(tab)
                         }
                     }
-                    .padding(16)
-                    .padding(.bottom, 80)
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
+
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 18) {
+                            if let active = missionViewModel.activeMission, selectedTab.matches(active.type) {
+                                section("In Progress", missions: [active])
+                            }
+                            section("Available", missions: filtered(missionViewModel.availableMissions))
+                            let cooldowns = filtered(missionViewModel.cooldownMissions)
+                            if !cooldowns.isEmpty {
+                                cooldownSection(cooldowns)
+                            }
+                        }
+                        .padding(16)
+                        .padding(.bottom, 80)
+                    }
                 }
             }
             .navigationTitle("Missions")
@@ -43,21 +70,14 @@ struct MissionsView: View {
             missionViewModel.expireCooldowns()
         }
         .sheet(item: $selectedMission) { mission in
-            MissionDetailView(mission: mission) { started in
-                selectedMission = nil
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                    missionViewModel.start(started)
-                    coverMission = started
-                }
-            }
+            MissionDetailView(mission: mission)
         }
-        .fullScreenCover(item: $coverMission) { mission in
-            if mission.type == .photo {
-                PhotoMissionView(mission: mission)
-            } else {
-                ActiveMissionView(mission: mission)
-            }
-        }
+    }
+
+    // MARK: - Filtering
+
+    private func filtered(_ missions: [Mission]) -> [Mission] {
+        missions.filter { selectedTab.matches($0.type) }
     }
 
     // MARK: - Sections
@@ -78,12 +98,12 @@ struct MissionsView: View {
         }
     }
 
-    private var cooldownSection: some View {
+    private func cooldownSection(_ missions: [Mission]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("On Cooldown")
                 .font(.system(size: 18, weight: .heavy))
                 .foregroundColor(.white)
-            ForEach(missionViewModel.cooldownMissions) { mission in
+            ForEach(missions) { mission in
                 CooldownMissionCardView(mission: mission, now: now)
             }
         }

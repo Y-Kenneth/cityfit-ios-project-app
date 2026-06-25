@@ -19,8 +19,11 @@ struct MissionMapView: UIViewRepresentable {
 
     func updateUIView(_ mapView: MKMapView, context: Context) {
         // Trail polyline (redraw each update — point counts stay modest).
+        // Drawn as two overlays: a soft wide glow underneath, a crisp dashed
+        // core on top — reads as a deliberate "live trail," not a flat line.
         mapView.removeOverlays(mapView.overlays)
         if trail.count >= 2 {
+            mapView.addOverlay(GlowPolyline(coordinates: trail, count: trail.count))
             mapView.addOverlay(MKPolyline(coordinates: trail, count: trail.count))
         }
 
@@ -49,10 +52,24 @@ struct MissionMapView: UIViewRepresentable {
             guard let polyline = overlay as? MKPolyline else {
                 return MKOverlayRenderer(overlay: overlay)
             }
+            if polyline is GlowPolyline {
+                let renderer = MKPolylineRenderer(polyline: polyline)
+                renderer.strokeColor = UIColor(Color.cityAccent).withAlphaComponent(0.25)
+                renderer.lineWidth = 14
+                renderer.lineCap = .round
+                return renderer
+            }
             let renderer = MKPolylineRenderer(polyline: polyline)
-            renderer.strokeColor = UIColor(Color.cityGreen)
-            renderer.lineWidth = 6
+            renderer.strokeColor = UIColor(Color.cityAccent)
+            renderer.lineWidth = 5
+            renderer.lineCap = .round
+            renderer.lineJoin = .round
+            renderer.lineDashPattern = [0, 14]
             return renderer
         }
     }
 }
+
+/// Tags the wide soft-glow underlay so the renderer can tell it apart from the
+/// crisp dashed line drawn on top of it.
+private final class GlowPolyline: MKPolyline {}

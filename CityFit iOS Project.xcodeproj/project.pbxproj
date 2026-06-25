@@ -53,6 +53,7 @@
 		9D4009F220F9C438F0439E8E /* CharacterSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271293DF6F5B76921A3D4CA3 /* CharacterSelectView.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* GameEventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* GameEventDetailView.swift */; };
 		BC751E28DD8A47E3C8F1AE20 /* MissionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C5DDE49D0F94B84BED4E90 /* MissionCardView.swift */; };
+		DF4D815B921E984056A8FA00 /* ExamplePhotoGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 880F2A9572B1D8F68812F63E /* ExamplePhotoGrid.swift */; };
 		BC9F82281A10458AA9A656EE /* CharacterPickerGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047AEFECE2D647F4A9E041FD /* CharacterPickerGrid.swift */; };
 		BF4B7B6B476AD282BE1D4B04 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077BD74AA0BAD72537558463 /* AuthService.swift */; };
 		BFFDD57CF8C2F0B670AD403A /* EXPBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD41A8489CDB13B01874645C /* EXPBarView.swift */; };
@@ -92,6 +93,7 @@
 		21BB3729533A8A1F9E397EC2 /* LeaderboardEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardEntry.swift; sourceTree = "<group>"; };
 		21D5824B65AB2320894FD570 /* EXPCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXPCalculator.swift; sourceTree = "<group>"; };
 		22C5DDE49D0F94B84BED4E90 /* MissionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionCardView.swift; sourceTree = "<group>"; };
+		880F2A9572B1D8F68812F63E /* ExamplePhotoGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamplePhotoGrid.swift; sourceTree = "<group>"; };
 		271293DF6F5B76921A3D4CA3 /* CharacterSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterSelectView.swift; sourceTree = "<group>"; };
 		2DB877A605767C2659F19703 /* MissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionViewModel.swift; sourceTree = "<group>"; };
 		30263B8435DC1054691E6C57 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 				CD41A8489CDB13B01874645C /* EXPBarView.swift */,
 				E785CF8C291ACE741704390F /* LeaderboardRowView.swift */,
 				22C5DDE49D0F94B84BED4E90 /* MissionCardView.swift */,
+				880F2A9572B1D8F68812F63E /* ExamplePhotoGrid.swift */,
 				E8EBF84A238E24297B14EB95 /* MissionPinView.swift */,
 				8A1F34EB7E2B7C2565F2BD9F /* NavigationMapView.swift */,
 				BED861EA2C9079E3DE3A51E4 /* MissionMapView.swift */,
@@ -443,6 +446,7 @@
 				BFFDD57CF8C2F0B670AD403A /* EXPBarView.swift in Sources */,
 				7B2A21634A06887946274DA5 /* LeaderboardRowView.swift in Sources */,
 				BC751E28DD8A47E3C8F1AE20 /* MissionCardView.swift in Sources */,
+				DF4D815B921E984056A8FA00 /* ExamplePhotoGrid.swift in Sources */,
 				C19AE23B4B7EF1E9CB99E272 /* MissionPinView.swift in Sources */,
 				479DA02FB820FD004705C257 /* NavigationMapView.swift in Sources */,
 				F6841E532748EF9563A81516 /* MissionMapView.swift in Sources */,
@@ -613,6 +617,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CityFit-iOS-Project-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = CityFit;
 				INFOPLIST_KEY_NSCameraUsageDescription = "CityFit uses the camera to detect objects for photo missions.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "CityFit reads your step data from Apple Health.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CityFit saves workout data to Apple Health after missions.";
@@ -649,6 +654,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CityFit-iOS-Project-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = CityFit;
 				INFOPLIST_KEY_NSCameraUsageDescription = "CityFit uses the camera to detect objects for photo missions.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "CityFit reads your step data from Apple Health.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CityFit saves workout data to Apple Health after missions.";

@@ -2,7 +2,10 @@ import SwiftUI
 import MapKit
 
 struct ActiveMissionView: View {
-    let mission: Mission
+    /// The specific mission this walk targets, e.g. via the AI-route arrival flow.
+    /// `nil` for a plain walk/run session started from Home, where every eligible
+    /// steps/distance mission progresses passively instead of one "primary" mission.
+    let mission: Mission?
 
     @EnvironmentObject private var missionViewModel: MissionViewModel
     @EnvironmentObject private var profileViewModel: ProfileViewModel
@@ -18,11 +21,13 @@ struct ActiveMissionView: View {
     @State private var failed = false
     @State private var showGiveUpConfirm = false
     @State private var showMissionsTray = false
+    @State private var showPhotoMissionPicker = false
+    @State private var capturePhotoMission: Mission?
     @State private var passiveBonusEXP: Int?
 
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    init(mission: Mission) {
+    init(mission: Mission?) {
         self.mission = mission
         _tracker = StateObject(wrappedValue: MissionTracker(mission: mission))
     }
@@ -31,7 +36,7 @@ struct ActiveMissionView: View {
         ZStack(alignment: .bottom) {
             MissionMapView(userLocation: tracker.userLocation,
                            trail: tracker.trail,
-                           destination: mission.coordinate)
+                           destination: mission?.coordinate)
                 .ignoresSafeArea()
 
             topBar
@@ -77,7 +82,7 @@ struct ActiveMissionView: View {
         .onReceive(timer) { _ in tick() }
         .confirmationDialog("Give up this mission?", isPresented: $showGiveUpConfirm, titleVisibility: .visible) {
             Button("Give Up", role: .destructive) {
-                missionViewModel.cancelActiveMission()
+                if mission != nil { missionViewModel.cancelActiveMission() }
                 dismiss()
             }
             Button("Keep Going", role: .cancel) {}
@@ -85,116 +90,152 @@ struct ActiveMissionView: View {
         .sheet(isPresented: $showMissionsTray) {
             MissionsTrayView(steps: pedometer.stepCount, distance: distanceValue)
         }
+        .sheet(isPresented: $showPhotoMissionPicker) {
+            PhotoMissionPickerView { picked in
+                showPhotoMissionPicker = false
+                missionViewModel.start(picked)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    capturePhotoMission = picked
+                }
+            }
+        }
+        .fullScreenCover(item: $capturePhotoMission) { photoMission in
+            PhotoMissionView(mission: photoMission)
+        }
     }
 
     // MARK: - Top bar
 
     private var topBar: some View {
         VStack {
-            HStack {
-                // Quit
+            HStack(spacing: 10) {
+                Spacer()
+
+                // Photo missions: pick one, jump straight into the camera
                 Button {
-                    showGiveUpConfirm = true
+                    showPhotoMissionPicker = true
                 } label: {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(12)
-                        .background(Color.cityCard.opacity(0.9))
-                        .clipShape(Circle())
+                    badgedIcon(systemName: "camera.fill",
+                               count: missionViewModel.availablePhotoMissions.count)
                 }
-                .accessibilityLabel("Give up mission")
-
-                Spacer()
-
-                // Timer
-                Text(timeText)
-                    .font(.system(size: 15, weight: .bold).monospacedDigit())
-                    .foregroundColor(mission.timeLimit != nil ? .cityYellow : .white)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(Color.cityCard.opacity(0.9))
-                    .cornerRadius(20)
-
-                Spacer()
+                .accessibilityLabel("Find a photo mission to capture")
 
                 // Missions tray
                 Button {
                     showMissionsTray = true
                 } label: {
-                    ZStack(alignment: .topTrailing) {
-                        Image(systemName: "list.bullet.clipboard.fill")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(12)
-                            .background(Color.cityAccent.opacity(0.9))
-                            .clipShape(Circle())
-
-                        // Badge: count of passive missions in progress
-                        let passiveCount = missionViewModel.passiveWalkingMissions.count
-                        if passiveCount > 0 {
-                            Text("\(passiveCount)")
-                                .font(.system(size: 10, weight: .black))
-                                .foregroundColor(.black)
-                                .padding(4)
-                                .background(Color.cityGreen)
-                                .clipShape(Circle())
-                                .offset(x: 4, y: -4)
-                        }
-                    }
+                    badgedIcon(systemName: "list.bullet",
+                               count: missionViewModel.passiveWalkingMissions.count)
                 }
                 .accessibilityLabel("View all missions")
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 16)
             .padding(.top, 12)
             Spacer()
+        }
+    }
+
+    private func badgedIcon(systemName: String, count: Int) -> some View {
+        ZStack(alignment: .topTrailing) {
+            Image(systemName: systemName)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(.white)
+                .frame(width: 42, height: 42)
+                .background(.ultraThinMaterial, in: Circle())
+                .overlay(Circle().strokeBorder(Color.white.opacity(0.15), lineWidth: 1))
+
+            if count > 0 {
+                Text("\(count)")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundColor(.white)
+                    .frame(minWidth: 16, minHeight: 16)
+                    .background(Color.cityAccent, in: Circle())
+                    .offset(x: 3, y: -3)
+            }
         }
     }
 
     // MARK: - Progress panel
 
     private var progressPanel: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(mission.title)
-                .font(.system(size: 20, weight: .heavy))
-                .foregroundColor(.white)
-
-            VStack(alignment: .leading, spacing: 6) {
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        Capsule().fill(Color.cityCard)
-                        Capsule().fill(Color.cityGreen)
-                            .frame(width: geo.size.width * CGFloat(min(progressValue / mission.targetValue, 1)))
-                            .animation(.easeOut(duration: 0.4), value: progressValue)
-                    }
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .firstTextBaseline) {
+                HStack(spacing: 6) {
+                    Image(systemName: activityIcon)
+                        .font(.system(size: 13, weight: .semibold))
+                    Text(activityService.activity.label.uppercased())
+                        .font(.system(size: 12, weight: .bold))
+                        .tracking(0.5)
                 }
-                .frame(height: 12)
-                Text("\(Int(progressValue)) of \(Int(mission.targetValue)) \(mission.type.unit)")
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.citySubtext)
-            }
-
-            HStack(spacing: 8) {
-                Image(systemName: activityIcon)
-                Text(activityService.activity.label)
-                Text("×\(activityService.expMultiplier, specifier: "%.0f") EXP")
-                    .foregroundColor(.cityYellow)
+                .foregroundColor(.citySubtext)
                 Spacer()
-                Text("+\(mission.expReward)")
-                    .foregroundColor(.cityGreen)
+                if activityService.expMultiplier > 1 {
+                    Text("\(activityService.expMultiplier, specifier: "%.0f")× EXP")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(.cityAccent)
+                }
             }
-            .font(.system(size: 14, weight: .bold))
-            .foregroundColor(.white)
 
-            HStack(spacing: 12) {
-                statBox(value: "\(pedometer.stepCount)", label: "Steps")
-                statBox(value: String(format: "%.0fm", distanceValue), label: "Distance")
+            if let mission {
+                Text(mission.title)
+                    .font(.system(size: 17, weight: .bold))
+                    .foregroundColor(.white)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            Capsule().fill(Color.white.opacity(0.1)).frame(height: 3)
+                            Capsule().fill(Color.cityAccent)
+                                .frame(width: geo.size.width * CGFloat(min(progressValue / mission.targetValue, 1)),
+                                       height: 3)
+                                .animation(.easeOut(duration: 0.4), value: progressValue)
+                        }
+                    }
+                    .frame(height: 3)
+                    Text("\(Int(progressValue)) / \(Int(mission.targetValue)) \(mission.type.unit) · +\(mission.expReward) EXP")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.citySubtext)
+                }
             }
+
+            HStack(alignment: .bottom, spacing: 0) {
+                statColumn(value: "\(pedometer.stepCount)", label: "Steps")
+                Divider().background(Color.white.opacity(0.12)).frame(height: 38)
+                    .padding(.horizontal, 18)
+                statColumn(value: String(format: "%.0f", distanceValue), label: "Meters")
+                Divider().background(Color.white.opacity(0.12)).frame(height: 38)
+                    .padding(.horizontal, 18)
+                statColumn(value: timeText, label: "Time", isMonospaced: true)
+                Spacer(minLength: 0)
+            }
+
+            Button {
+                showGiveUpConfirm = true
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "stop.fill")
+                        .font(.system(size: 11, weight: .bold))
+                    Text("End Walk")
+                }
+                .font(.system(size: 13, weight: .bold))
+                .foregroundColor(.white.opacity(0.85))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
+                )
+            }
+            .accessibilityLabel("Give up mission")
         }
         .padding(20)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.cityBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
+        )
         .padding(.horizontal, 12)
         .padding(.bottom, 12)
     }
@@ -205,7 +246,12 @@ struct ActiveMissionView: View {
         max(locationService.trackedDistance, pedometer.distance)
     }
 
+    /// Progress toward the primary mission's target, if there is one. A plain
+    /// walk session (`mission == nil`) has no single target to track here —
+    /// completion for every eligible mission instead happens via the passive
+    /// progress update in `tick()`.
     private var progressValue: Double {
+        guard let mission else { return 0 }
         switch mission.type {
         case .steps:    return Double(pedometer.stepCount)
         case .distance: return distanceValue
@@ -214,7 +260,7 @@ struct ActiveMissionView: View {
     }
 
     private var timeText: String {
-        if let limit = mission.timeLimit {
+        if let limit = mission?.timeLimit {
             let remaining = max(limit * 60 - elapsedSeconds, 0)
             return String(format: "⏱ %d:%02d left", remaining / 60, remaining % 60)
         }
@@ -251,6 +297,9 @@ struct ActiveMissionView: View {
             }
         }
 
+        // A plain walk session has no single primary mission to complete or
+        // time out on — every eligible mission already completes passively above.
+        guard let mission else { return }
         if progressValue >= mission.targetValue {
             complete()
         } else if let limit = mission.timeLimit, elapsedSeconds >= limit * 60 {
@@ -275,19 +324,18 @@ struct ActiveMissionView: View {
         withAnimation { failed = true }
     }
 
-    private func statBox(value: String, label: String) -> some View {
-        VStack(spacing: 4) {
+    private func statColumn(value: String, label: String, isMonospaced: Bool = false) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
             Text(value)
-                .font(.system(size: 17, weight: .heavy).monospacedDigit())
+                .font(isMonospaced
+                      ? .system(size: 26, weight: .bold).monospacedDigit()
+                      : .system(size: 26, weight: .bold))
                 .foregroundColor(.white)
-            Text(label)
-                .font(.system(size: 11))
+            Text(label.uppercased())
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.5)
                 .foregroundColor(.citySubtext)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-        .background(Color.cityCard)
-        .cornerRadius(12)
     }
 
     private var failedOverlay: some View {
@@ -315,6 +363,61 @@ struct ActiveMissionView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.cityBackground.opacity(0.95))
         .ignoresSafeArea()
+    }
+}
+
+// MARK: - Photo mission picker sheet
+
+/// Lets the user pick a photo-capture mission while walking — spot a bottle or
+/// a cat, check the list, tap the matching mission, and the camera opens
+/// straight into capture mode for that object.
+private struct PhotoMissionPickerView: View {
+    @EnvironmentObject private var missionViewModel: MissionViewModel
+    let onPick: (Mission) -> Void
+
+    var body: some View {
+        ZStack {
+            Color.cityBackground.ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    Image(systemName: "camera.fill")
+                        .foregroundColor(.cityYellow)
+                    Text("Photo Missions")
+                        .font(.system(size: 17, weight: .heavy))
+                        .foregroundColor(.white)
+                    Spacer()
+                }
+                .padding(20)
+
+                Text("See one of these nearby? Tap it to open the camera.")
+                    .font(.system(size: 13))
+                    .foregroundColor(.citySubtext)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 16)
+
+                Divider().background(Color.cityCard)
+
+                ScrollView {
+                    VStack(spacing: 12) {
+                        ForEach(missionViewModel.availablePhotoMissions) { mission in
+                            Button {
+                                onPick(mission)
+                            } label: {
+                                MissionCardView(mission: mission)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        if missionViewModel.availablePhotoMissions.isEmpty {
+                            Text("No photo missions available right now.")
+                                .font(.system(size: 14))
+                                .foregroundColor(.citySubtext)
+                                .padding(24)
+                        }
+                    }
+                    .padding(16)
+                }
+            }
+        }
     }
 }
 

@@ -69,6 +69,11 @@ final class MissionViewModel: ObservableObject {
         }
     }
 
+    /// Photo-capture missions available to pick from the in-walk camera icon.
+    var availablePhotoMissions: [Mission] {
+        missions.filter { $0.status == .available && $0.type == .photo }
+    }
+
     /// Updates every passive walking mission with the current pedometer/GPS value.
     /// Completes any that cross the target and returns the total EXP earned.
     @discardableResult

@@ -12,10 +12,10 @@ final class MissionTracker: ObservableObject {
     @Published private(set) var userLocation: CLLocationCoordinate2D?
     @Published private(set) var trail: [CLLocationCoordinate2D] = []
 
-    private let mission: Mission
+    private let mission: Mission?
     private var cancellable: AnyCancellable?
 
-    init(mission: Mission) {
+    init(mission: Mission?) {
         self.mission = mission
     }
 
@@ -58,7 +58,7 @@ final class MissionTracker: ObservableObject {
 
     private func startSimulatedWalk() {
         // Start at the mission pin if it has one, else a Nanjing fallback.
-        var current = mission.coordinate
+        var current = mission?.coordinate
             ?? CLLocationCoordinate2D(latitude: 32.0603, longitude: 118.7964)
         append(current)
 

@@ -11,6 +11,7 @@ struct HomeView: View {
 
     @State private var showRoutePreview = false
     @State private var coverMission: Mission?
+    @State private var showPlainWalk = false
     @State private var showRouteError = false
     @State private var selectedEvent: GameEvent?
 
@@ -77,58 +78,9 @@ struct HomeView: View {
 
             // MARK: - Featured mission card
             if let mission = missionViewModel.featuredMission {
-                VStack(alignment: .leading, spacing: 10) {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("🎯 \(mission.title)")
-                                .font(.system(size: 15, weight: .bold))
-                                .foregroundColor(.white)
-                            Text(remainingText(for: mission))
-                                .font(.system(size: 12))
-                                .foregroundColor(.citySubtext)
-                        }
-                        Spacer()
-                    }
-
-                    HStack(spacing: 10) {
-                        Button {
-                            generateRoute()
-                        } label: {
-                            HStack(spacing: 6) {
-                                if aiViewModel.isGeneratingRoute {
-                                    ProgressView().tint(.cityAccent)
-                                } else {
-                                    Image(systemName: "wand.and.stars")
-                                }
-                                Text("Generate Route")
-                            }
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.cityAccent)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 10)
-                            .background(Color.cityAccent.opacity(0.15))
-                            .cornerRadius(10)
-                        }
-                        .disabled(aiViewModel.isGeneratingRoute)
-
-                        Button {
-                            start(mission)
-                        } label: {
-                            Text(mission.status == .active ? "Resume" : "Start")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundColor(.black)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 10)
-                                .background(Color.cityAccent)
-                                .cornerRadius(10)
-                        }
-                    }
-                }
-                .padding(16)
-                .background(.ultraThinMaterial)
-                .cornerRadius(16)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 12)
+                featuredMissionCard(mission)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
             }
         }
         .sheet(isPresented: $showRoutePreview) {
@@ -164,6 +116,9 @@ struct HomeView: View {
                 ActiveMissionView(mission: mission)
             }
         }
+        .fullScreenCover(isPresented: $showPlainWalk) {
+            ActiveMissionView(mission: nil)
+        }
         .alert("AI Route Generator", isPresented: $showRouteError) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -172,6 +127,92 @@ struct HomeView: View {
         .sheet(item: $selectedEvent) { event in
             GameEventDetailView(event: event)
         }
+    }
+
+    // MARK: - Featured mission card
+
+    private func featuredMissionCard(_ mission: Mission) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("FEATURED MISSION")
+                        .font(.system(size: 10, weight: .bold))
+                        .tracking(0.8)
+                        .foregroundColor(.citySubtext)
+                    Text(mission.title)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.white)
+                }
+                Spacer()
+                Image(systemName: mission.type.icon)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.citySubtext)
+            }
+
+            if mission.type != .photo {
+                VStack(alignment: .leading, spacing: 8) {
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            Capsule().fill(Color.white.opacity(0.1)).frame(height: 3)
+                            Capsule().fill(Color.cityAccent)
+                                .frame(width: geo.size.width * CGFloat(mission.progress), height: 3)
+                        }
+                    }
+                    .frame(height: 3)
+                    Text(remainingText(for: mission))
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(.citySubtext)
+                }
+            } else {
+                Text(remainingText(for: mission))
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.citySubtext)
+            }
+
+            HStack(spacing: 10) {
+                Button {
+                    generateRoute()
+                } label: {
+                    HStack(spacing: 6) {
+                        if aiViewModel.isGeneratingRoute {
+                            ProgressView().tint(.white)
+                        } else {
+                            Image(systemName: "wand.and.stars")
+                                .font(.system(size: 13, weight: .semibold))
+                        }
+                        Text("Generate Route")
+                    }
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.18), lineWidth: 1)
+                    )
+                }
+                .disabled(aiViewModel.isGeneratingRoute)
+
+                Button {
+                    showPlainWalk = true
+                } label: {
+                    Text("Start")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.cityAccent)
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                }
+            }
+        }
+        .padding(18)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
+        )
     }
 
     // MARK: - Actions
