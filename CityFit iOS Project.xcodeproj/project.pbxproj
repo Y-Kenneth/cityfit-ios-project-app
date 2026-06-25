@@ -152,6 +152,7 @@
 		F9FA70990002ADDF814B5042 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		FCCCBB3C5605F2EF5DF8F257 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
 		FE9ABB7CEB99E0967019BE0D /* RouteMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteMapView.swift; sourceTree = "<group>"; };
+		E1BD85EA8B594DBB9B5DAA11 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Config/Shared.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -294,6 +295,7 @@
 			children = (
 				CB44AA9E2FD8044100D3D7D7 /* CityFit iOS Project */,
 				CB44AA9D2FD8044100D3D7D7 /* Products */,
+				E1BD85EA8B594DBB9B5DAA11 /* Shared.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -607,13 +609,13 @@
 		};
 		CB44AAAB2FD8044300D3D7D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1BD85EA8B594DBB9B5DAA11 /* Shared.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CityFit iOS Project/Preview Content\"";
-				DEVELOPMENT_TEAM = MGUFYQ4S2L;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CityFit-iOS-Project-Info.plist";
@@ -634,7 +636,6 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kenneth.cityfit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -644,13 +645,13 @@
 		};
 		CB44AAAC2FD8044300D3D7D7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1BD85EA8B594DBB9B5DAA11 /* Shared.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CityFit iOS Project/Preview Content\"";
-				DEVELOPMENT_TEAM = MGUFYQ4S2L;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CityFit-iOS-Project-Info.plist";
@@ -671,7 +672,6 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kenneth.cityfit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

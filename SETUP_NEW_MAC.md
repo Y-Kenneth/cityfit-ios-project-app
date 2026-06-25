@@ -14,20 +14,39 @@ travels via git — every machine needs its own copy.
   `CityFit-iOS-Project-Info.plist` — if it doesn't, update that file's
   `CFBundleURLSchemes` entry to match.
 
-### 2. Set Signing Team to your own Apple ID
-- Xcode → Target → Signing & Capabilities → **Team**
-- Click **Add an Account…** if your Apple ID isn't listed, then select it
-- Bundle Identifier should already read `com.kenneth.cityfit` from git — don't
-  change it
-- **Why this matters:** App IDs are global across Apple's developer accounts.
-  Whichever Apple ID is selected in Team the first time a machine builds is the
-  one that registers `com.kenneth.cityfit`. If you build with the wrong Apple ID
-  selected, that account claims the bundle ID and locks everyone else out of it —
-  this already happened once with an earlier bundle ID
-  (`com.yakhekenneth.CityFit`, registered under a friend's Apple ID), which is
-  why the project switched to `com.kenneth.cityfit`. Don't repeat it: always
-  double check Team is set to *your own* Apple ID before the first build on any
-  new machine.
+### 2. Create your own Config/Local.xcconfig (per-machine signing identity)
+Two Apple IDs are permanently in play on this project — Marcellino's personal
+team (owns `com.yakhekenneth.CityFit`) and Kenneth's personal team (owns
+`com.kenneth.cityfit`). App IDs are global across Apple's developer accounts,
+so the same bundle ID can never be signed by both — this already caused a
+breakage loop once (switching the committed bundle ID back and forth every
+time the project moved between machines).
+
+The fix: `PRODUCT_BUNDLE_IDENTIFIER` and `DEVELOPMENT_TEAM` are **not**
+hardcoded in `project.pbxproj` anymore. They come from
+`Config/Shared.xcconfig` (committed, holds Kenneth's identity as the
+canonical default) optionally overridden by `Config/Local.xcconfig`
+(gitignored — every machine has its own, never committed).
+
+On a new machine:
+- Create `Config/Local.xcconfig` (it won't exist after a fresh clone) with:
+  ```
+  PRODUCT_BUNDLE_IDENTIFIER = com.yourbundleid.here
+  DEVELOPMENT_TEAM = YOURTEAMID
+  ```
+- Find your Team ID via `security find-identity -v -p codesigning`, then
+  `security find-certificate -c "Apple Development: <name/email shown>" -p | openssl x509 -noout -subject`
+  — the `OU=` field is the real Team ID (the parenthetical after your name in
+  the identity list is **not** the Team ID, don't use that one).
+- **Do not** set Team or Bundle Identifier via Xcode's Signing & Capabilities
+  UI after this — picking a value there writes it back as an inline override
+  in `project.pbxproj`, which is committed and will silently re-break the
+  *other* machine on next pull. Edit `Config/Local.xcconfig` by hand instead.
+- This machine's values: `com.yakhekenneth.CityFit` / `9F2TJU8B45`
+  (Marcellino). Lab Mac's values: `com.kenneth.cityfit` / `MGUFYQ4S2L`
+  (Kenneth) — already the Shared.xcconfig default, so the lab Mac doesn't
+  strictly need its own Local.xcconfig, but creating one explicitly is safer
+  against future default changes.
 
 ### 3. Firebase SDK packages (should auto-resolve)
 SPM packages are declared in `project.pbxproj` — Xcode should resolve them
