@@ -33,7 +33,7 @@ enum AIService {
     }
 
     static func generateRoute(_ request: RouteRequest) async throws -> RouteResponse {
-        try await post(path: "/route", body: request)
+        try await post(path: "/route", body: request, timeout: Constants.routeRequestTimeout)
     }
 
     static func verifyPhoto(_ request: VerifyPhotoRequest) async throws -> VerifyPhotoResponse {
@@ -43,14 +43,14 @@ enum AIService {
     // MARK: - Plumbing
 
     private static func post<Body: Encodable, Response: Decodable>(
-        path: String, body: Body
+        path: String, body: Body, timeout: TimeInterval = Constants.requestTimeout
     ) async throws -> Response {
         guard let url = URL(string: Constants.backendURL + path) else {
             throw AIServiceError.invalidURL
         }
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
-        urlRequest.timeoutInterval = Constants.requestTimeout
+        urlRequest.timeoutInterval = timeout
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         // Ngrok free tier shows an interstitial page unless this header is set
         urlRequest.setValue("true", forHTTPHeaderField: "ngrok-skip-browser-warning")

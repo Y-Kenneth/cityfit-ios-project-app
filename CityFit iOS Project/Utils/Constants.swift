@@ -6,6 +6,9 @@ enum Constants {
     static let backendURL = "https://lustrous-donor-cavalier.ngrok-free.dev"
 
     static let requestTimeout: TimeInterval = 20
+    /// Route Crew runs 2 agents sequentially (Planner -> Calculator), roughly
+    /// 2x the DeepSeek round-trips of Chat/Vision — needs more headroom.
+    static let routeRequestTimeout: TimeInterval = 45
     static let missionCooldownHours: Double = 8
 
     enum EXP {
