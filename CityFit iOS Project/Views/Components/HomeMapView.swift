@@ -116,26 +116,25 @@ struct HomeMapView: UIViewRepresentable {
             mapView.addAnnotation(AvatarAnnotation(coordinate: avatarCoordinate))
         }
 
-        // Camera — keep following the user's GPS position until they actually
-        // touch the map. Following (not centering once) is what survives a bad
-        // first location fix: on launch, especially in China behind a VPN, iOS
-        // can hand over a wrong network-assisted fix before GPS locks; centering
-        // once froze the map on that wrong country. By following, the camera
-        // tracks straight to the corrected position the instant GPS provides it,
-        // with no manual recenter. The moment the user pans/zooms for real, the
-        // regionWillChange delegate (which checks for a live touch gesture, so it
-        // ignores our own programmatic moves and MapKit's launch layout) turns
-        // following off so we never fight their browsing.
+        // Camera — keep the map centered on the user while following. We compare
+        // the MAP's current center to the user, not the user's previous value,
+        // and re-center whenever they've drifted apart. That distinction is the
+        // fix: MapKit resets the camera to its OWN default region (a US location
+        // near Apple HQ — the "San Jose" the map kept opening on) once the
+        // initially-zero-sized map view resolves its real on-screen bounds. The
+        // old check only re-centered when the user's coordinate changed, so it
+        // never corrected that reset and the map sat on the default. Driving off
+        // the map-vs-user drift also rides a bad first GPS fix straight through
+        // to the corrected position. Following is switched off the instant the
+        // user actually pans (regionWillChange + live-touch check), so a drift
+        // they created themselves is left alone.
         let target = userLocation ?? region.center
         if context.coordinator.isFollowingUser {
-            let last = context.coordinator.lastFollowedCenter
-            let moved = last.map {
-                CLLocation(latitude: $0.latitude, longitude: $0.longitude)
-                    .distance(from: CLLocation(latitude: target.latitude, longitude: target.longitude)) > 2
-            } ?? true
-            if moved {
-                context.coordinator.lastFollowedCenter = target
-                setCamera(on: mapView, center: target, animated: last != nil)
+            let current = mapView.camera.centerCoordinate
+            let drift = CLLocation(latitude: current.latitude, longitude: current.longitude)
+                .distance(from: CLLocation(latitude: target.latitude, longitude: target.longitude))
+            if drift > 5 {
+                setCamera(on: mapView, center: target, animated: false)
             }
         }
 
@@ -154,7 +153,6 @@ struct HomeMapView: UIViewRepresentable {
         if recenterTrigger != context.coordinator.lastRecenterTrigger {
             context.coordinator.lastRecenterTrigger = recenterTrigger
             context.coordinator.isFollowingUser = true
-            context.coordinator.lastFollowedCenter = target
             setCamera(on: mapView, center: target, animated: true)
         }
     }
@@ -179,7 +177,6 @@ struct HomeMapView: UIViewRepresentable {
         /// Stays true through launch layout and our own programmatic moves, and
         /// only flips off when the user physically pans/zooms (see regionWillChange).
         var isFollowingUser = true
-        var lastFollowedCenter: CLLocationCoordinate2D?
         var lastRecenterTrigger = 0
         var lastTripSignature = ""
 
