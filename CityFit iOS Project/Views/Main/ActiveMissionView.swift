@@ -38,6 +38,9 @@ struct ActiveMissionView: View {
             MissionMapView(userLocation: tracker.userLocation,
                            trail: tracker.trail,
                            destination: mission?.coordinate,
+                           heading: locationService.heading,
+                           isMoving: locationService.isMoving,
+                           character: profileViewModel.profile?.character ?? .sportsmanM,
                            recenterTrigger: recenterTrigger)
                 .ignoresSafeArea()
 
