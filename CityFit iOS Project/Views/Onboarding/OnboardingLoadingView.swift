@@ -3,6 +3,9 @@ import SwiftUI
 struct OnboardingLoadingView: View {
     let username: String
     let character: CharacterType
+    var gender: Gender = .male
+    var weightKg: Double = 70
+    var heightCm: Double = 170
 
     @EnvironmentObject private var profileViewModel: ProfileViewModel
     @State private var spin = false
@@ -33,7 +36,10 @@ struct OnboardingLoadingView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 profileViewModel.createUser(
                     username: username.isEmpty ? "CityFitter" : username,
-                    character: character
+                    character: character,
+                    gender: gender,
+                    weightKg: weightKg,
+                    heightCm: heightCm
                 )
             }
         }

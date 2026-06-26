@@ -12,8 +12,31 @@ struct UserProfile: Codable {
     var weeklySteps: [Int]       // [today, yesterday, ...6 days ago]
     var streak: Int
     var joinedCommunityIds: [String]
+    var gender: Gender
+    var weightKg: Double
+    var heightCm: Double
+    var restingHeartRate: Int?
+    var activeEnergyKcal: Double?
+    var isHealthKitConnected: Bool
 
-    static func new(id: String = UUID().uuidString, username: String, character: CharacterType) -> UserProfile {
+    /// Standard BMI = kg / m². `heightCm` is always > 0 (clamped by the
+    /// stepper UI), so no divide-by-zero guard needed here.
+    var bmi: Double {
+        let heightM = heightCm / 100
+        return weightKg / (heightM * heightM)
+    }
+
+    var bmiCategory: String {
+        switch bmi {
+        case ..<18.5: return "Underweight"
+        case ..<25:   return "Normal"
+        case ..<30:   return "Overweight"
+        default:      return "Obese"
+        }
+    }
+
+    static func new(id: String = UUID().uuidString, username: String, character: CharacterType,
+                     gender: Gender = .male, weightKg: Double = 70, heightCm: Double = 170) -> UserProfile {
         UserProfile(id: id,
                     username: username,
                     character: character,
@@ -24,12 +47,17 @@ struct UserProfile: Codable {
                     joinDate: Date(),
                     weeklySteps: [0, 0, 0, 0, 0, 0, 0],
                     streak: 0,
-                    joinedCommunityIds: [])
+                    joinedCommunityIds: [],
+                    gender: gender,
+                    weightKg: weightKg,
+                    heightCm: heightCm)
     }
 
     init(id: String, username: String, character: CharacterType, level: Int, currentEXP: Int,
          totalSteps: Int, missionsCompleted: Int, joinDate: Date, weeklySteps: [Int], streak: Int,
-         joinedCommunityIds: [String] = []) {
+         joinedCommunityIds: [String] = [], gender: Gender = .male, weightKg: Double = 70,
+         heightCm: Double = 170, restingHeartRate: Int? = nil, activeEnergyKcal: Double? = nil,
+         isHealthKitConnected: Bool = false) {
         self.id = id
         self.username = username
         self.character = character
@@ -41,11 +69,17 @@ struct UserProfile: Codable {
         self.weeklySteps = weeklySteps
         self.streak = streak
         self.joinedCommunityIds = joinedCommunityIds
+        self.gender = gender
+        self.weightKg = weightKg
+        self.heightCm = heightCm
+        self.restingHeartRate = restingHeartRate
+        self.activeEnergyKcal = activeEnergyKcal
+        self.isHealthKitConnected = isHealthKitConnected
     }
 
-    // `joinedCommunityIds` is decoded with a default so older locally-cached
-    // profiles (saved before this field existed) still decode instead of
-    // failing on a missing key.
+    // Health fields are decoded with defaults so older locally-cached
+    // profiles (saved before these fields existed) still decode instead of
+    // failing on a missing key — same pattern as `joinedCommunityIds`.
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decode(String.self, forKey: .id)
@@ -59,6 +93,23 @@ struct UserProfile: Codable {
         weeklySteps = try c.decode([Int].self, forKey: .weeklySteps)
         streak = try c.decode(Int.self, forKey: .streak)
         joinedCommunityIds = try c.decodeIfPresent([String].self, forKey: .joinedCommunityIds) ?? []
+        gender = try c.decodeIfPresent(Gender.self, forKey: .gender) ?? .male
+        weightKg = try c.decodeIfPresent(Double.self, forKey: .weightKg) ?? 70
+        heightCm = try c.decodeIfPresent(Double.self, forKey: .heightCm) ?? 170
+        restingHeartRate = try c.decodeIfPresent(Int.self, forKey: .restingHeartRate)
+        activeEnergyKcal = try c.decodeIfPresent(Double.self, forKey: .activeEnergyKcal)
+        isHealthKitConnected = try c.decodeIfPresent(Bool.self, forKey: .isHealthKitConnected) ?? false
+    }
+}
+
+enum Gender: String, Codable, CaseIterable {
+    case male, female
+
+    var displayName: String {
+        switch self {
+        case .male:   return "Male"
+        case .female: return "Female"
+        }
     }
 }
 

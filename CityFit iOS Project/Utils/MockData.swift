@@ -122,14 +122,22 @@ enum MockData {
 
     // MARK: - Leaderboard (current user at rank 5)
     static let leaderboard: [LeaderboardEntry] = [
-        LeaderboardEntry(rank: 1, username: "SpeedKing99",  exp: 8420, level: 16, character: .sportsmanM),
-        LeaderboardEntry(rank: 2, username: "RunnerGirl",   exp: 7890, level: 15, character: .sportsmanF),
-        LeaderboardEntry(rank: 3, username: "CityWalker",   exp: 6540, level: 13, character: .studentF),
-        LeaderboardEntry(rank: 4, username: "BunnyHops",    exp: 5320, level: 10, character: .rabbit),
-        LeaderboardEntry(rank: 5, username: "YouAreHere",   exp: 1340, level: 5,  character: .sportsmanM),
-        LeaderboardEntry(rank: 6, username: "StepMaster",   exp: 1100, level: 4,  character: .studentF),
-        LeaderboardEntry(rank: 7, username: "NightRunner",  exp: 890,  level: 3,  character: .sportsmanF),
-        LeaderboardEntry(rank: 8, username: "LazyToActive", exp: 620,  level: 2,  character: .rabbit),
+        LeaderboardEntry(rank: 1, username: "SpeedKing99",  exp: 8420, level: 16, character: .sportsmanM,
+                          gender: .male, weightKg: 74, heightCm: 180, restingHeartRate: 52, activeEnergyKcal: 620, streak: 41, totalSteps: 184_200),
+        LeaderboardEntry(rank: 2, username: "RunnerGirl",   exp: 7890, level: 15, character: .sportsmanF,
+                          gender: .female, weightKg: 56, heightCm: 165, restingHeartRate: 55, activeEnergyKcal: 540, streak: 33, totalSteps: 171_500),
+        LeaderboardEntry(rank: 3, username: "CityWalker",   exp: 6540, level: 13, character: .studentF,
+                          gender: .female, weightKg: 60, heightCm: 168, restingHeartRate: 61, activeEnergyKcal: 410, streak: 27, totalSteps: 152_800),
+        LeaderboardEntry(rank: 4, username: "BunnyHops",    exp: 5320, level: 10, character: .rabbit,
+                          gender: .male, weightKg: 58, heightCm: 162, restingHeartRate: 64, activeEnergyKcal: 380, streak: 19, totalSteps: 119_400),
+        LeaderboardEntry(rank: 5, username: "YouAreHere",   exp: 1340, level: 5,  character: .sportsmanM,
+                          gender: .male, weightKg: 70, heightCm: 170, restingHeartRate: 66, activeEnergyKcal: 290, streak: 6,  totalSteps: 41_200),
+        LeaderboardEntry(rank: 6, username: "StepMaster",   exp: 1100, level: 4,  character: .studentF,
+                          gender: .female, weightKg: 52, heightCm: 158, restingHeartRate: 68, activeEnergyKcal: 260, streak: 5,  totalSteps: 35_700),
+        LeaderboardEntry(rank: 7, username: "NightRunner",  exp: 890,  level: 3,  character: .sportsmanF,
+                          gender: .female, weightKg: 63, heightCm: 170, restingHeartRate: 58, activeEnergyKcal: 300, streak: 4,  totalSteps: 28_900),
+        LeaderboardEntry(rank: 8, username: "LazyToActive", exp: 620,  level: 2,  character: .rabbit,
+                          gender: .male, weightKg: 82, heightCm: 175, restingHeartRate: 74, activeEnergyKcal: 180, streak: 2,  totalSteps: 19_300),
     ]
 
     static let currentUserRank = 5
@@ -203,6 +211,75 @@ enum MockData {
                   imageURL: URL(string: "https://picsum.photos/seed/c5/800/450"),
                   tags: ["student", "campus"], memberCount: 431, isJoined: false),
     ]
+
+    // MARK: - Community Chat Seed Data
+    // Used to seed a new community's Firestore "messages" subcollection the
+    // first time a user joins it, so the group chat never opens empty during
+    // testing. Timestamps are relative offsets (minutes-ago) from "now" —
+    // FirestoreService converts them to absolute Dates right before writing,
+    // so the conversation always reads as "recent" no matter when it's seeded.
+    struct SeedMessage {
+        let senderUsername: String
+        let senderCharacter: CharacterType
+        let text: String
+        let minutesAgo: Int
+    }
+
+    static func seedMessages(for communityId: String) -> [SeedMessage] {
+        switch communityId {
+        case "c1":
+            return [
+                SeedMessage(senderUsername: "SpeedKing99", senderCharacter: .sportsmanM, text: "morning runners, who's up for 5:45am tomorrow?", minutesAgo: 320),
+                SeedMessage(senderUsername: "RunnerGirl", senderCharacter: .sportsmanF, text: "I'm in, same spot by the fountain?", minutesAgo: 318),
+                SeedMessage(senderUsername: "SpeedKing99", senderCharacter: .sportsmanM, text: "yep, fountain then the river loop", minutesAgo: 316),
+                SeedMessage(senderUsername: "NightRunner", senderCharacter: .sportsmanF, text: "ugh 5:45 is rough but ok 😭", minutesAgo: 90),
+                SeedMessage(senderUsername: "CityWalker", senderCharacter: .studentF, text: "did 6k this morning, legs are dead", minutesAgo: 70),
+                SeedMessage(senderUsername: "RunnerGirl", senderCharacter: .sportsmanF, text: "nice!! that's a new PR for you right", minutesAgo: 68),
+                SeedMessage(senderUsername: "CityWalker", senderCharacter: .studentF, text: "yeah by like 2 minutes lol", minutesAgo: 65),
+                SeedMessage(senderUsername: "SpeedKing99", senderCharacter: .sportsmanM, text: "let's go 🔥", minutesAgo: 64),
+            ]
+        case "c2":
+            return [
+                SeedMessage(senderUsername: "BunnyHops", senderCharacter: .rabbit, text: "weekend plan: river trail, 10am, anyone in?", minutesAgo: 240),
+                SeedMessage(senderUsername: "StepMaster", senderCharacter: .studentF, text: "in! bringing snacks this time", minutesAgo: 235),
+                SeedMessage(senderUsername: "LazyToActive", senderCharacter: .rabbit, text: "what kind of snacks asking for myself", minutesAgo: 233),
+                SeedMessage(senderUsername: "StepMaster", senderCharacter: .studentF, text: "orange slices and those little buns", minutesAgo: 231),
+                SeedMessage(senderUsername: "LazyToActive", senderCharacter: .rabbit, text: "ok i'm definitely coming now", minutesAgo: 230),
+                SeedMessage(senderUsername: "BunnyHops", senderCharacter: .rabbit, text: "lol classic. last week's photos were great btw", minutesAgo: 95),
+                SeedMessage(senderUsername: "StepMaster", senderCharacter: .studentF, text: "the sunset one is my new wallpaper ngl", minutesAgo: 92),
+            ]
+        case "c3":
+            return [
+                SeedMessage(senderUsername: "CityWalker", senderCharacter: .studentF, text: "found a mural near the old train yard, anyone been?", minutesAgo: 410),
+                SeedMessage(senderUsername: "NightRunner", senderCharacter: .sportsmanF, text: "no!! send the location", minutesAgo: 405),
+                SeedMessage(senderUsername: "CityWalker", senderCharacter: .studentF, text: "dropping a pin in the group route file later today", minutesAgo: 400),
+                SeedMessage(senderUsername: "YouAreHere", senderCharacter: .sportsmanM, text: "there's also a tiny café two blocks from there, good detour", minutesAgo: 150),
+                SeedMessage(senderUsername: "NightRunner", senderCharacter: .sportsmanF, text: "say less, adding it to the walk", minutesAgo: 148),
+            ]
+        case "c4":
+            return [
+                SeedMessage(senderUsername: "StepMaster", senderCharacter: .studentF, text: "daily count: 11,204. who's beating that", minutesAgo: 500),
+                SeedMessage(senderUsername: "LazyToActive", senderCharacter: .rabbit, text: "...not me today, 3,000 and proud of it honestly", minutesAgo: 495),
+                SeedMessage(senderUsername: "CityWalker", senderCharacter: .studentF, text: "every step counts 👏", minutesAgo: 493),
+                SeedMessage(senderUsername: "SpeedKing99", senderCharacter: .sportsmanM, text: "14,002. took the long way to literally everything today", minutesAgo: 200),
+                SeedMessage(senderUsername: "StepMaster", senderCharacter: .studentF, text: "show off 😂", minutesAgo: 198),
+                SeedMessage(senderUsername: "SpeedKing99", senderCharacter: .sportsmanM, text: "🐢🐢🐢", minutesAgo: 197),
+            ]
+        case "c5":
+            return [
+                SeedMessage(senderUsername: "RunnerGirl", senderCharacter: .sportsmanF, text: "anyone walking to the north campus lecture at 2?", minutesAgo: 130),
+                SeedMessage(senderUsername: "YouAreHere", senderCharacter: .sportsmanM, text: "yeah leaving library in 5", minutesAgo: 128),
+                SeedMessage(senderUsername: "RunnerGirl", senderCharacter: .sportsmanF, text: "perfect, meet by the fountain steps", minutesAgo: 127),
+                SeedMessage(senderUsername: "NightRunner", senderCharacter: .sportsmanF, text: "study break walk later? brain is fried", minutesAgo: 40),
+                SeedMessage(senderUsername: "YouAreHere", senderCharacter: .sportsmanM, text: "always down for that", minutesAgo: 38),
+            ]
+        default:
+            return [
+                SeedMessage(senderUsername: "CityWalker", senderCharacter: .studentF, text: "welcome to the group! 👋", minutesAgo: 60),
+                SeedMessage(senderUsername: "YouAreHere", senderCharacter: .sportsmanM, text: "good to be here, let's get moving", minutesAgo: 55),
+            ]
+        }
+    }
 
     // MARK: - Mock Map Events (Nanjing coordinates)
     static let gameEvents: [GameEvent] = [

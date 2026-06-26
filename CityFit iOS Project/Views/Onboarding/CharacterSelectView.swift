@@ -4,7 +4,7 @@ struct CharacterSelectView: View {
     let username: String
 
     @State private var selected: CharacterType = .sportsmanM
-    @State private var showLoading = false
+    @State private var showHealthInfo = false
 
     var body: some View {
         ZStack {
@@ -21,9 +21,9 @@ struct CharacterSelectView: View {
                 }
 
                 Button {
-                    showLoading = true
+                    showHealthInfo = true
                 } label: {
-                    Text("Start My Journey")
+                    Text("Next")
                         .font(.system(size: 17, weight: .bold))
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity)
@@ -37,8 +37,8 @@ struct CharacterSelectView: View {
         }
         .navigationTitle("Character")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(isPresented: $showLoading) {
-            OnboardingLoadingView(username: username, character: selected)
+        .navigationDestination(isPresented: $showHealthInfo) {
+            HealthInfoSetupView(username: username, character: selected)
         }
     }
 }

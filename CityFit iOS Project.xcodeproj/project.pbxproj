@@ -82,6 +82,10 @@
 		221ADD4381434270B2540BCA /* CommunityMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFD7B4286E64F6BBC61C1EB /* CommunityMessage.swift */; };
 		2DA241F7C7E5415CBAC64F9A /* CommunityChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3FA1FFD6A485185CFFB01 /* CommunityChatViewModel.swift */; };
 		D98070E5C2684008957AC36F /* CommunityChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC3D908DE11472C925D2178 /* CommunityChatView.swift */; };
+		8B82D594EB0DB7BF591F22F0 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1357174BF97CB87ABB9BB19 /* HealthKitService.swift */; };
+		55E113ECE5DEAC76782EC545 /* HealthInfoFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BD3BA66EDABB075FFEE8A0 /* HealthInfoFormView.swift */; };
+		142F8AE85B9990EE5B425625 /* HealthInfoSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780BA7036F83D899D1C67430 /* HealthInfoSetupView.swift */; };
+		53AFF3E15AD14985C2BE91FD /* UserDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9899920BDF41C1CC17178CCD /* UserDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -159,6 +163,11 @@
 		FDFD7B4286E64F6BBC61C1EB /* CommunityMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityMessage.swift; sourceTree = "<group>"; };
 		42A3FA1FFD6A485185CFFB01 /* CommunityChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityChatViewModel.swift; sourceTree = "<group>"; };
 		0AC3D908DE11472C925D2178 /* CommunityChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityChatView.swift; sourceTree = "<group>"; };
+		A1357174BF97CB87ABB9BB19 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		91BD3BA66EDABB075FFEE8A0 /* HealthInfoFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthInfoFormView.swift; sourceTree = "<group>"; };
+		780BA7036F83D899D1C67430 /* HealthInfoSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthInfoSetupView.swift; sourceTree = "<group>"; };
+		9899920BDF41C1CC17178CCD /* UserDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailView.swift; sourceTree = "<group>"; };
+		2AAF0FFB101CFE2B72D7FEC0 /* CityFit-iOS-Project.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "CityFit-iOS-Project.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -196,6 +205,7 @@
 				005F3BEDE4ED370C27B393DF /* RoutePreviewView.swift */,
 				57550143F494483CFD8F89C2 /* RouteNavigationView.swift */,
 				0AC3D908DE11472C925D2178 /* CommunityChatView.swift */,
+				9899920BDF41C1CC17178CCD /* UserDetailView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -234,6 +244,7 @@
 				5FF2C3F4BBAEE70AEF371BB8 /* PedometerService.swift */,
 				BEAC9959B4EA727A19447F80 /* VisionService.swift */,
 				65E740E5C403416998209FC7 /* VoiceCoachService.swift */,
+				A1357174BF97CB87ABB9BB19 /* HealthKitService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -281,6 +292,7 @@
 				8A1F34EB7E2B7C2565F2BD9F /* NavigationMapView.swift */,
 				BED861EA2C9079E3DE3A51E4 /* MissionMapView.swift */,
 				FE9ABB7CEB99E0967019BE0D /* RouteMapView.swift */,
+				91BD3BA66EDABB075FFEE8A0 /* HealthInfoFormView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -320,6 +332,7 @@
 			isa = PBXGroup;
 			children = (
 				CB13D6882FECD63900A910AD /* GoogleService-Info.plist */,
+				2AAF0FFB101CFE2B72D7FEC0 /* CityFit-iOS-Project.entitlements */,
 				51B161582FE4630800BF83AA /* CityFit-iOS-Project-Info.plist */,
 				CBDDB6422FE26DBB001BED25 /* ImageClassifier.mlmodel */,
 				CB31134A2FD924D7007BFF65 /* iOS CityFit Project Background.md */,
@@ -348,6 +361,7 @@
 			children = (
 				271293DF6F5B76921A3D4CA3 /* CharacterSelectView.swift */,
 				F66A3EDDB98DE2159616B743 /* OnboardingLoadingView.swift */,
+				780BA7036F83D899D1C67430 /* HealthInfoSetupView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -499,6 +513,10 @@
 				221ADD4381434270B2540BCA /* CommunityMessage.swift in Sources */,
 				2DA241F7C7E5415CBAC64F9A /* CommunityChatViewModel.swift in Sources */,
 				D98070E5C2684008957AC36F /* CommunityChatView.swift in Sources */,
+				8B82D594EB0DB7BF591F22F0 /* HealthKitService.swift in Sources */,
+				55E113ECE5DEAC76782EC545 /* HealthInfoFormView.swift in Sources */,
+				142F8AE85B9990EE5B425625 /* HealthInfoSetupView.swift in Sources */,
+				53AFF3E15AD14985C2BE91FD /* UserDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -625,6 +643,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "CityFit iOS Project/CityFit-iOS-Project.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CityFit iOS Project/Preview Content\"";
@@ -633,8 +652,8 @@
 				INFOPLIST_FILE = "CityFit-iOS-Project-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = CityFit;
 				INFOPLIST_KEY_NSCameraUsageDescription = "CityFit uses the camera to detect objects for photo missions.";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "CityFit reads your step data from Apple Health.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CityFit saves workout data to Apple Health after missions.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "CityFit reads your weight, height, resting heart rate, and active energy from Apple Health to show on your profile.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CityFit does not write any data to Apple Health.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "CityFit tracks your location during active missions.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "CityFit needs your location to show the map and nearby missions.";
 				INFOPLIST_KEY_NSMotionUsageDescription = "CityFit uses motion sensors to detect your activity and count steps.";
@@ -661,6 +680,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "CityFit iOS Project/CityFit-iOS-Project.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CityFit iOS Project/Preview Content\"";
@@ -669,8 +689,8 @@
 				INFOPLIST_FILE = "CityFit-iOS-Project-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = CityFit;
 				INFOPLIST_KEY_NSCameraUsageDescription = "CityFit uses the camera to detect objects for photo missions.";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "CityFit reads your step data from Apple Health.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CityFit saves workout data to Apple Health after missions.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "CityFit reads your weight, height, resting heart rate, and active energy from Apple Health to show on your profile.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CityFit does not write any data to Apple Health.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "CityFit tracks your location during active missions.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "CityFit needs your location to show the map and nearby missions.";
 				INFOPLIST_KEY_NSMotionUsageDescription = "CityFit uses motion sensors to detect your activity and count steps.";

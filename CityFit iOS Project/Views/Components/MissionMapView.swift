@@ -18,18 +18,16 @@ struct MissionMapView: UIViewRepresentable {
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = true
         mapView.showsCompass = true
-        // .follow hands the "wait for the first GPS fix, then zoom/center on
-        // the user" sequence to MapKit itself — the same mechanism Apple Maps
-        // and Google Maps use, including their brief default view before the
-        // first fix arrives. A previous version of this code seeded a
-        // hardcoded fallback center instead, which made the user's own blue
-        // dot disappear off-screen on real devices far from that point —
-        // don't reintroduce a fake center here.
+        seedInitialRegionIfNeeded(mapView, context: context)
+        // .follow hands ongoing tracking to MapKit itself — same mechanism
+        // Apple Maps and Google Maps use.
         mapView.userTrackingMode = .follow
         return mapView
     }
 
     func updateUIView(_ mapView: MKMapView, context: Context) {
+        seedInitialRegionIfNeeded(mapView, context: context)
+
         // Trail polyline (redraw each update — point counts stay modest).
         // Drawn as two overlays: a soft wide glow underneath, a crisp dashed
         // core on top — reads as a deliberate "live trail," not a flat line.
@@ -54,10 +52,37 @@ struct MissionMapView: UIViewRepresentable {
         }
     }
 
+    /// showsUserLocation + .follow spin up MKMapView's OWN internal
+    /// CLLocationManager, separate from the app's already-running
+    /// LocationService — it needs its own fresh GPS fix, which briefly shows
+    /// MapKit's default world view first. But the app's LocationService has
+    /// almost always already got a real fix by the time this screen opens
+    /// (it's been running since app launch), passed in here via
+    /// `userLocation`. Seed the camera with that real coordinate the first
+    /// time it's available — whether that's already true at `makeUIView`, or
+    /// only arrives a moment later via `updateUIView` (SwiftUI can render
+    /// this view's body, and thus call `makeUIView`, before the parent's
+    /// `.onAppear` populates `userLocation`) — so the map opens in the right
+    /// place instead of waiting on MapKit's separate fix. This is the user's
+    /// actual current location, not a guess — unlike the previous hardcoded
+    /// fallback center this code used to seed (removed because it made the
+    /// blue dot disappear off-screen on devices far from that point), so it
+    /// can't reintroduce that bug. Guarded to run once so it never fights
+    /// `.follow` or the user's own panning afterward.
+    private func seedInitialRegionIfNeeded(_ mapView: MKMapView, context: Context) {
+        guard !context.coordinator.hasSeededInitialRegion, let userLocation else { return }
+        context.coordinator.hasSeededInitialRegion = true
+        mapView.setRegion(MKCoordinateRegion(center: userLocation,
+                                              latitudinalMeters: 600,
+                                              longitudinalMeters: 600),
+                           animated: false)
+    }
+
     func makeCoordinator() -> Coordinator { Coordinator() }
 
     final class Coordinator: NSObject, MKMapViewDelegate {
         var lastRecenterTrigger = 0
+        var hasSeededInitialRegion = false
 
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             guard let polyline = overlay as? MKPolyline else {

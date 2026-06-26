@@ -56,6 +56,9 @@ struct ProfileView: View {
                             weeklyChart(steps: profile.weeklySteps)
                                 .padding(.horizontal, 16)
 
+                            healthSection(profile)
+                                .padding(.horizontal, 16)
+
                             Text("Joined \(profile.joinDate.formatted(date: .abbreviated, time: .omitted))")
                                 .font(.system(size: 12))
                                 .foregroundColor(.citySubtext)
@@ -141,6 +144,60 @@ struct ProfileView: View {
         .padding(16)
         .background(Color.cityCard)
         .cornerRadius(16)
+    }
+
+    private func healthSection(_ profile: UserProfile) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Health")
+                    .font(.system(size: 16, weight: .heavy))
+                    .foregroundColor(.white)
+                Spacer()
+                if profile.isHealthKitConnected {
+                    Label("Apple Health", systemImage: "heart.fill")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.cityGreen)
+                }
+            }
+
+            HStack(spacing: 12) {
+                healthBox(value: String(format: "%.1f", profile.weightKg), unit: "kg", label: "Weight")
+                healthBox(value: String(format: "%.0f", profile.heightCm), unit: "cm", label: "Height")
+                healthBox(value: String(format: "%.1f", profile.bmi), unit: profile.bmiCategory, label: "BMI")
+            }
+
+            if profile.restingHeartRate != nil || profile.activeEnergyKcal != nil {
+                HStack(spacing: 12) {
+                    if let hr = profile.restingHeartRate {
+                        healthBox(value: "\(hr)", unit: "bpm", label: "Resting HR")
+                    }
+                    if let energy = profile.activeEnergyKcal {
+                        healthBox(value: String(format: "%.0f", energy), unit: "kcal", label: "Active Energy")
+                    }
+                }
+            }
+        }
+        .padding(16)
+        .background(Color.cityCard)
+        .cornerRadius(16)
+    }
+
+    private func healthBox(value: String, unit: String, label: String) -> some View {
+        VStack(spacing: 4) {
+            Text(value)
+                .font(.system(size: 17, weight: .heavy))
+                .foregroundColor(.white)
+            Text(unit)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundColor(.cityAccent)
+            Text(label)
+                .font(.system(size: 10))
+                .foregroundColor(.citySubtext)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+        .background(Color.cityBackground)
+        .cornerRadius(12)
     }
 
     private func dayLabel(daysAgo: Int) -> String {
