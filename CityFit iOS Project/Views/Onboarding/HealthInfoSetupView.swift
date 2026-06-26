@@ -16,7 +16,7 @@ struct HealthInfoSetupView: View {
 
     var body: some View {
         ZStack {
-            Color.cityBackground.ignoresSafeArea()
+            AppBackgroundView()
 
             VStack(spacing: 24) {
                 VStack(spacing: 8) {

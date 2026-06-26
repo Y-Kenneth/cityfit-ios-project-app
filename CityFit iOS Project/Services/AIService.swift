@@ -33,11 +33,22 @@ enum AIService {
     }
 
     static func generateRoute(_ request: RouteRequest) async throws -> RouteResponse {
-        try await post(path: "/route", body: request, timeout: Constants.routeRequestTimeout)
+        do {
+            return try await post(path: "/route", body: request, timeout: Constants.routeRequestTimeout)
+        } catch {
+            // Route Crew already retries once server-side; this is the last-resort
+            // safety net for a tunnel/network blip on top of that. One extra try
+            // here catches most of what's left without making the user tap again.
+            return try await post(path: "/route", body: request, timeout: Constants.routeRequestTimeout)
+        }
     }
 
     static func verifyPhoto(_ request: VerifyPhotoRequest) async throws -> VerifyPhotoResponse {
         try await post(path: "/verify-photo", body: request)
+    }
+
+    static func planTrip(_ request: TripRequest) async throws -> TripResponse {
+        try await post(path: "/plan-trip", body: request, timeout: Constants.tripRequestTimeout)
     }
 
     // MARK: - Plumbing

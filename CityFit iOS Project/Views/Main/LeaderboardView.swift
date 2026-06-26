@@ -11,7 +11,7 @@ struct LeaderboardView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.cityBackground.ignoresSafeArea()
+                AppBackgroundView()
 
                 ScrollView {
                     VStack(spacing: 10) {

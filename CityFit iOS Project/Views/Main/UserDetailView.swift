@@ -9,7 +9,7 @@ struct UserDetailView: View {
 
     var body: some View {
         ZStack {
-            Color.cityBackground.ignoresSafeArea()
+            AppBackgroundView()
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {

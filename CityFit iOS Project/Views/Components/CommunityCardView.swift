@@ -46,6 +46,8 @@ struct CommunityCardView: View {
                 }
             }
 
+            CommunityImageTile(imageName: community.imageName, height: 120)
+
             Button(action: onDetail) {
                 Text("Detail")
                     .font(.system(size: 13, weight: .semibold))

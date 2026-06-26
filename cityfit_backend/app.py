@@ -13,6 +13,7 @@ from flask import Flask, jsonify, request
 
 from crews.chat_crew import run_chat_crew
 from crews.route_crew import run_route_crew
+from crews.trip_crew import run_trip_crew
 from crews.vision_crew import run_vision_crew
 
 app = Flask(__name__)
@@ -58,6 +59,28 @@ def route():
         return jsonify(result)
     except Exception as exc:  # noqa: BLE001
         app.logger.exception("route crew failed")
+        return jsonify({"error": str(exc)}), 503
+
+
+@app.post("/plan-trip")
+def plan_trip():
+    """Trip Crew (2 agents, sequential) -> steps/time/calories for walk & run
+    between two user-chosen points. The distance is measured on-device via
+    MapKit (the backend can't call Apple's MapKit) and passed in as ground truth."""
+    data = request.get_json(force=True)
+    try:
+        result = run_trip_crew(
+            origin_lat=data.get("origin_lat", 0.0),
+            origin_lng=data.get("origin_lng", 0.0),
+            destination_lat=data.get("destination_lat", 0.0),
+            destination_lng=data.get("destination_lng", 0.0),
+            distance_meters=data.get("distance_meters", 0.0),
+            level=data.get("level", 1),
+            weight_kg=data.get("weight_kg", 70.0),
+        )
+        return jsonify(result)
+    except Exception as exc:  # noqa: BLE001
+        app.logger.exception("trip crew failed")
         return jsonify({"error": str(exc)}), 503
 
 

@@ -27,7 +27,7 @@ struct MissionsView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.cityBackground.ignoresSafeArea()
+                AppBackgroundView()
 
                 VStack(spacing: 0) {
                     Picker("Mission type", selection: $selectedTab) {

@@ -29,4 +29,16 @@ enum EventType {
         case .walk:     return .cityGreen
         }
     }
+
+    /// Header photo for the event detail sheet — bundled as a local Asset
+    /// Catalog image (not fetched at runtime): Wikimedia Commons, the
+    /// original source, is blocked in mainland China, which made the photo
+    /// silently fail to load there even with a VPN that routes other traffic.
+    var headerImageName: String {
+        switch self {
+        case .run:      return "eventRun"
+        case .wellness: return "eventWellness"
+        case .walk:     return "eventWalk"
+        }
+    }
 }

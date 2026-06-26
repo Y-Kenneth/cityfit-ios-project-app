@@ -6,12 +6,23 @@ struct GameEventDetailView: View {
 
     var body: some View {
         ZStack {
-            Color.cityBackground.ignoresSafeArea()
+            AppBackgroundView()
 
             VStack(spacing: 0) {
-                // Header band
-                ZStack {
-                    event.eventType.color.opacity(0.15)
+                // Header band — event photo (bundled asset) with a gradient
+                // so the icon/title stay readable on top of it.
+                ZStack(alignment: .bottom) {
+                    Image(event.eventType.headerImageName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 220)
+                        .frame(maxWidth: .infinity)
+                        .clipped()
+
+                    LinearGradient(colors: [.clear, Color.cityBackground],
+                                  startPoint: .top, endPoint: .bottom)
+                        .frame(height: 220)
+
                     VStack(spacing: 12) {
                         ZStack {
                             Circle()
@@ -35,8 +46,9 @@ struct GameEventDetailView: View {
                             .background(event.eventType.color.opacity(0.15))
                             .cornerRadius(8)
                     }
-                    .padding(.vertical, 32)
+                    .padding(.bottom, 20)
                 }
+                .frame(height: 220)
 
                 // Details
                 VStack(spacing: 16) {

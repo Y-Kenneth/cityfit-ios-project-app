@@ -8,7 +8,7 @@ struct CharacterSelectView: View {
 
     var body: some View {
         ZStack {
-            Color.cityBackground.ignoresSafeArea()
+            AppBackgroundView()
 
             VStack(spacing: 24) {
                 Text("Choose your character")

@@ -7,8 +7,13 @@ enum Constants {
 
     static let requestTimeout: TimeInterval = 20
     /// Route Crew runs 2 agents sequentially (Planner -> Calculator), roughly
-    /// 2x the DeepSeek round-trips of Chat/Vision — needs more headroom.
-    static let routeRequestTimeout: TimeInterval = 45
+    /// 2x the DeepSeek round-trips of Chat/Vision, AND retries once
+    /// server-side on a malformed/transient failure — needs headroom for
+    /// that full retried run, not just one pass.
+    static let routeRequestTimeout: TimeInterval = 70
+    /// Trip Crew also runs 2 agents sequentially (Distance Analyst -> Pace
+    /// Estimator) with the same server-side retry — same headroom as Route Crew.
+    static let tripRequestTimeout: TimeInterval = 70
     static let missionCooldownHours: Double = 8
 
     enum EXP {

@@ -1,11 +1,12 @@
 # CityFit AI Backend
 
-Flask + CrewAI + DeepSeek backend with 3 endpoints and 4 agents across 3 crews.
+Flask + CrewAI + DeepSeek backend with 4 endpoints and 6 agents across 4 crews.
 
 | Endpoint | Crew | Agents |
 |---|---|---|
 | `POST /chat` | Chat Crew | Personal Coach |
 | `POST /route` | Route Crew | Route Planner → Fitness Calculator (sequential) |
+| `POST /plan-trip` | Trip Crew | Distance Analyst → Pace Estimator (sequential) — distance is measured on-device via MapKit and passed in, not computed by the agents |
 | `POST /verify-photo` | Vision Crew | Object Detection Specialist (+ DeepSeek Vision model) |
 
 ## Setup (on the AI laptop)
@@ -44,4 +45,7 @@ curl -X POST http://localhost:5000/chat -H "Content-Type: application/json" \
 
 curl -X POST http://localhost:5000/route -H "Content-Type: application/json" \
   -d '{"current_lat":32.0603,"current_lng":118.7964,"level":5,"preferred_distance":2000,"mission_pins":[{"id":"m3","title":"Morning Sprinter","lat":32.0620,"lng":118.7980,"exp":150},{"id":"m4","title":"City Explorer","lat":32.0590,"lng":118.7950,"exp":200}]}'
+
+curl -X POST http://localhost:5000/plan-trip -H "Content-Type: application/json" \
+  -d '{"origin_lat":32.0603,"origin_lng":118.7964,"destination_lat":32.0650,"destination_lng":118.8010,"distance_meters":650,"level":5,"weight_kg":70}'
 ```

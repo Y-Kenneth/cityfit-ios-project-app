@@ -9,7 +9,7 @@ struct CommunityDetailView: View {
 
     var body: some View {
         ZStack {
-            Color.cityBackground.ignoresSafeArea()
+            AppBackgroundView()
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
@@ -19,7 +19,7 @@ struct CommunityDetailView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.top, 10)
 
-                    headerImage
+                    CommunityImageTile(imageName: community.imageName, height: 180)
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text(community.name)
@@ -82,32 +82,6 @@ struct CommunityDetailView: View {
         }
     }
 
-    private var headerImage: some View {
-        AsyncImage(url: community.imageURL) { phase in
-            switch phase {
-            case .empty:
-                placeholderTile.overlay(ProgressView().tint(.cityAccent))
-            case .success(let image):
-                image.resizable().scaledToFill()
-            case .failure:
-                placeholderTile.overlay(
-                    Image(systemName: "photo")
-                        .font(.system(size: 32))
-                        .foregroundColor(.citySubtext)
-                )
-            @unknown default:
-                placeholderTile
-            }
-        }
-        .frame(height: 180)
-        .frame(maxWidth: .infinity)
-        .clipped()
-        .cornerRadius(16)
-    }
-
-    private var placeholderTile: some View {
-        Rectangle().fill(Color.cityCard)
-    }
 }
 
 struct CommunityDetailView_Previews: PreviewProvider {

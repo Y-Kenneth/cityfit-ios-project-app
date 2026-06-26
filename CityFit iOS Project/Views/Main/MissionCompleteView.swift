@@ -47,7 +47,7 @@ struct MissionCompleteView: View {
             .padding(.top, 10)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.cityBackground.opacity(0.97))
+        .background(AppBackgroundView())
         .ignoresSafeArea()
         .onAppear { celebrate = true }
     }

@@ -10,7 +10,7 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.cityBackground.ignoresSafeArea()
+                AppBackgroundView()
 
                 if let profile = profileViewModel.profile {
                     ScrollView {

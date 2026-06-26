@@ -80,7 +80,7 @@ struct AIChatView: View {
             .padding(14)
             .background(Color.cityCard)
         }
-        .background(Color.cityBackground)
+        .background(AppBackgroundView())
     }
 
     private func send() {

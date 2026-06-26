@@ -9,7 +9,7 @@ struct MissionDetailView: View {
 
     var body: some View {
         ZStack {
-            Color.cityBackground.ignoresSafeArea()
+            AppBackgroundView()
 
             VStack(spacing: 0) {
                 Capsule()

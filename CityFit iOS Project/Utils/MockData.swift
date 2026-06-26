@@ -157,7 +157,7 @@ enum MockData {
                   this group keeps things low-pressure: no minimum pace, no mandatory distance. \
                   Show up, run, and watch the city wake up around you.
                   """,
-                  imageURL: URL(string: "https://picsum.photos/seed/c1/800/450"),
+                  imageName: "communityMorningRunners",
                   tags: ["running", "morning"], memberCount: 1243, isJoined: false),
         Community(id: "c2", name: "Weekend Warriors",
                   description: "Make every weekend count",
@@ -170,7 +170,7 @@ enum MockData {
                   week than squeeze in five rushed ones. Bring snacks, bring friends, bring a \
                   camera — the weekend is the whole point.
                   """,
-                  imageURL: URL(string: "https://picsum.photos/seed/c2/800/450"),
+                  imageName: "communityWeekendWarriors",
                   tags: ["weekend", "casual"], memberCount: 892, isJoined: false),
         Community(id: "c3", name: "City Explorers",
                   description: "Discover hidden gems on foot",
@@ -183,7 +183,7 @@ enum MockData {
                   something new every time you go out. Great for anyone who finds a familiar \
                   neighborhood boring on a treadmill but endlessly interesting on foot.
                   """,
-                  imageURL: URL(string: "https://picsum.photos/seed/c3/800/450"),
+                  imageName: "communityCityExplorers",
                   tags: ["walking", "exploration"], memberCount: 567, isJoined: false),
         Community(id: "c4", name: "Step Counter Squad",
                   description: "Daily step challenges and accountability",
@@ -196,7 +196,7 @@ enum MockData {
                   errands, dog walks, and pacing around during phone calls, and want a reason \
                   to make today's total a little higher than yesterday's.
                   """,
-                  imageURL: URL(string: "https://picsum.photos/seed/c4/800/450"),
+                  imageName: "communityStepCounterSquad",
                   tags: ["steps", "challenge"], memberCount: 2104, isJoined: false),
         Community(id: "c5", name: "Campus Walkers",
                   description: "Students walking beyond class",
@@ -208,7 +208,7 @@ enum MockData {
 
                   Open to anyone studying anywhere; the "campus" is wherever you're based.
                   """,
-                  imageURL: URL(string: "https://picsum.photos/seed/c5/800/450"),
+                  imageName: "communityCampusWalkers",
                   tags: ["student", "campus"], memberCount: 431, isJoined: false),
     ]
 

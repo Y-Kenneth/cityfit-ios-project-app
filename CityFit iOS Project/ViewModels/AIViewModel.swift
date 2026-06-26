@@ -18,6 +18,11 @@ final class AIViewModel: ObservableObject {
     @Published var isGeneratingRoute = false
     @Published var routeError: String?
 
+    // Trip (point-to-point walk/run estimate)
+    @Published var tripResult: TripResponse?
+    @Published var isPlanningTripRequest = false
+    @Published var tripError: String?
+
     // MARK: - Chat
 
     func sendChat(_ text: String, profile: UserProfile?, activeMission: Mission?, stepsToday: Int, missionsCompleted: Int = 0) async {
@@ -51,12 +56,13 @@ final class AIViewModel: ObservableObject {
     func generateRoute(from location: CLLocationCoordinate2D,
                        level: Int,
                        missions: [Mission],
+                       landmarkPins: [RouteRequest.Pin] = [],
                        preferredDistance: Double = 2000) async {
         isGeneratingRoute = true
         routeError = nil
         defer { isGeneratingRoute = false }
 
-        let pins = missions.compactMap { mission -> RouteRequest.Pin? in
+        let missionPins = missions.compactMap { mission -> RouteRequest.Pin? in
             guard let coordinate = mission.coordinate else { return nil }
             return RouteRequest.Pin(id: mission.id,
                                     title: mission.title,
@@ -67,13 +73,36 @@ final class AIViewModel: ObservableObject {
         let request = RouteRequest(current_lat: location.latitude,
                                    current_lng: location.longitude,
                                    level: level,
-                                   mission_pins: pins,
+                                   mission_pins: missionPins + landmarkPins,
                                    preferred_distance: preferredDistance)
         do {
             routeResult = try await AIService.generateRoute(request)
         } catch {
             print("⚠️ AI route generation failed: \(error.localizedDescription)")
             routeError = error.localizedDescription
+        }
+    }
+
+    // MARK: - Trip planning (point-to-point walk/run estimate)
+
+    func planTrip(origin: CLLocationCoordinate2D, destination: CLLocationCoordinate2D,
+                 distanceMeters: Double, level: Int, weightKg: Double) async {
+        isPlanningTripRequest = true
+        tripError = nil
+        defer { isPlanningTripRequest = false }
+
+        let request = TripRequest(origin_lat: origin.latitude,
+                                  origin_lng: origin.longitude,
+                                  destination_lat: destination.latitude,
+                                  destination_lng: destination.longitude,
+                                  distance_meters: distanceMeters,
+                                  level: level,
+                                  weight_kg: weightKg)
+        do {
+            tripResult = try await AIService.planTrip(request)
+        } catch {
+            print("⚠️ AI trip planning failed: \(error.localizedDescription)")
+            tripError = error.localizedDescription
         }
     }
 

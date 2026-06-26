@@ -18,6 +18,14 @@ final class MapViewModel: ObservableObject {
     @Published var routeOverlays: [MKPolyline] = []
     @Published var routeWaypoints: [RouteResponse.Waypoint] = []
 
+    // MARK: - Trip planning (user-picked point A/B on the Home map)
+
+    @Published var isPlanningTrip = false
+    @Published var tripOrigin: CLLocationCoordinate2D?
+    @Published var tripDestination: CLLocationCoordinate2D?
+    @Published var tripPolyline: MKPolyline?
+    @Published var tripDistanceMeters: CLLocationDistance?
+
     func pins(missions: [Mission], events: [GameEvent]) -> [MapPinItem] {
         let missionPins = missions.compactMap { mission -> MapPinItem? in
             guard let coordinate = mission.coordinate else { return nil }
@@ -65,5 +73,54 @@ final class MapViewModel: ObservableObject {
     func clearRoute() {
         routeOverlays = []
         routeWaypoints = []
+    }
+
+    // MARK: - Trip planning
+
+    func beginPlanningTrip() {
+        isPlanningTrip = true
+        tripOrigin = nil
+        tripDestination = nil
+        tripPolyline = nil
+        tripDistanceMeters = nil
+    }
+
+    func cancelPlanningTrip() {
+        isPlanningTrip = false
+        tripOrigin = nil
+        tripDestination = nil
+        tripPolyline = nil
+        tripDistanceMeters = nil
+    }
+
+    /// First tap while planning sets the origin, second sets the destination
+    /// and kicks off the real MapKit walking-distance lookup.
+    func handleTripTap(_ coordinate: CLLocationCoordinate2D) {
+        guard isPlanningTrip else { return }
+        if tripOrigin == nil {
+            tripOrigin = coordinate
+        } else if tripDestination == nil {
+            tripDestination = coordinate
+            fetchTripDistance()
+        }
+    }
+
+    /// The backend's Trip Crew agents can't call Apple's MapKit themselves —
+    /// only the device can — so the real walking distance is measured here,
+    /// on-device, and handed to the AI as ground truth (same MKDirections
+    /// pattern as drawRoute() above).
+    private func fetchTripDistance() {
+        guard let origin = tripOrigin, let destination = tripDestination else { return }
+        let request = MKDirections.Request()
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: origin))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination))
+        request.transportType = .walking
+        MKDirections(request: request).calculate { [weak self] response, _ in
+            guard let route = response?.routes.first else { return }
+            DispatchQueue.main.async {
+                self?.tripPolyline = route.polyline
+                self?.tripDistanceMeters = route.distance
+            }
+        }
     }
 }

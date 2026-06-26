@@ -28,7 +28,7 @@ struct EditProfileView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.cityBackground.ignoresSafeArea()
+                AppBackgroundView()
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {

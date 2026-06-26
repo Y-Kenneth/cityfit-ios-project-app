@@ -5,7 +5,7 @@ struct SplashView: View {
 
     var body: some View {
         ZStack {
-            Color.cityBackground.ignoresSafeArea()
+            AppBackgroundView()
 
             Image("AppLogo")
                 .resizable()

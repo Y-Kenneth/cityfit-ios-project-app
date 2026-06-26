@@ -12,6 +12,10 @@ final class LocationService: NSObject, ObservableObject, CLLocationManagerDelega
     @Published var userLocation: CLLocationCoordinate2D?
     @Published var trackedDistance: Double = 0   // meters accumulated during an active mission
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
+    /// Real compass heading (degrees clockwise from north) — drives the 3D map avatar's facing direction.
+    @Published var heading: CLLocationDirection = 0
+    /// True while the device is physically moving at walking speed or faster — drives the avatar's walk animation.
+    @Published var isMoving = false
 
     private var hasCenteredOnUser = false
     private var isTrackingDistance = false
@@ -23,6 +27,10 @@ final class LocationService: NSObject, ObservableObject, CLLocationManagerDelega
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
+        if CLLocationManager.headingAvailable() {
+            manager.headingFilter = 5
+            manager.startUpdatingHeading()
+        }
     }
 
     func centerOnUser() {
@@ -57,6 +65,7 @@ final class LocationService: NSObject, ObservableObject, CLLocationManagerDelega
         guard let location = locations.last else { return }
         DispatchQueue.main.async {
             self.userLocation = location.coordinate
+            self.isMoving = location.speed >= 0.3   // ~walking pace; speed is negative when invalid
 
             // Only auto-center on the first fix so the user can pan freely afterwards
             if !self.hasCenteredOnUser {
@@ -78,5 +87,12 @@ final class LocationService: NSObject, ObservableObject, CLLocationManagerDelega
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         // GPS unavailable (e.g. simulator without a simulated location) — keep the fallback region
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        let value = newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading
+        DispatchQueue.main.async {
+            self.heading = value
+        }
     }
 }

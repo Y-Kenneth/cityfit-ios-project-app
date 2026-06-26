@@ -69,6 +69,36 @@ extension RouteResponse: Identifiable {
     }
 }
 
+// MARK: - Trip (point-to-point walk/run estimate)
+
+struct TripRequest: Encodable {
+    let origin_lat: Double
+    let origin_lng: Double
+    let destination_lat: Double
+    let destination_lng: Double
+    let distance_meters: Double
+    let level: Int
+    let weight_kg: Double
+}
+
+struct TripResponse: Decodable {
+    struct ModeEstimate: Decodable {
+        let steps: Int
+        let minutes: Int
+        let calories: Int
+    }
+
+    let distance_meters: Double
+    let walk: ModeEstimate
+    let run: ModeEstimate
+    let summary: String
+}
+
+// Allows presenting the trip result via .sheet(item:).
+extension TripResponse: Identifiable {
+    var id: String { "\(distance_meters)|\(summary)" }
+}
+
 // MARK: - Photo Verification
 
 struct VerifyPhotoRequest: Encodable {
