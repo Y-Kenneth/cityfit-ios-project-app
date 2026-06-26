@@ -10,10 +10,10 @@ struct CommunityCardView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(community.name)
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.game(size: 16, weight: .bold))
                         .foregroundColor(.white)
                     Text("\(community.memberCount) members")
-                        .font(.system(size: 12))
+                        .font(.game(size: 12))
                         .foregroundColor(.citySubtext)
                 }
 
@@ -21,7 +21,7 @@ struct CommunityCardView: View {
 
                 Button(action: onJoinToggle) {
                     Text(community.isJoined ? "Joined ✓" : "Join")
-                        .font(.system(size: 13, weight: .bold))
+                        .font(.game(size: 13, weight: .bold))
                         .foregroundColor(community.isJoined ? .cityGreen : .black)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 7)
@@ -31,13 +31,13 @@ struct CommunityCardView: View {
             }
 
             Text(community.description)
-                .font(.system(size: 13))
+                .font(.game(size: 13))
                 .foregroundColor(.citySubtext)
 
             HStack(spacing: 6) {
                 ForEach(community.tags, id: \.self) { tag in
                     Text("#\(tag)")
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.game(size: 11, weight: .medium))
                         .foregroundColor(.cityAccent)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
@@ -50,7 +50,7 @@ struct CommunityCardView: View {
 
             Button(action: onDetail) {
                 Text("Detail")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.game(size: 13, weight: .semibold))
                     .foregroundColor(.cityAccent)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)

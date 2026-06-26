@@ -85,7 +85,7 @@ struct MissionsView: View {
     private func section(_ title: String, missions: [Mission]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
-                .font(.system(size: 18, weight: .heavy))
+                .font(.game(size: 18, weight: .heavy))
                 .foregroundColor(.white)
             ForEach(missions) { mission in
                 Button {
@@ -101,7 +101,7 @@ struct MissionsView: View {
     private func cooldownSection(_ missions: [Mission]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("On Cooldown")
-                .font(.system(size: 18, weight: .heavy))
+                .font(.game(size: 18, weight: .heavy))
                 .foregroundColor(.white)
             ForEach(missions) { mission in
                 CooldownMissionCardView(mission: mission, now: now)
@@ -124,23 +124,23 @@ private struct CooldownMissionCardView: View {
                     .fill(Color.cityPurple.opacity(0.2))
                     .frame(width: 44, height: 44)
                 Image(systemName: mission.type.icon)
-                    .font(.system(size: 18))
+                    .font(.game(size: 18))
                     .foregroundColor(.cityPurple)
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(mission.title)
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.game(size: 14, weight: .bold))
                     .foregroundColor(.white.opacity(0.6))
 
                 if let until = mission.cooldownUntil {
                     let remaining = max(until.timeIntervalSince(now), 0)
                     HStack(spacing: 4) {
                         Image(systemName: "clock.fill")
-                            .font(.system(size: 10))
+                            .font(.game(size: 10))
                             .foregroundColor(.cityPurple)
                         Text("Resets in \(formatCountdown(remaining))")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(.game(size: 12, weight: .semibold))
                             .foregroundColor(.cityPurple)
                     }
                 }
@@ -150,7 +150,7 @@ private struct CooldownMissionCardView: View {
 
             // Cooldown lock icon
             Image(systemName: "lock.fill")
-                .font(.system(size: 14))
+                .font(.game(size: 14))
                 .foregroundColor(.citySubtext)
         }
         .padding(14)

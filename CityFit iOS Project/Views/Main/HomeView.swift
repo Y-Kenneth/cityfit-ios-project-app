@@ -26,6 +26,10 @@ struct HomeView: View {
     @State private var navigationRoute: RouteResponse?
     @State private var missionAfterNavigation: Mission?
 
+    // Bumped by the recenter button so the map re-snaps to the user even when
+    // they only panned (mirrors ActiveMissionView's recenter pattern).
+    @State private var recenterTrigger = 0
+
     var body: some View {
         ZStack(alignment: .bottom) {
 
@@ -38,6 +42,9 @@ struct HomeView: View {
                        heading: locationService.heading,
                        isMoving: locationService.isMoving,
                        isPlanningTrip: mapViewModel.isPlanningTrip,
+                       recenterTrigger: recenterTrigger,
+                       tripOrigin: mapViewModel.tripOrigin,
+                       tripDestination: mapViewModel.tripDestination,
                        onSelectPin: { pin in
                 if let event = MockData.gameEvents.first(where: { "event-\($0.id)" == pin.id }) {
                     selectedEvent = event
@@ -45,8 +52,8 @@ struct HomeView: View {
             }, onMapTap: mapViewModel.handleTripTap)
             .ignoresSafeArea(edges: .top)
 
-            // MARK: - Top EXP bar + "Plan a Walk" selection banner
-            VStack(spacing: 10) {
+            // MARK: - Top EXP bar
+            VStack {
                 HStack(spacing: 10) {
                     if let profile = profileViewModel.profile {
                         CharacterAvatarView(character: profile.character, size: 36)
@@ -58,59 +65,67 @@ struct HomeView: View {
                 .background(.ultraThinMaterial)
                 .cornerRadius(12)
                 .padding(.horizontal, 16)
-
-                if mapViewModel.isPlanningTrip {
-                    planTripBanner
-                        .padding(.horizontal, 16)
-                }
                 Spacer()
             }
 
-            // MARK: - Center-on-user + Plan-a-Walk buttons
+            // MARK: - Floating map buttons (Plan Trip bottom-left, recenter bottom-right)
             VStack {
                 Spacer()
-                HStack {
-                    Spacer()
-                    VStack(spacing: 12) {
-                        if !mapViewModel.isPlanningTrip {
-                            Button {
-                                mapViewModel.beginPlanningTrip()
-                            } label: {
-                                Image(systemName: "figure.walk")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.cityAccent)
-                                    .padding(12)
-                                    .background(.ultraThinMaterial)
-                                    .clipShape(Circle())
-                                    .shadow(color: .black.opacity(0.3), radius: 6)
-                            }
-                            .accessibilityLabel("Plan a walk between two points")
-                        }
+                HStack(alignment: .bottom) {
+                    if !mapViewModel.isPlanningTrip {
                         Button {
-                            locationService.centerOnUser()
+                            mapViewModel.beginPlanningTrip()
                         } label: {
-                            Image(systemName: "location.fill")
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(.cityAccent)
-                                .padding(12)
-                                .background(.ultraThinMaterial)
-                                .clipShape(Circle())
-                                .shadow(color: .black.opacity(0.3), radius: 6)
+                            HStack(spacing: 6) {
+                                Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
+                                    .font(.game(size: 15, weight: .bold))
+                                Text("Plan Trip")
+                                    .font(.game(size: 14, weight: .bold))
+                            }
+                            .foregroundColor(.black)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 11)
+                            .background(Color.cityAccent)
+                            .clipShape(Capsule())
+                            .shadow(color: .black.opacity(0.3), radius: 6)
                         }
-                        .accessibilityLabel("Center map on my location")
+                        .accessibilityLabel("Plan a trip between two points")
+                        .padding(.leading, 16)
                     }
+
+                    Spacer()
+
+                    Button {
+                        locationService.centerOnUser()
+                        recenterTrigger += 1
+                    } label: {
+                        Image(systemName: "location.fill")
+                            .font(.game(size: 18, weight: .semibold))
+                            .foregroundColor(.cityAccent)
+                            .padding(12)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Circle())
+                            .shadow(color: .black.opacity(0.3), radius: 6)
+                    }
+                    .accessibilityLabel("Center map on my location")
                     .padding(.trailing, 16)
-                    .padding(.bottom, 190)
                 }
+                .padding(.bottom, mapViewModel.isPlanningTrip ? 210 : 190)
             }
 
-            // MARK: - Featured mission card
-            if let mission = missionViewModel.featuredMission {
+            // MARK: - Bottom panel: trip planning takes over the featured card slot
+            if mapViewModel.isPlanningTrip {
+                planTripPanel
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            } else if let mission = missionViewModel.featuredMission {
                 featuredMissionCard(mission)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 12)
             }
         }
+        .animation(.easeInOut(duration: 0.25), value: mapViewModel.isPlanningTrip)
         .sheet(isPresented: $showRoutePreview) {
             RoutePreviewView(mapViewModel: mapViewModel,
                              route: aiViewModel.routeResult) { mission in
@@ -188,38 +203,82 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - "Plan a Walk" banner
+    // MARK: - "Plan a Trip" floating panel
 
-    private var planTripBanner: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "mappin.and.ellipse")
-                .foregroundColor(.cityAccent)
-            Text(tripBannerText)
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(.white)
-            Spacer()
+    private var planTripPanel: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Label("Plan a Trip", systemImage: "point.topleft.down.to.point.bottomright.curvepath")
+                    .font(.game(size: 16, weight: .heavy))
+                    .foregroundColor(.cityAccent)
+                Spacer()
+                Button {
+                    mapViewModel.cancelPlanningTrip()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.game(size: 22))
+                        .foregroundColor(.citySubtext)
+                }
+                .accessibilityLabel("Cancel trip planning")
+            }
+
+            Text(tripInstruction)
+                .font(.game(size: 13, weight: .medium))
+                .foregroundColor(.citySubtext)
+
+            VStack(spacing: 10) {
+                tripPointRow(color: .cityGreen, icon: "figure.walk",
+                             title: "Starting point", isSet: mapViewModel.tripOrigin != nil)
+                tripPointRow(color: .cityAccent, icon: "flag.checkered",
+                             title: "Destination", isSet: mapViewModel.tripDestination != nil)
+            }
+
             if aiViewModel.isPlanningTripRequest {
-                ProgressView().tint(.white)
+                HStack(spacing: 8) {
+                    ProgressView().tint(.cityAccent)
+                    Text("Calculating your trip…")
+                        .font(.game(size: 13, weight: .semibold))
+                        .foregroundColor(.white)
+                }
             }
-            Button("Cancel") {
-                mapViewModel.cancelPlanningTrip()
-            }
-            .font(.system(size: 13, weight: .semibold))
-            .foregroundColor(.citySubtext)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
+        .padding(18)
         .background(.ultraThinMaterial)
-        .cornerRadius(12)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .strokeBorder(Color.cityAccent.opacity(0.4), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.3), radius: 10, y: 4)
     }
 
-    private var tripBannerText: String {
+    private func tripPointRow(color: Color, icon: String, title: String, isSet: Bool) -> some View {
+        HStack(spacing: 10) {
+            ZStack {
+                Circle().fill(color).frame(width: 26, height: 26)
+                Image(systemName: icon)
+                    .font(.game(size: 12, weight: .bold))
+                    .foregroundColor(.black)
+            }
+            Text(title)
+                .font(.game(size: 14, weight: .semibold))
+                .foregroundColor(.white)
+            Spacer()
+            Image(systemName: isSet ? "checkmark.circle.fill" : "circle.dashed")
+                .font(.game(size: 16))
+                .foregroundColor(isSet ? .cityGreen : .citySubtext)
+        }
+    }
+
+    private var tripInstruction: String {
         if aiViewModel.isPlanningTripRequest {
-            return "Calculating your trip…"
+            return "Finding the best route between your two points…"
         } else if mapViewModel.tripOrigin == nil {
-            return "Tap your starting point"
+            return "Tap your starting point on the map."
+        } else if mapViewModel.tripDestination == nil {
+            return "Now tap your destination on the map."
         } else {
-            return "Tap your destination"
+            return "Both points set."
         }
     }
 
@@ -230,16 +289,16 @@ struct HomeView: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text("FEATURED MISSION")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.game(size: 10, weight: .bold))
                         .tracking(0.8)
                         .foregroundColor(.citySubtext)
                     Text(mission.title)
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.game(size: 18, weight: .bold))
                         .foregroundColor(.white)
                 }
                 Spacer()
                 Image(systemName: mission.type.icon)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.game(size: 16, weight: .semibold))
                     .foregroundColor(.citySubtext)
             }
 
@@ -254,12 +313,12 @@ struct HomeView: View {
                     }
                     .frame(height: 3)
                     Text(remainingText(for: mission))
-                        .font(.system(size: 13, weight: .medium))
+                        .font(.game(size: 13, weight: .medium))
                         .foregroundColor(.citySubtext)
                 }
             } else {
                 Text(remainingText(for: mission))
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.game(size: 13, weight: .medium))
                     .foregroundColor(.citySubtext)
             }
 
@@ -272,11 +331,11 @@ struct HomeView: View {
                             ProgressView().tint(.white)
                         } else {
                             Image(systemName: "wand.and.stars")
-                                .font(.system(size: 13, weight: .semibold))
+                                .font(.game(size: 13, weight: .semibold))
                         }
                         Text("Generate Route")
                     }
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.game(size: 14, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
@@ -291,7 +350,7 @@ struct HomeView: View {
                     showPlainWalk = true
                 } label: {
                     Text("Start")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.game(size: 14, weight: .bold))
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)

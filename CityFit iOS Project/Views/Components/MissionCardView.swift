@@ -10,18 +10,18 @@ struct MissionCardView: View {
                     .fill(Color.cityAccent.opacity(0.15))
                     .frame(width: 48, height: 48)
                 Image(systemName: mission.type.icon)
-                    .font(.system(size: 20))
+                    .font(.game(size: 20))
                     .foregroundColor(.cityAccent)
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(mission.title)
-                        .font(.system(size: 15, weight: .bold))
+                        .font(.game(size: 15, weight: .bold))
                         .foregroundColor(.white)
                     if mission.status == .active {
                         Text("ACTIVE")
-                            .font(.system(size: 9, weight: .heavy))
+                            .font(.game(size: 9, weight: .heavy))
                             .foregroundColor(.black)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
@@ -30,7 +30,7 @@ struct MissionCardView: View {
                     }
                 }
                 Text(mission.description)
-                    .font(.system(size: 12))
+                    .font(.game(size: 12))
                     .foregroundColor(.citySubtext)
                     .lineLimit(1)
 
@@ -42,10 +42,10 @@ struct MissionCardView: View {
 
             VStack(alignment: .trailing, spacing: 4) {
                 Text("+\(mission.expReward)")
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.game(size: 14, weight: .bold))
                     .foregroundColor(.cityYellow)
                 Text(mission.difficulty.label)
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.game(size: 10, weight: .semibold))
                     .foregroundColor(difficultyColor)
             }
         }

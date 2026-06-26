@@ -15,7 +15,7 @@ struct CharacterPickerGrid: View {
                     VStack(spacing: 10) {
                         CharacterPortraitView(character: character, width: 100, height: 140)
                         Text(character.displayName)
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.game(size: 14, weight: .semibold))
                             .foregroundColor(.white)
                     }
                     .frame(maxWidth: .infinity)

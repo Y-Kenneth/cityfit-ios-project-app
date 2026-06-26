@@ -55,7 +55,7 @@ struct RouteNavigationView: View {
             HStack {
                 Button { dismiss() } label: {
                     Image(systemName: "xmark")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.game(size: 16, weight: .bold))
                         .foregroundColor(.white)
                         .padding(12)
                         .background(Color.cityCard.opacity(0.9))
@@ -73,16 +73,16 @@ struct RouteNavigationView: View {
     private var navPanel: some View {
         VStack(alignment: .leading, spacing: 14) {
             Label("Navigating route", systemImage: "location.north.line.fill")
-                .font(.system(size: 13, weight: .bold))
+                .font(.game(size: 13, weight: .bold))
                 .foregroundColor(.cityAccent)
 
             // Primary: distance to the next waypoint.
             VStack(alignment: .leading, spacing: 2) {
                 Text(distanceString(viewModel.distanceToNext))
-                    .font(.system(size: 40, weight: .heavy).monospacedDigit())
+                    .font(.game(size: 40, weight: .heavy).monospacedDigit())
                     .foregroundColor(.white)
                 Text("to \(viewModel.nextWaypointTitle)")
-                    .font(.system(size: 15, weight: .medium))
+                    .font(.game(size: 15, weight: .medium))
                     .foregroundColor(.citySubtext)
             }
 
@@ -107,10 +107,10 @@ struct RouteNavigationView: View {
     private func metric(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title)
-                .font(.system(size: 11))
+                .font(.game(size: 11))
                 .foregroundColor(.citySubtext)
             Text(value)
-                .font(.system(size: 18, weight: .bold).monospacedDigit())
+                .font(.game(size: 18, weight: .bold).monospacedDigit())
                 .foregroundColor(.white)
         }
     }

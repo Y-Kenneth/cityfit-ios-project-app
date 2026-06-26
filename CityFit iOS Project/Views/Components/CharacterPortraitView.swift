@@ -22,7 +22,7 @@ struct CharacterPortraitView: View {
                     .padding(10)
             } else {
                 Text(character.emoji)
-                    .font(.system(size: height * 0.4))
+                    .font(.game(size: height * 0.4))
             }
         }
         .frame(width: width, height: height)

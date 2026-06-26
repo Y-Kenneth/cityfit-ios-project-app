@@ -99,7 +99,7 @@ struct PhotoMissionView: View {
                 dismiss()
             } label: {
                 Image(systemName: "xmark")
-                    .font(.system(size: 15, weight: .bold))
+                    .font(.game(size: 15, weight: .bold))
                     .foregroundColor(.white)
                     .frame(width: 36, height: 36)
                     .background(.ultraThinMaterial)
@@ -110,10 +110,10 @@ struct PhotoMissionView: View {
 
             VStack(spacing: 2) {
                 Text(mission.title)
-                    .font(.system(size: 13, weight: .bold))
+                    .font(.game(size: 13, weight: .bold))
                     .foregroundColor(.white)
                 Text("Find: \(target.capitalized)")
-                    .font(.system(size: 11, weight: .medium))
+                    .font(.game(size: 11, weight: .medium))
                     .foregroundColor(.cityAccent)
             }
             .padding(.horizontal, 14)
@@ -127,7 +127,7 @@ struct PhotoMissionView: View {
                 cameraViewModel.camera.switchCamera()
             } label: {
                 Image(systemName: "camera.rotate.fill")
-                    .font(.system(size: 15, weight: .bold))
+                    .font(.game(size: 15, weight: .bold))
                     .foregroundColor(.white)
                     .frame(width: 36, height: 36)
                     .background(.ultraThinMaterial)
@@ -159,7 +159,7 @@ struct PhotoMissionView: View {
                         Image(systemName: "camera.fill")
                         Text("Snap!")
                     }
-                    .font(.system(size: 17, weight: .bold))
+                    .font(.game(size: 17, weight: .bold))
                     .foregroundColor(.black)
                     .padding(.horizontal, 44)
                     .padding(.vertical, 14)
@@ -174,7 +174,7 @@ struct PhotoMissionView: View {
                 HStack(spacing: 8) {
                     ProgressView().tint(.cityAccent)
                     Text("Verifying…")
-                        .font(.system(size: 14, weight: .medium))
+                        .font(.game(size: 14, weight: .medium))
                         .foregroundColor(.cityAccent)
                 }
                 .transition(.opacity)
@@ -220,11 +220,11 @@ struct PhotoMissionView: View {
 
             VStack(spacing: 0) {
                 Text("\(currentCount)")
-                    .font(.system(size: 28, weight: .black))
+                    .font(.gameTitle(size: 22))
                     .foregroundColor(.white)
                     .scaleEffect(progressBounce ? 1.35 : 1.0)
                 Text("of \(targetCount)")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.game(size: 11, weight: .semibold))
                     .foregroundColor(.citySubtext)
             }
         }
@@ -258,10 +258,10 @@ struct PhotoMissionView: View {
                     if captureStage == .captured {
                         VStack(spacing: 6) {
                             Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 32))
+                                .font(.game(size: 32))
                                 .foregroundColor(.cityGreen)
                             Text("\(target.capitalized) captured!")
-                                .font(.system(size: 16, weight: .heavy))
+                                .font(.game(size: 16, weight: .heavy))
                                 .foregroundColor(.white)
                         }
                         .opacity(labelOpacity)
@@ -284,10 +284,10 @@ struct PhotoMissionView: View {
                 .ignoresSafeArea()
             VStack(spacing: 16) {
                 Image(systemName: "camera.fill")
-                    .font(.system(size: 48))
+                    .font(.game(size: 48))
                     .foregroundColor(.citySubtext)
                 Text("Camera unavailable on Simulator")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.game(size: 14, weight: .semibold))
                     .foregroundColor(.citySubtext)
                 HStack(spacing: 12) {
                     Button("Clear Detection") {
@@ -455,31 +455,35 @@ private struct CaptureCompleteView: View {
 
             VStack(spacing: 22) {
                 Text("📸")
-                    .font(.system(size: 72))
+                    .font(.game(size: 72))
                     .scaleEffect(emojiScale)
                     .opacity(emojiOpacity)
 
                 VStack(spacing: 6) {
                     Text("Mission Complete!")
-                        .font(.system(size: 28, weight: .heavy))
+                        .font(.gameTitle(size: 15))
                         .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .minimumScaleFactor(0.6)
                     Text("\(target.capitalized) successfully captured")
-                        .font(.system(size: 14))
+                        .font(.game(size: 14))
                         .foregroundColor(.citySubtext)
                 }
                 .offset(y: titleOffset)
                 .opacity(titleOpacity)
 
                 Text("+\(expAwarded) EXP")
-                    .font(.system(size: 44, weight: .heavy))
+                    .font(.gameTitle(size: 26))
                     .foregroundColor(.cityYellow)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                     .shadow(color: .cityYellow.opacity(expGlow ? 0.8 : 0.2), radius: expGlow ? 24 : 6)
                     .scaleEffect(expScale)
                     .opacity(expOpacity)
 
                 if leveledUp {
                     Text("⬆️ LEVEL UP!")
-                        .font(.system(size: 20, weight: .heavy))
+                        .font(.gameTitle(size: 13))
                         .foregroundColor(.cityGreen)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 8)
@@ -490,7 +494,7 @@ private struct CaptureCompleteView: View {
 
                 Button(action: onContinue) {
                     Text("Continue")
-                        .font(.system(size: 17, weight: .bold))
+                        .font(.game(size: 17, weight: .bold))
                         .foregroundColor(.black)
                         .padding(.horizontal, 50)
                         .padding(.vertical, 14)

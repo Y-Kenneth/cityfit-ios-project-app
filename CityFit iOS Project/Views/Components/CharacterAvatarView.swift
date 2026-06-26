@@ -11,7 +11,7 @@ struct CharacterAvatarView: View {
             Circle()
                 .strokeBorder(Color.cityAccent, lineWidth: 2)
             Text(character.emoji)
-                .font(.system(size: size * 0.5))
+                .font(.game(size: size * 0.5))
         }
         .frame(width: size, height: size)
         .accessibilityLabel("\(character.displayName) character")

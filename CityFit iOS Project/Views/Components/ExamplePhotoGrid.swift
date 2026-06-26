@@ -15,7 +15,7 @@ struct ExamplePhotoGrid: View {
 
         VStack(alignment: .leading, spacing: 8) {
             Text("Example photos")
-                .font(.system(size: 12, weight: .bold))
+                .font(.game(size: 12, weight: .bold))
                 .foregroundColor(.citySubtext)
                 .padding(.horizontal, 4)
 
@@ -55,7 +55,7 @@ struct ExamplePhotoGrid: View {
 
     private var placeholderIcon: some View {
         Image(systemName: Self.icon(for: targetObject))
-            .font(.system(size: 28, weight: .medium))
+            .font(.game(size: 28, weight: .medium))
             .foregroundColor(.cityAccent.opacity(0.7))
     }
 

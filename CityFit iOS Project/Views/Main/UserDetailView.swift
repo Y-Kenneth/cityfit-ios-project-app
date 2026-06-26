@@ -30,7 +30,7 @@ struct UserDetailView: View {
                     healthSection
 
                     Text("\(entry.totalSteps) total steps logged")
-                        .font(.system(size: 12))
+                        .font(.game(size: 12))
                         .foregroundColor(.citySubtext)
                 }
                 .padding(20)
@@ -45,11 +45,11 @@ struct UserDetailView: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
                     Text(entry.username)
-                        .font(.system(size: 22, weight: .heavy))
+                        .font(.game(size: 22, weight: .heavy))
                         .foregroundColor(.white)
                     if isCurrentUser {
                         Text("YOU")
-                            .font(.system(size: 10, weight: .heavy))
+                            .font(.game(size: 10, weight: .heavy))
                             .foregroundColor(.black)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
@@ -58,7 +58,7 @@ struct UserDetailView: View {
                     }
                 }
                 Text("Rank \(rankLabel) · \(entry.character.displayName)")
-                    .font(.system(size: 13))
+                    .font(.game(size: 13))
                     .foregroundColor(.citySubtext)
             }
         }
@@ -68,11 +68,11 @@ struct UserDetailView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("Health")
-                    .font(.system(size: 16, weight: .heavy))
+                    .font(.game(size: 16, weight: .heavy))
                     .foregroundColor(.white)
                 Spacer()
                 Text(entry.gender.displayName)
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.game(size: 11, weight: .semibold))
                     .foregroundColor(.citySubtext)
             }
 
@@ -101,13 +101,13 @@ struct UserDetailView: View {
     private func healthBox(value: String, unit: String, label: String) -> some View {
         VStack(spacing: 4) {
             Text(value)
-                .font(.system(size: 17, weight: .heavy))
+                .font(.game(size: 17, weight: .heavy))
                 .foregroundColor(.white)
             Text(unit)
-                .font(.system(size: 11, weight: .semibold))
+                .font(.game(size: 11, weight: .semibold))
                 .foregroundColor(.cityAccent)
             Text(label)
-                .font(.system(size: 10))
+                .font(.game(size: 10))
                 .foregroundColor(.citySubtext)
         }
         .frame(maxWidth: .infinity)
@@ -119,13 +119,13 @@ struct UserDetailView: View {
     private func statBox(value: String, label: String, icon: String) -> some View {
         VStack(spacing: 6) {
             Image(systemName: icon)
-                .font(.system(size: 18))
+                .font(.game(size: 18))
                 .foregroundColor(.cityAccent)
             Text(value)
-                .font(.system(size: 17, weight: .heavy))
+                .font(.game(size: 17, weight: .heavy))
                 .foregroundColor(.white)
             Text(label)
-                .font(.system(size: 11))
+                .font(.game(size: 11))
                 .foregroundColor(.citySubtext)
         }
         .frame(maxWidth: .infinity)

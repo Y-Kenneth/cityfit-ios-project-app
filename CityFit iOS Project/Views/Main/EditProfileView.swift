@@ -34,10 +34,10 @@ struct EditProfileView: View {
                     VStack(alignment: .leading, spacing: 24) {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Username")
-                                .font(.system(size: 13, weight: .semibold))
+                                .font(.game(size: 13, weight: .semibold))
                                 .foregroundColor(.citySubtext)
                             TextField("Username", text: $username)
-                                .font(.system(size: 17, weight: .semibold))
+                                .font(.game(size: 17, weight: .semibold))
                                 .foregroundColor(.white)
                                 .padding(14)
                                 .background(Color.cityCard)
@@ -46,7 +46,7 @@ struct EditProfileView: View {
 
                         VStack(alignment: .leading, spacing: 14) {
                             Text("Character")
-                                .font(.system(size: 13, weight: .semibold))
+                                .font(.game(size: 13, weight: .semibold))
                                 .foregroundColor(.citySubtext)
                             CharacterPickerGrid(selected: $selectedCharacter)
                         }
@@ -100,12 +100,12 @@ struct EditProfileView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Text("Health Info")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.game(size: 13, weight: .semibold))
                     .foregroundColor(.citySubtext)
                 Spacer()
                 if isHealthKitConnected {
                     Label("Synced from Health", systemImage: "heart.fill")
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(.game(size: 11, weight: .semibold))
                         .foregroundColor(.cityGreen)
                 }
             }
@@ -116,7 +116,7 @@ struct EditProfileView: View {
                     profileViewModel.disconnectHealthKit()
                 } label: {
                     Text("Disconnect from Apple Health")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.game(size: 14, weight: .semibold))
                         .foregroundColor(.red.opacity(0.85))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
@@ -150,11 +150,11 @@ struct EditProfileView: View {
     private func healthRow(label: String, value: String) -> some View {
         HStack {
             Text(label)
-                .font(.system(size: 13))
+                .font(.game(size: 13))
                 .foregroundColor(.citySubtext)
             Spacer()
             Text(value)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.game(size: 13, weight: .semibold))
                 .foregroundColor(.white)
         }
     }
@@ -171,7 +171,7 @@ struct EditProfileView: View {
                 }
                 Text(profileViewModel.isConnectingHealthKit ? "Connecting…" : "Connect to Apple Health")
             }
-            .font(.system(size: 15, weight: .bold))
+            .font(.game(size: 15, weight: .bold))
             .foregroundColor(.black)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)

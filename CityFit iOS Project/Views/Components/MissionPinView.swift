@@ -16,7 +16,7 @@ struct MissionPinView: View {
                     .fill(pin.color)
                     .frame(width: 36, height: 36)
                 Image(systemName: pin.icon)
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.game(size: 16, weight: .bold))
                     .foregroundColor(.black)
             }
             .scaleEffect(isPressed ? 1.2 : 1.0)
@@ -30,7 +30,7 @@ struct MissionPinView: View {
             }
 
             Text(pin.title)
-                .font(.system(size: 10, weight: .semibold))
+                .font(.game(size: 10, weight: .semibold))
                 .foregroundColor(.white)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)

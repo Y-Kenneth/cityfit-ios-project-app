@@ -21,10 +21,10 @@ struct HealthInfoSetupView: View {
             VStack(spacing: 24) {
                 VStack(spacing: 8) {
                     Text("A few health basics")
-                        .font(.system(size: 24, weight: .heavy))
+                        .font(.game(size: 24, weight: .heavy))
                         .foregroundColor(.white)
                     Text("Used to calculate your BMI and personalize EXP. You can connect Apple Health or edit this anytime later.")
-                        .font(.system(size: 13))
+                        .font(.game(size: 13))
                         .foregroundColor(.citySubtext)
                         .multilineTextAlignment(.center)
                 }
@@ -39,7 +39,7 @@ struct HealthInfoSetupView: View {
                     showLoading = true
                 } label: {
                     Text("Start My Journey")
-                        .font(.system(size: 17, weight: .bold))
+                        .font(.game(size: 17, weight: .bold))
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)

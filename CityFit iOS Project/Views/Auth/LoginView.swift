@@ -32,7 +32,7 @@ struct LoginView: View {
                             Image(systemName: "exclamationmark.circle.fill")
                                 .foregroundColor(.red)
                             Text(error)
-                                .font(.system(size: 13))
+                                .font(.game(size: 13))
                                 .foregroundColor(.red.opacity(0.9))
                         }
                         .padding(.horizontal, 16)
@@ -47,7 +47,7 @@ struct LoginView: View {
                     }
 
                     Text("By continuing, you agree to our Terms of Service")
-                        .font(.system(size: 11))
+                        .font(.game(size: 11))
                         .foregroundColor(.citySubtext.opacity(0.5))
                         .multilineTextAlignment(.center)
 
@@ -55,7 +55,7 @@ struct LoginView: View {
                     Button("Skip Login (Debug)") {
                         profileViewModel.debugSkipLogin()
                     }
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.game(size: 13, weight: .semibold))
                     .foregroundColor(.cityAccent.opacity(0.7))
                     .padding(.top, 6)
                     #endif
@@ -101,7 +101,7 @@ private struct GoogleSignInButton: View {
                 }
 
                 Text(isLoading ? "Signing in…" : "Continue with Google")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.game(size: 16, weight: .semibold))
                     .foregroundColor(Color(red: 0.235, green: 0.247, blue: 0.263)) // fixed dark gray — .label resolves to white under the app's forced dark scheme
             }
             .frame(maxWidth: .infinity)

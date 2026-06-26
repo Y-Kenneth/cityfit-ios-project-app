@@ -23,17 +23,17 @@ struct ProfileView: View {
                                     ZStack(alignment: .bottomTrailing) {
                                         CharacterAvatarView(character: profile.character, size: 100)
                                         Image(systemName: "pencil.circle.fill")
-                                            .font(.system(size: 22))
+                                            .font(.game(size: 22))
                                             .foregroundColor(.cityAccent)
                                             .background(Color.cityBackground, in: Circle())
                                     }
 
                                     HStack(spacing: 6) {
                                         Text(profile.username)
-                                            .font(.system(size: 24, weight: .heavy))
+                                            .font(.game(size: 24, weight: .heavy))
                                             .foregroundColor(.white)
                                         Image(systemName: "pencil")
-                                            .font(.system(size: 13, weight: .semibold))
+                                            .font(.game(size: 13, weight: .semibold))
                                             .foregroundColor(.citySubtext)
                                     }
                                 }
@@ -60,7 +60,7 @@ struct ProfileView: View {
                                 .padding(.horizontal, 16)
 
                             Text("Joined \(profile.joinDate.formatted(date: .abbreviated, time: .omitted))")
-                                .font(.system(size: 12))
+                                .font(.game(size: 12))
                                 .foregroundColor(.citySubtext)
 
                             Button {
@@ -70,7 +70,7 @@ struct ProfileView: View {
                                     Image(systemName: "rectangle.portrait.and.arrow.right")
                                     Text("Sign Out")
                                 }
-                                .font(.system(size: 15, weight: .semibold))
+                                .font(.game(size: 15, weight: .semibold))
                                 .foregroundColor(.red.opacity(0.85))
                                 .padding(.horizontal, 24)
                                 .padding(.vertical, 12)
@@ -102,13 +102,13 @@ struct ProfileView: View {
     private func statBox(value: String, label: String, icon: String) -> some View {
         VStack(spacing: 6) {
             Image(systemName: icon)
-                .font(.system(size: 18))
+                .font(.game(size: 18))
                 .foregroundColor(.cityAccent)
             Text(value)
-                .font(.system(size: 17, weight: .heavy))
+                .font(.game(size: 17, weight: .heavy))
                 .foregroundColor(.white)
             Text(label)
-                .font(.system(size: 11))
+                .font(.game(size: 11))
                 .foregroundColor(.citySubtext)
         }
         .frame(maxWidth: .infinity)
@@ -123,7 +123,7 @@ struct ProfileView: View {
         let ordered = Array(steps.reversed())
         return VStack(alignment: .leading, spacing: 10) {
             Text("This Week")
-                .font(.system(size: 16, weight: .heavy))
+                .font(.game(size: 16, weight: .heavy))
                 .foregroundColor(.white)
 
             HStack(alignment: .bottom, spacing: 10) {
@@ -133,7 +133,7 @@ struct ProfileView: View {
                             .fill(index == ordered.count - 1 ? Color.cityGreen : Color.cityAccent.opacity(0.5))
                             .frame(height: max(CGFloat(ordered[index]) / CGFloat(maxSteps) * 80, 4))
                         Text(dayLabel(daysAgo: ordered.count - 1 - index))
-                            .font(.system(size: 10))
+                            .font(.game(size: 10))
                             .foregroundColor(.citySubtext)
                     }
                     .frame(maxWidth: .infinity)
@@ -150,12 +150,12 @@ struct ProfileView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("Health")
-                    .font(.system(size: 16, weight: .heavy))
+                    .font(.game(size: 16, weight: .heavy))
                     .foregroundColor(.white)
                 Spacer()
                 if profile.isHealthKitConnected {
                     Label("Apple Health", systemImage: "heart.fill")
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(.game(size: 11, weight: .semibold))
                         .foregroundColor(.cityGreen)
                 }
             }
@@ -185,13 +185,13 @@ struct ProfileView: View {
     private func healthBox(value: String, unit: String, label: String) -> some View {
         VStack(spacing: 4) {
             Text(value)
-                .font(.system(size: 17, weight: .heavy))
+                .font(.game(size: 17, weight: .heavy))
                 .foregroundColor(.white)
             Text(unit)
-                .font(.system(size: 11, weight: .semibold))
+                .font(.game(size: 11, weight: .semibold))
                 .foregroundColor(.cityAccent)
             Text(label)
-                .font(.system(size: 10))
+                .font(.game(size: 10))
                 .foregroundColor(.citySubtext)
         }
         .frame(maxWidth: .infinity)

@@ -10,10 +10,10 @@ struct DetectionBannerView: View {
         if let message {
             HStack(spacing: 8) {
                 Image(systemName: stateIcon)
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.game(size: 14, weight: .bold))
                     .foregroundColor(borderColor)
                 Text(message)
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.game(size: 14, weight: .bold))
                     .foregroundColor(.white)
             }
             .padding(.horizontal, 20)

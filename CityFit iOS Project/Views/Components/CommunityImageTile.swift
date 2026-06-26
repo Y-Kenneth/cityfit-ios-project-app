@@ -28,7 +28,7 @@ struct CommunityImageTile: View {
         ZStack {
             Color.cityCard
             Image(systemName: "photo.on.rectangle.angled")
-                .font(.system(size: 28))
+                .font(.game(size: 28))
                 .foregroundColor(.citySubtext.opacity(0.5))
         }
     }

@@ -14,42 +14,54 @@ struct TripPreviewView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        VStack(spacing: 0) {
-            RouteMapView(overlays: polyline.map { [$0] } ?? [], waypoints: waypoints)
-                .ignoresSafeArea(edges: .top)
+        GeometryReader { geo in
+            VStack(spacing: 0) {
+                RouteMapView(overlays: polyline.map { [$0] } ?? [], waypoints: waypoints)
+                    .frame(height: geo.size.height * 0.42)
+                    .ignoresSafeArea(edges: .top)
 
-            VStack(alignment: .leading, spacing: 14) {
-                Label("AI Trip Planner", systemImage: "figure.walk")
-                    .font(.system(size: 16, weight: .heavy))
-                    .foregroundColor(.cityAccent)
+                // Scrollable so the AI's explanation paragraph is never cropped,
+                // however long it runs.
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 14) {
+                        Label("AI Trip Planner", systemImage: "figure.walk")
+                            .font(.game(size: 16, weight: .heavy))
+                            .foregroundColor(.cityAccent)
 
-                Text(String(format: "%.1fkm", trip.distance_meters / 1000))
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.white)
+                        Text(String(format: "%.1fkm", trip.distance_meters / 1000))
+                            .font(.game(size: 18, weight: .bold))
+                            .foregroundColor(.white)
 
-                Text(trip.summary)
-                    .font(.system(size: 13))
-                    .foregroundColor(.citySubtext)
-                    .lineLimit(3)
+                        Text(trip.summary)
+                            .font(.game(size: 13))
+                            .foregroundColor(.citySubtext)
+                            .fixedSize(horizontal: false, vertical: true)
 
-                HStack(spacing: 12) {
-                    modeCard(icon: "figure.walk", title: "Walk", estimate: trip.walk)
-                    modeCard(icon: "figure.run", title: "Run", estimate: trip.run)
+                        HStack(spacing: 12) {
+                            modeCard(icon: "figure.walk", title: "Walk", estimate: trip.walk)
+                            modeCard(icon: "figure.run", title: "Run", estimate: trip.run)
+                        }
+                    }
+                    .padding(20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
+                // Done stays pinned below the scroll area so it's always reachable.
                 Button {
                     dismiss()
                 } label: {
                     Text("Done")
-                        .font(.system(size: 17, weight: .bold))
+                        .font(.game(size: 17, weight: .bold))
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(Color.cityAccent)
                         .cornerRadius(14)
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+                .padding(.bottom, 20)
             }
-            .padding(20)
             .background(Color.cityBackground)
         }
         .background(Color.cityBackground)
@@ -63,13 +75,13 @@ struct TripPreviewView: View {
     private func modeCard(icon: String, title: String, estimate: TripResponse.ModeEstimate) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Label(title, systemImage: icon)
-                .font(.system(size: 13, weight: .bold))
+                .font(.game(size: 13, weight: .bold))
                 .foregroundColor(.cityAccent)
             Text("\(estimate.steps) steps")
-                .font(.system(size: 13, weight: .semibold))
+                .font(.game(size: 13, weight: .semibold))
                 .foregroundColor(.white)
             Text("\(estimate.minutes) min · ~\(estimate.calories) cal")
-                .font(.system(size: 12))
+                .font(.game(size: 12))
                 .foregroundColor(.citySubtext)
         }
         .padding(12)

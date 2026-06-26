@@ -7,7 +7,7 @@ struct LeaderboardRowView: View {
     var body: some View {
         HStack(spacing: 14) {
             Text(rankLabel)
-                .font(.system(size: 16, weight: .heavy))
+                .font(.game(size: 16, weight: .heavy))
                 .foregroundColor(rankColor)
                 .frame(width: 36)
 
@@ -15,17 +15,17 @@ struct LeaderboardRowView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(entry.username)
-                    .font(.system(size: 15, weight: isCurrentUser ? .heavy : .semibold))
+                    .font(.game(size: 15, weight: isCurrentUser ? .heavy : .semibold))
                     .foregroundColor(isCurrentUser ? .cityAccent : .white)
                 Text("Level \(entry.level)")
-                    .font(.system(size: 12))
+                    .font(.game(size: 12))
                     .foregroundColor(.citySubtext)
             }
 
             Spacer()
 
             Text("\(entry.exp) EXP")
-                .font(.system(size: 14, weight: .bold))
+                .font(.game(size: 14, weight: .bold))
                 .foregroundColor(.cityYellow)
         }
         .padding(12)

@@ -30,6 +30,22 @@ enum Constants {
     }
 }
 
+extension Font {
+    /// App-wide gamified UI/body font — Apple's rounded system face. Readable at
+    /// every size and weight, used in place of the plain system font everywhere.
+    static func game(size: CGFloat, weight: Font.Weight = .regular) -> Font {
+        .system(size: size, weight: weight, design: .rounded)
+    }
+
+    /// Arcade pixel face for prominent titles / hero text (Press Start 2P,
+    /// bundled). Pixel glyphs render large and wide, so callers pass a smaller
+    /// size than the equivalent body text. Falls back to the system font if the
+    /// bundled .ttf is ever missing.
+    static func gameTitle(size: CGFloat) -> Font {
+        .custom("PressStart2P-Regular", size: size)
+    }
+}
+
 extension Color {
     static let cityBackground = Color(hex: "#0D0D1A")   // Deep dark navy
     static let cityCard       = Color(hex: "#1A1A2E")   // Card surface

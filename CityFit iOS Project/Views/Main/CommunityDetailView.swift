@@ -23,16 +23,16 @@ struct CommunityDetailView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text(community.name)
-                            .font(.system(size: 26, weight: .heavy))
+                            .font(.game(size: 26, weight: .heavy))
                             .foregroundColor(.white)
                         Text("\(community.memberCount) members")
-                            .font(.system(size: 13))
+                            .font(.game(size: 13))
                             .foregroundColor(.citySubtext)
 
                         HStack(spacing: 6) {
                             ForEach(community.tags, id: \.self) { tag in
                                 Text("#\(tag)")
-                                    .font(.system(size: 11, weight: .medium))
+                                    .font(.game(size: 11, weight: .medium))
                                     .foregroundColor(.cityAccent)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 3)
@@ -42,13 +42,13 @@ struct CommunityDetailView: View {
                         }
 
                         Text(community.longDescription)
-                            .font(.system(size: 15))
+                            .font(.game(size: 15))
                             .foregroundColor(.citySubtext)
                     }
 
                     Button(action: onJoinToggle) {
                         Text(community.isJoined ? "Leave Community" : "Join Community")
-                            .font(.system(size: 16, weight: .bold))
+                            .font(.game(size: 16, weight: .bold))
                             .foregroundColor(community.isJoined ? .red : .black)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
@@ -61,7 +61,7 @@ struct CommunityDetailView: View {
                             showChat = true
                         } label: {
                             Label("Open Chat", systemImage: "bubble.left.and.bubble.right.fill")
-                                .font(.system(size: 16, weight: .bold))
+                                .font(.game(size: 16, weight: .bold))
                                 .foregroundColor(.black)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)

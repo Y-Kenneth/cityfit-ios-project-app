@@ -16,16 +16,16 @@ struct OnboardingLoadingView: View {
 
             VStack(spacing: 24) {
                 Text(character.emoji)
-                    .font(.system(size: 72))
+                    .font(.game(size: 72))
 
                 Image(systemName: "arrow.triangle.2.circlepath")
-                    .font(.system(size: 28))
+                    .font(.game(size: 28))
                     .foregroundColor(.cityAccent)
                     .rotationEffect(.degrees(spin ? 360 : 0))
                     .animation(.linear(duration: 1).repeatForever(autoreverses: false), value: spin)
 
                 Text("Building your city…")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.game(size: 17, weight: .semibold))
                     .foregroundColor(.citySubtext)
             }
         }

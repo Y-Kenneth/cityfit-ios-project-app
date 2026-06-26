@@ -10,22 +10,26 @@ struct MissionCompleteView: View {
     var body: some View {
         VStack(spacing: 18) {
             Text("🎉")
-                .font(.system(size: 72))
+                .font(.game(size: 72))
                 .scaleEffect(celebrate ? 1.15 : 0.8)
                 .animation(.spring(response: 0.4, dampingFraction: 0.5), value: celebrate)
 
             Text("Mission Complete!")
-                .font(.system(size: 28, weight: .heavy))
+                .font(.gameTitle(size: 15))
                 .foregroundColor(.white)
+                .multilineTextAlignment(.center)
+                .minimumScaleFactor(0.6)
 
             Text("+\(expAwarded) EXP")
-                .font(.system(size: 36, weight: .heavy))
+                .font(.gameTitle(size: 24))
                 .foregroundColor(.cityYellow)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
                 .shadow(color: .cityYellow.opacity(0.5), radius: celebrate ? 16 : 4)
 
             if leveledUp {
                 Text("⬆️ LEVEL UP!")
-                    .font(.system(size: 20, weight: .heavy))
+                    .font(.gameTitle(size: 13))
                     .foregroundColor(.cityGreen)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 8)
@@ -37,7 +41,7 @@ struct MissionCompleteView: View {
                 onContinue()
             } label: {
                 Text("Continue")
-                    .font(.system(size: 17, weight: .bold))
+                    .font(.game(size: 17, weight: .bold))
                     .foregroundColor(.black)
                     .padding(.horizontal, 50)
                     .padding(.vertical, 14)

@@ -19,16 +19,16 @@ struct RoutePreviewView: View {
 
             VStack(alignment: .leading, spacing: 12) {
                 Label("AI Generated Route", systemImage: "wand.and.stars")
-                    .font(.system(size: 16, weight: .heavy))
+                    .font(.game(size: 16, weight: .heavy))
                     .foregroundColor(.cityAccent)
 
                 if let route {
                     Text(metricsLine(for: route))
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.game(size: 18, weight: .bold))
                         .foregroundColor(.white)
 
                     Text(route.summary)
-                        .font(.system(size: 13))
+                        .font(.game(size: 13))
                         .foregroundColor(.citySubtext)
                         .lineLimit(3)
 
@@ -36,7 +36,7 @@ struct RoutePreviewView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         ForEach(Array(route.waypoints.enumerated()), id: \.offset) { index, waypoint in
                             Text("\(index + 1). \(waypoint.title)")
-                                .font(.system(size: 12, weight: .medium))
+                                .font(.game(size: 12, weight: .medium))
                                 .foregroundColor(.citySubtext)
                         }
                     }
@@ -45,7 +45,7 @@ struct RoutePreviewView: View {
                         startRoute(route)
                     } label: {
                         Text("Start This Route")
-                            .font(.system(size: 17, weight: .bold))
+                            .font(.game(size: 17, weight: .bold))
                             .foregroundColor(.black)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)

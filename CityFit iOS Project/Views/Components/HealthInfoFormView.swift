@@ -16,7 +16,7 @@ struct HealthInfoFormView: View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Gender")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.game(size: 13, weight: .semibold))
                     .foregroundColor(.citySubtext)
                 HStack(spacing: 10) {
                     ForEach(Gender.allCases, id: \.self) { option in
@@ -35,7 +35,7 @@ struct HealthInfoFormView: View {
             gender = option
         } label: {
             Text(option.displayName)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.game(size: 15, weight: .semibold))
                 .foregroundColor(gender == option ? .black : .white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
@@ -48,7 +48,7 @@ struct HealthInfoFormView: View {
                              range: ClosedRange<Double>, decimals: Int) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.game(size: 13, weight: .semibold))
                 .foregroundColor(.citySubtext)
             HStack {
                 stepButton(systemName: "minus") {
@@ -56,7 +56,7 @@ struct HealthInfoFormView: View {
                 }
                 Spacer()
                 Text("\(value.wrappedValue, specifier: decimals == 0 ? "%.0f" : "%.1f") \(unit)")
-                    .font(.system(size: 20, weight: .heavy))
+                    .font(.game(size: 20, weight: .heavy))
                     .foregroundColor(.white)
                     .frame(minWidth: 90)
                 Spacer()
@@ -74,7 +74,7 @@ struct HealthInfoFormView: View {
     private func stepButton(systemName: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemName)
-                .font(.system(size: 16, weight: .bold))
+                .font(.game(size: 16, weight: .bold))
                 .foregroundColor(.black)
                 .frame(width: 36, height: 36)
                 .background(Color.cityAccent)

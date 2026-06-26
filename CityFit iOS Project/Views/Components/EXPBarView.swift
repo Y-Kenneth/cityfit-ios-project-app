@@ -7,8 +7,10 @@ struct EXPBarView: View {
     var body: some View {
         HStack(spacing: 10) {
             Text("Lv.\(level)")
-                .font(.system(size: 14, weight: .bold))
+                .font(.gameTitle(size: 10))
                 .foregroundColor(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
@@ -23,7 +25,7 @@ struct EXPBarView: View {
             .frame(height: 10)
 
             Text("\(currentEXP) EXP")
-                .font(.system(size: 12, weight: .medium))
+                .font(.game(size: 12, weight: .medium))
                 .foregroundColor(.cityAccent)
         }
         .accessibilityElement(children: .ignore)

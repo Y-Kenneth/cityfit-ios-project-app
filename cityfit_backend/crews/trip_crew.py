@@ -81,6 +81,23 @@ No markdown, no code fences, no explanation before or after the JSON.""",
     return extract_json(crew.kickoff())
 
 
+def _coerce_mode(raw) -> dict:
+    """Force a {steps, minutes, calories} block into the integer shape the iOS
+    TripResponse decoder expects. The Pace Estimator's MET arithmetic
+    (calories = MET * weight * hours) routinely yields floats like 32.4 — or
+    the model quotes them as strings — and a Swift `Int` field rejects both,
+    which surfaced in the app as "unexpected response (HTTP 200)" (a decode
+    failure on an otherwise-successful call)."""
+    raw = raw if isinstance(raw, dict) else {}
+    out = {}
+    for key in ("steps", "minutes", "calories"):
+        try:
+            out[key] = int(round(float(raw.get(key, 0))))
+        except (TypeError, ValueError):
+            out[key] = 0
+    return out
+
+
 def run_trip_crew(origin_lat: float, origin_lng: float, destination_lat: float,
                   destination_lng: float, distance_meters: float, level: int,
                   weight_kg: float) -> dict:
@@ -98,8 +115,11 @@ def run_trip_crew(origin_lat: float, origin_lng: float, destination_lat: float,
     if result is None:
         raise last_error
 
-    result.setdefault("walk", {"steps": 0, "minutes": 0, "calories": 0})
-    result.setdefault("run", {"steps": 0, "minutes": 0, "calories": 0})
-    result.setdefault("summary", "Your trip is ready!")
-    result["distance_meters"] = distance_meters
-    return result
+    # Rebuild the payload in exactly the shape iOS decodes, coercing whatever
+    # the model produced — never pass the raw LLM dict straight through.
+    return {
+        "walk": _coerce_mode(result.get("walk")),
+        "run": _coerce_mode(result.get("run")),
+        "summary": str(result.get("summary") or "Your trip is ready!"),
+        "distance_meters": float(distance_meters),
+    }

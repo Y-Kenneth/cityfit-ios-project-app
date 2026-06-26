@@ -58,7 +58,7 @@ struct ActiveMissionView: View {
                 VStack {
                     Spacer()
                     Text("+\(bonus) EXP — Bonus mission complete!")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.game(size: 14, weight: .bold))
                         .foregroundColor(.black)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
@@ -149,7 +149,7 @@ struct ActiveMissionView: View {
                     recenterTrigger += 1
                 } label: {
                     Image(systemName: "location.fill")
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.game(size: 18, weight: .semibold))
                         .foregroundColor(.cityAccent)
                         .padding(12)
                         .background(.ultraThinMaterial)
@@ -166,7 +166,7 @@ struct ActiveMissionView: View {
     private func badgedIcon(systemName: String, count: Int) -> some View {
         ZStack(alignment: .topTrailing) {
             Image(systemName: systemName)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.game(size: 15, weight: .semibold))
                 .foregroundColor(.white)
                 .frame(width: 42, height: 42)
                 .background(.ultraThinMaterial, in: Circle())
@@ -174,7 +174,7 @@ struct ActiveMissionView: View {
 
             if count > 0 {
                 Text("\(count)")
-                    .font(.system(size: 10, weight: .bold))
+                    .font(.game(size: 10, weight: .bold))
                     .foregroundColor(.white)
                     .frame(minWidth: 16, minHeight: 16)
                     .background(Color.cityAccent, in: Circle())
@@ -190,23 +190,23 @@ struct ActiveMissionView: View {
             HStack(alignment: .firstTextBaseline) {
                 HStack(spacing: 6) {
                     Image(systemName: activityIcon)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.game(size: 13, weight: .semibold))
                     Text(activityService.activity.label.uppercased())
-                        .font(.system(size: 12, weight: .bold))
+                        .font(.game(size: 12, weight: .bold))
                         .tracking(0.5)
                 }
                 .foregroundColor(.citySubtext)
                 Spacer()
                 if activityService.expMultiplier > 1 {
                     Text("\(activityService.expMultiplier, specifier: "%.0f")× EXP")
-                        .font(.system(size: 12, weight: .bold))
+                        .font(.game(size: 12, weight: .bold))
                         .foregroundColor(.cityAccent)
                 }
             }
 
             if let mission {
                 Text(mission.title)
-                    .font(.system(size: 17, weight: .bold))
+                    .font(.game(size: 17, weight: .bold))
                     .foregroundColor(.white)
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -221,7 +221,7 @@ struct ActiveMissionView: View {
                     }
                     .frame(height: 3)
                     Text("\(Int(progressValue)) / \(Int(mission.targetValue)) \(mission.type.unit) · +\(mission.expReward) EXP")
-                        .font(.system(size: 12, weight: .medium))
+                        .font(.game(size: 12, weight: .medium))
                         .foregroundColor(.citySubtext)
                 }
             }
@@ -242,10 +242,10 @@ struct ActiveMissionView: View {
             } label: {
                 HStack(spacing: 6) {
                     Image(systemName: "stop.fill")
-                        .font(.system(size: 11, weight: .bold))
+                        .font(.game(size: 11, weight: .bold))
                     Text("End Walk")
                 }
-                .font(.system(size: 13, weight: .bold))
+                .font(.game(size: 13, weight: .bold))
                 .foregroundColor(.white.opacity(0.85))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
@@ -356,11 +356,11 @@ struct ActiveMissionView: View {
         VStack(alignment: .leading, spacing: 2) {
             Text(value)
                 .font(isMonospaced
-                      ? .system(size: 26, weight: .bold).monospacedDigit()
-                      : .system(size: 26, weight: .bold))
+                      ? .game(size: 26, weight: .bold).monospacedDigit()
+                      : .game(size: 26, weight: .bold))
                 .foregroundColor(.white)
             Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+                .font(.game(size: 10, weight: .semibold))
                 .tracking(0.5)
                 .foregroundColor(.citySubtext)
         }
@@ -369,18 +369,18 @@ struct ActiveMissionView: View {
     private var failedOverlay: some View {
         VStack(spacing: 16) {
             Text("⏰")
-                .font(.system(size: 60))
+                .font(.game(size: 60))
             Text("Time's up!")
-                .font(.system(size: 26, weight: .heavy))
+                .font(.game(size: 26, weight: .heavy))
                 .foregroundColor(.white)
             Text("Don't worry — the mission is back on the board.")
-                .font(.system(size: 14))
+                .font(.game(size: 14))
                 .foregroundColor(.citySubtext)
             Button {
                 dismiss()
             } label: {
                 Text("Back to Map")
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.game(size: 16, weight: .bold))
                     .foregroundColor(.black)
                     .padding(.horizontal, 40)
                     .padding(.vertical, 12)
@@ -411,14 +411,14 @@ private struct PhotoMissionPickerView: View {
                     Image(systemName: "camera.fill")
                         .foregroundColor(.cityYellow)
                     Text("Photo Missions")
-                        .font(.system(size: 17, weight: .heavy))
+                        .font(.game(size: 17, weight: .heavy))
                         .foregroundColor(.white)
                     Spacer()
                 }
                 .padding(20)
 
                 Text("See one of these nearby? Tap it to open the camera.")
-                    .font(.system(size: 13))
+                    .font(.game(size: 13))
                     .foregroundColor(.citySubtext)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 16)
@@ -437,7 +437,7 @@ private struct PhotoMissionPickerView: View {
                         }
                         if missionViewModel.availablePhotoMissions.isEmpty {
                             Text("No photo missions available right now.")
-                                .font(.system(size: 14))
+                                .font(.game(size: 14))
                                 .foregroundColor(.citySubtext)
                                 .padding(24)
                         }
@@ -465,14 +465,14 @@ private struct MissionsTrayView: View {
                     Image(systemName: "figure.walk")
                         .foregroundColor(.cityAccent)
                     Text("Active Walking Missions")
-                        .font(.system(size: 17, weight: .heavy))
+                        .font(.game(size: 17, weight: .heavy))
                         .foregroundColor(.white)
                     Spacer()
                 }
                 .padding(20)
 
                 Text("These missions progress automatically while you walk.")
-                    .font(.system(size: 13))
+                    .font(.game(size: 13))
                     .foregroundColor(.citySubtext)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 16)
@@ -492,7 +492,7 @@ private struct MissionsTrayView: View {
                         if missionViewModel.passiveWalkingMissions.isEmpty &&
                            missionViewModel.activeMission == nil {
                             Text("No walking missions available.")
-                                .font(.system(size: 14))
+                                .font(.game(size: 14))
                                 .foregroundColor(.citySubtext)
                                 .padding(24)
                         }
@@ -510,15 +510,15 @@ private struct MissionsTrayView: View {
         return VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: mission.type.icon)
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.game(size: 14, weight: .bold))
                     .foregroundColor(isPrimary ? .cityAccent : .cityGreen)
                 Text(mission.title)
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.game(size: 14, weight: .bold))
                     .foregroundColor(.white)
                 Spacer()
                 if isPrimary {
                     Text("Primary")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.game(size: 10, weight: .bold))
                         .foregroundColor(.black)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
@@ -526,7 +526,7 @@ private struct MissionsTrayView: View {
                         .cornerRadius(6)
                 }
                 Text("+\(mission.expReward) EXP")
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.game(size: 12, weight: .bold))
                     .foregroundColor(.cityYellow)
             }
 
@@ -542,7 +542,7 @@ private struct MissionsTrayView: View {
             .frame(height: 8)
 
             Text("\(Int(min(current, mission.targetValue))) / \(Int(mission.targetValue)) \(mission.type.unit)")
-                .font(.system(size: 12))
+                .font(.game(size: 12))
                 .foregroundColor(.citySubtext)
         }
         .padding(14)

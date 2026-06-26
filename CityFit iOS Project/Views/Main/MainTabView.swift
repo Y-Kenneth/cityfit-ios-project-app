@@ -35,7 +35,7 @@ struct MainTabView: View {
                         showChat = true
                     } label: {
                         Image(systemName: "bubble.left.fill")
-                            .font(.system(size: 18))
+                            .font(.game(size: 18))
                             .foregroundColor(.black)
                             .padding(12)
                             .background(Color.cityAccent)

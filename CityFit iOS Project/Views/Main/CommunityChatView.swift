@@ -29,7 +29,7 @@ struct CommunityChatView: View {
     private var header: some View {
         ZStack {
             Text(community.name)
-                .font(.system(size: 17, weight: .semibold))
+                .font(.game(size: 17, weight: .semibold))
                 .foregroundColor(.black)
             HStack {
                 Spacer()
@@ -37,7 +37,7 @@ struct CommunityChatView: View {
                     dismiss()
                 } label: {
                     Image(systemName: "xmark")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.game(size: 14, weight: .bold))
                         .foregroundColor(.black.opacity(0.6))
                 }
                 .accessibilityLabel("Close chat")
@@ -81,7 +81,7 @@ struct CommunityChatView: View {
 
     private func timeDivider(for date: Date) -> some View {
         Text(date.formatted(.dateTime.month().day().hour().minute()))
-            .font(.system(size: 11))
+            .font(.game(size: 11))
             .foregroundColor(.black.opacity(0.4))
             .padding(.vertical, 12)
     }
@@ -97,7 +97,7 @@ struct CommunityChatView: View {
                 .onSubmit { viewModel.send() }
 
             Button("Send", action: viewModel.send)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.game(size: 15, weight: .semibold))
                 .foregroundColor(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
@@ -124,7 +124,7 @@ struct CommunityChatView: View {
                 VStack(alignment: .leading, spacing: 3) {
                     if showSenderName {
                         Text(message.senderUsername)
-                            .font(.system(size: 12))
+                            .font(.game(size: 12))
                             .foregroundColor(.black.opacity(0.45))
                     }
                     bubbleText(message, isMe: false)
@@ -141,7 +141,7 @@ struct CommunityChatView: View {
             RoundedRectangle(cornerRadius: 4)
                 .fill(Color.cityAccent.opacity(0.15))
             Text(character.emoji)
-                .font(.system(size: 19))
+                .font(.game(size: 19))
         }
         .frame(width: 36, height: 36)
         .accessibilityLabel("\(character.displayName) character")
@@ -149,7 +149,7 @@ struct CommunityChatView: View {
 
     private func bubbleText(_ message: CommunityMessage, isMe: Bool) -> some View {
         Text(message.text)
-            .font(.system(size: 16))
+            .font(.game(size: 16))
             .foregroundColor(.black)
             .padding(.horizontal, 12)
             .padding(.vertical, 9)

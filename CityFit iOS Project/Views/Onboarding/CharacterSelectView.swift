@@ -12,7 +12,7 @@ struct CharacterSelectView: View {
 
             VStack(spacing: 24) {
                 Text("Choose your character")
-                    .font(.system(size: 24, weight: .heavy))
+                    .font(.game(size: 24, weight: .heavy))
                     .foregroundColor(.white)
                     .padding(.top, 30)
 
@@ -24,7 +24,7 @@ struct CharacterSelectView: View {
                     showHealthInfo = true
                 } label: {
                     Text("Next")
-                        .font(.system(size: 17, weight: .bold))
+                        .font(.game(size: 17, weight: .bold))
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)

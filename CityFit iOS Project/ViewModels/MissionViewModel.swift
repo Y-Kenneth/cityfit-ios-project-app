@@ -37,6 +37,12 @@ final class MissionViewModel: ObservableObject {
 
     func updateActiveProgress(_ value: Double) {
         guard var mission = activeMission else { return }
+        // Photo missions count captured objects via incrementPhotoProgress, not
+        // steps/distance. When a photo mission is picked mid-walk it becomes the
+        // active mission, but the walk's per-second tick keeps calling this with
+        // its own step/distance value (0 for a plain walk) — which would reset
+        // the capture count to 0 every tick, making the mission uncompletable.
+        guard mission.type != .photo else { return }
         let previousFraction = mission.targetValue > 0 ? mission.currentValue / mission.targetValue : 0
         mission.currentValue = value
         activeMission = mission

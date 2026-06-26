@@ -25,7 +25,7 @@ struct UserAvatarPinView: View {
                 .strokeBorder(Color.cityAccent, lineWidth: 2.5)
                 .frame(width: 40, height: 40)
             Text(emoji)
-                .font(.system(size: 19))
+                .font(.game(size: 19))
         }
         .frame(width: 64, height: 64)
     }

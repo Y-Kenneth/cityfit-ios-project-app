@@ -25,16 +25,16 @@ struct MissionDetailView: View {
                                 .fill(Color.cityAccent.opacity(0.15))
                                 .frame(width: 90, height: 90)
                             Image(systemName: mission.type.icon)
-                                .font(.system(size: 36))
+                                .font(.game(size: 36))
                                 .foregroundColor(.cityAccent)
                         }
 
                         Text(mission.title)
-                            .font(.system(size: 24, weight: .heavy))
+                            .font(.game(size: 24, weight: .heavy))
                             .foregroundColor(.white)
 
                         Text(mission.description)
-                            .font(.system(size: 15))
+                            .font(.game(size: 15))
                             .foregroundColor(.citySubtext)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 30)
@@ -48,14 +48,14 @@ struct MissionDetailView: View {
 
                         if let limit = mission.timeLimit {
                             Label("Time limit: \(limit) minutes", systemImage: "clock.fill")
-                                .font(.system(size: 13, weight: .semibold))
+                                .font(.game(size: 13, weight: .semibold))
                                 .foregroundColor(.cityYellow)
                         }
 
                         if mission.type == .photo, let target = mission.targetObject {
                             VStack(spacing: 14) {
                                 Label("Point your camera at a \(target)", systemImage: "camera.viewfinder")
-                                    .font(.system(size: 13, weight: .semibold))
+                                    .font(.game(size: 13, weight: .semibold))
                                     .foregroundColor(.cityAccent)
 
                                 ExamplePhotoGrid(targetObject: target)
@@ -70,7 +70,7 @@ struct MissionDetailView: View {
                         onStart(mission)
                     } label: {
                         Text(mission.status == .active ? "Resume Mission" : "Start Mission")
-                            .font(.system(size: 17, weight: .bold))
+                            .font(.game(size: 17, weight: .bold))
                             .foregroundColor(.black)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
@@ -94,10 +94,10 @@ struct MissionDetailView: View {
     private func statBox(value: String, label: String, color: Color) -> some View {
         VStack(spacing: 4) {
             Text(value)
-                .font(.system(size: 16, weight: .heavy))
+                .font(.game(size: 16, weight: .heavy))
                 .foregroundColor(color)
             Text(label)
-                .font(.system(size: 11))
+                .font(.game(size: 11))
                 .foregroundColor(.citySubtext)
         }
         .frame(maxWidth: .infinity)

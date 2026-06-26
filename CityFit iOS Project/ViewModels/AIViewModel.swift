@@ -70,10 +70,15 @@ final class AIViewModel: ObservableObject {
                                     lng: coordinate.longitude,
                                     exp: mission.expReward)
         }
+        // Shuffle so missions and real landmarks are interleaved in a different
+        // order each call. Listed missions-first (their old fixed order), the
+        // low-temperature planner deterministically picked the same 3 mission
+        // pins every time and ignored the landmarks further down the list.
+        let candidatePins = (missionPins + landmarkPins).shuffled()
         let request = RouteRequest(current_lat: location.latitude,
                                    current_lng: location.longitude,
                                    level: level,
-                                   mission_pins: missionPins + landmarkPins,
+                                   mission_pins: candidatePins,
                                    preferred_distance: preferredDistance)
         do {
             routeResult = try await AIService.generateRoute(request)

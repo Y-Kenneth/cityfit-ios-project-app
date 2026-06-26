@@ -14,14 +14,14 @@ struct AIChatView: View {
             // Header
             HStack {
                 Label("AI Coach", systemImage: "bubble.left.fill")
-                    .font(.system(size: 17, weight: .heavy))
+                    .font(.game(size: 17, weight: .heavy))
                     .foregroundColor(.cityAccent)
                 Spacer()
                 Button {
                     dismiss()
                 } label: {
                     Image(systemName: "xmark")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.game(size: 14, weight: .bold))
                         .foregroundColor(.citySubtext)
                 }
                 .accessibilityLabel("Close chat")
@@ -41,7 +41,7 @@ struct AIChatView: View {
                             HStack {
                                 ProgressView().tint(.cityAccent)
                                 Text("Coach is thinking…")
-                                    .font(.system(size: 12))
+                                    .font(.game(size: 12))
                                     .foregroundColor(.citySubtext)
                                 Spacer()
                             }
@@ -68,7 +68,7 @@ struct AIChatView: View {
 
                 Button(action: send) {
                     Image(systemName: "paperplane.fill")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.game(size: 16, weight: .bold))
                         .foregroundColor(.black)
                         .padding(12)
                         .background(Color.cityAccent)
@@ -100,7 +100,7 @@ struct AIChatView: View {
         HStack {
             if message.role == .user { Spacer(minLength: 50) }
             Text(message.text)
-                .font(.system(size: 14))
+                .font(.game(size: 14))
                 .foregroundColor(message.role == .user ? .black : .white)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)

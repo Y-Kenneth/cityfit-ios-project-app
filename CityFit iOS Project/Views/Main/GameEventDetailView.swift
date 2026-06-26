@@ -32,14 +32,14 @@ struct GameEventDetailView: View {
                                 .fill(event.eventType.color)
                                 .frame(width: 56, height: 56)
                             Image(systemName: event.eventType.icon)
-                                .font(.system(size: 26, weight: .bold))
+                                .font(.game(size: 26, weight: .bold))
                                 .foregroundColor(.black)
                         }
                         Text(event.title)
-                            .font(.system(size: 22, weight: .heavy))
+                            .font(.game(size: 22, weight: .heavy))
                             .foregroundColor(.white)
                         Text(eventTypeLabel)
-                            .font(.system(size: 13, weight: .semibold))
+                            .font(.game(size: 13, weight: .semibold))
                             .foregroundColor(event.eventType.color)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 4)
@@ -69,7 +69,7 @@ struct GameEventDetailView: View {
                     dismiss()
                 } label: {
                     Text("Close")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.game(size: 16, weight: .bold))
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -93,15 +93,15 @@ struct GameEventDetailView: View {
     private func infoRow(icon: String, label: String, value: String) -> some View {
         HStack(alignment: .top, spacing: 14) {
             Image(systemName: icon)
-                .font(.system(size: 16))
+                .font(.game(size: 16))
                 .foregroundColor(event.eventType.color)
                 .frame(width: 24)
             VStack(alignment: .leading, spacing: 2) {
                 Text(label)
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.game(size: 11, weight: .semibold))
                     .foregroundColor(.citySubtext)
                 Text(value)
-                    .font(.system(size: 15, weight: .medium))
+                    .font(.game(size: 15, weight: .medium))
                     .foregroundColor(.white)
             }
             Spacer()
