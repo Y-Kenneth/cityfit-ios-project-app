@@ -28,15 +28,13 @@ final class HealthKitService {
 
     struct HealthSnapshot {
         var weightKg: Double?
-        var heightCm: Double?
+        var heightCm: Double?   
         var gender: Gender?
         var restingHeartRate: Int?
         var activeEnergyKcal: Double?
     }
 
-    /// Requests read authorization, then immediately pulls the latest sample
-    /// of each metric. Returns nil if HealthKit is unavailable (e.g. Simulator)
-    /// or the user denies the permission sheet.
+    ///  Returns nil if HealthKit is unavailable (e.g. Simulator)
     func requestAuthorizationAndFetch() async -> HealthSnapshot? {
         guard isAvailable else { return nil }
         do {

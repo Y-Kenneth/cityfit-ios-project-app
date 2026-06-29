@@ -12,17 +12,18 @@ pre-trained, and the open decisions. Last updated: 2026-06-13._
 | AI Coach (chat) | Cloud LLM (DeepSeek) | Backend → DeepSeek API | ✅ Working |
 | AI Route Generator | Cloud LLM (DeepSeek, 2-agent crew) | Backend → DeepSeek API | ✅ Working |
 | AI Trip Planner | Cloud LLM (DeepSeek, 2-agent crew) | Backend → DeepSeek API | ✅ Working |
-| Photo Verification (Tier 1) | On-device computer vision (Apple Vision / CoreML) | On the iPhone | ✅ Working (untrained fallback) |
+| Photo Verification (Tier 1) | On-device computer vision (trained CoreML model) | On the iPhone | ✅ Working — trained model bundled |
 | Photo Verification (Tier 2, "Snap") | Cloud LLM vision (DeepSeek Vision + Vision Crew agent), on-device fallback | Backend → DeepSeek API | ✅ Working |
 | Activity detection | On-device heuristic (final — no CoreML training planned) | On the iPhone | ✅ Heuristic is permanent |
-| Photo classifier | On-device CoreML (planned) / built-in now | On the iPhone | ⚠️ Built-in until trained |
+| Photo classifier | On-device CoreML, trained with CreateML | On the iPhone | ✅ Trained model bundled (`ImageClassifier.mlmodel`) |
 
 **Key distinction:**
-- **Cloud LLM** (chat, route): a huge model on DeepSeek's servers. Needs internet.
+- **Cloud LLM** (chat, route, trip): a huge model on DeepSeek's servers. Needs internet.
   You do **not** train it — you use it as-is.
 - **On-device ML** (photo, activity): a small model that lives inside the app and
-  runs offline on the iPhone's Neural Engine. This is where **you train real data**
-  with CreateML — the project's ML deliverable.
+  runs offline on the iPhone's Neural Engine. The photo classifier is where
+  **real data was trained** with CreateML — the project's ML deliverable is done
+  (see below).
 
 ---
 
@@ -76,11 +77,16 @@ now calls `AIService.verifyPhoto` (`/verify-photo`), so Tier 2 is live end-to-en
 
 ---
 
-## 3. Training your own models (CreateML) — the "real data" deliverable
+## 3. Trained models (CreateML) — the "real data" deliverable
 
-The app is wired so a trained model **auto-loads with no code change**.
+**Status: done.** `ImageClassifier.mlmodel` is trained, bundled in the Xcode
+project (`CityFit iOS Project/ImageClassifier.mlmodel`), and registered in the
+build. The app is wired so a trained model **auto-loads with no code change**
+— `VisionService` detects the bundled `.mlmodelc` and prefers it automatically;
+the built-in `VNClassifyImageRequest` is only a fallback for the rare case the
+bundled model fails to load.
 
-### Photo classifier — `ImageClassifier.mlmodel`
+### Photo classifier — `ImageClassifier.mlmodel` — how it was trained
 1. CreateML → **Image Classification** template.
 2. One folder per object class, ~25–100+ images each (mix of Kaggle/internet
    images + your own iPhone photos for best accuracy). Folder names must exactly

@@ -38,16 +38,26 @@ with an AI coach. **iOS app** (SwiftUI, MVVM, iOS 16 SDK) + **Python AI backend*
   distance missions show a destination pin, compact progress bar + stats.
 
 ### Photo Mission Verification — **working, two-tier (on-device + backend Vision Crew)**
-- Tier 1 (live): Apple Vision `VNClassifyImageRequest` auto-completes at high
-  confidence (≥0.85), on-device.
+- Tier 1 (live): a trained CreateML model (`ImageClassifier.mlmodel`, bundled
+  and registered in Xcode) runs on-device via `VisionService`; auto-completes
+  at high confidence (≥0.85).
 - Tier 2 ("Snap"): only triggered when Tier 1 confidence is too low to
   auto-complete (0.50–0.85, "possible" band). Tapping Snap sends the captured
   frame to the backend Vision Crew (DeepSeek Vision describes the photo, the
   Object Detection Specialist agent gives a strict detected/rejected verdict).
   Falls back to a stricter on-device re-check (≥0.65) if the backend is
   unreachable, so the feature still works offline.
-- **CreateML-ready:** drop a trained `ImageClassifier.mlmodel` into the project
-  and `VisionService` uses it automatically — no code change. See `AI_AND_ML.md`.
+- **The "real data" deliverable is done:** `ImageClassifier.mlmodel` is trained
+  and bundled — `VisionService` loads it automatically (falls back to Apple's
+  built-in `VNClassifyImageRequest` only if the bundled model is ever missing).
+  See `AI_AND_ML.md`.
+
+### Firebase — **working**
+- `AuthService`: real login via Google Sign-In, exchanged for a Firebase Auth
+  session (not a mock flow).
+- `FirestoreService`: real-time cloud database — user profile (level, EXP,
+  steps, streak), leaderboard, and community chat messages (live updates via
+  Firestore listeners, not polling).
 
 ### Backend
 - Flask app with 4 endpoints (`/chat`, `/route`, `/plan-trip`, `/verify-photo`),
@@ -65,16 +75,10 @@ with an AI coach. **iOS app** (SwiftUI, MVVM, iOS 16 SDK) + **Python AI backend*
 
 ## ⚠️ Not done / known gaps / decisions pending
 
-- **`ImageClassifier.mlmodel` not yet trained.** Photo missions fall back to
-  Apple's built-in `VNClassifyImageRequest` until a trained model is dropped in.
-  Collecting ~25+ photos per class (bottle, bicycle, plant, bench) and training
-  in CreateML is the project's "real data" deliverable.
 - **`ActivityClassifier.mlmodel` — intentionally not planned.** Activity
   detection uses the motion-magnitude heuristic permanently. The EXP multiplier
   works correctly without a trained model; collecting labeled sensor data is out
   of scope.
-- **No real auth/persistence backend.** Login/SignUp are UI flows over mock data;
-  there's no user account server. Data is local (UserDefaults-style).
 - **Real device testing pending.** Camera (Tier 1 live + Snap) and real GPS/
   pedometer only run on a physical iPhone. The Simulator mocks movement and has
   no camera. Test on device before judging these.
@@ -95,13 +99,9 @@ See [`HOW_TO_RUN.md`](HOW_TO_RUN.md) for full setup steps (Firebase, backend
 
 ## Suggested next steps (brainstorm list)
 
-1. **Decide Tier 2 verification direction** (on-device vs Groq vs 2nd CoreML).
-2. **Collect data + train** `ImageClassifier.mlmodel` (photo) in CreateML, then drop in.
-   (~25+ photos each for: bottle, bicycle, plant, bench)
-3. **Test on a real iPhone** — camera + GPS + pedometer.
-4. **Optional:** "complete on arrival at pin" geofence for distance missions.
-5. **Optional:** real auth + persistence backend.
-6. **Optional:** AR camera layer for true Pokémon-GO feel.
+1. **Test on a real iPhone** — camera + GPS + pedometer.
+2. **Optional:** "complete on arrival at pin" geofence for distance missions.
+3. **Optional:** AR camera layer for true Pokémon-GO feel.
 
 See `DESIGN_SPEC.md` for the full UI/screen breakdown and `AI_AND_ML.md` for the
 AI/ML details.
