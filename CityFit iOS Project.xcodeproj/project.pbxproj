@@ -70,7 +70,7 @@
 		C96D89350E0D2D092115BE35 /* CommunityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45DB27E5F37FEAA1EB9B5 /* CommunityView.swift */; };
 		CB13D6892FECD63900A910AD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CB13D6882FECD63900A910AD /* GoogleService-Info.plist */; };
 		DF0EEE5B20F84D1C918A14BA /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2ACF7CC5A0CF46D8A7518346 /* PressStart2P-Regular.ttf */; };
-		CB31134B2FD924D8007BFF65 /* iOS CityFit Project Background.md in Resources */ = {isa = PBXBuildFile; fileRef = CB31134A2FD924D7007BFF65 /* iOS CityFit Project Background.md */; };
+		CB31134B2FD924D8007BFF65 /* PROJECT_BACKGROUND.md in Resources */ = {isa = PBXBuildFile; fileRef = CB31134A2FD924D7007BFF65 /* PROJECT_BACKGROUND.md */; };
 		CB44AAA02FD8044100D3D7D7 /* CityFit iOS ProjectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB44AA9F2FD8044100D3D7D7 /* CityFit iOS ProjectApp.swift */; };
 		CB44AAA42FD8044300D3D7D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB44AAA32FD8044300D3D7D7 /* Assets.xcassets */; };
 		CB44AAA72FD8044300D3D7D7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB44AAA62FD8044300D3D7D7 /* Preview Assets.xcassets */; };
@@ -155,7 +155,7 @@
 		C6F29A4D95704283015D57EA /* AIChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIChatView.swift; sourceTree = "<group>"; };
 		CB13D6882FECD63900A910AD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2ACF7CC5A0CF46D8A7518346 /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Resources/Fonts/PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
-		CB31134A2FD924D7007BFF65 /* iOS CityFit Project Background.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "iOS CityFit Project Background.md"; sourceTree = SOURCE_ROOT; };
+		CB31134A2FD924D7007BFF65 /* PROJECT_BACKGROUND.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "docs/PROJECT_BACKGROUND.md"; sourceTree = SOURCE_ROOT; };
 		CB44AA9C2FD8044100D3D7D7 /* CityFit iOS Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CityFit iOS Project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB44AA9F2FD8044100D3D7D7 /* CityFit iOS ProjectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CityFit iOS ProjectApp.swift"; sourceTree = "<group>"; };
 		CB44AAA32FD8044300D3D7D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -355,7 +355,7 @@
 				2AAF0FFB101CFE2B72D7FEC0 /* CityFit-iOS-Project.entitlements */,
 				51B161582FE4630800BF83AA /* CityFit-iOS-Project-Info.plist */,
 				CBDDB6422FE26DBB001BED25 /* ImageClassifier.mlmodel */,
-				CB31134A2FD924D7007BFF65 /* iOS CityFit Project Background.md */,
+				CB31134A2FD924D7007BFF65 /* PROJECT_BACKGROUND.md */,
 				2ACF7CC5A0CF46D8A7518346 /* PressStart2P-Regular.ttf */,
 				CB44AA9F2FD8044100D3D7D7 /* CityFit iOS ProjectApp.swift */,
 				A1C86A29E589D48EC70B6A32 /* Models */,
@@ -456,7 +456,7 @@
 				CB44AAA72FD8044300D3D7D7 /* Preview Assets.xcassets in Resources */,
 				CB13D6892FECD63900A910AD /* GoogleService-Info.plist in Resources */,
 				CB44AAA42FD8044300D3D7D7 /* Assets.xcassets in Resources */,
-				CB31134B2FD924D8007BFF65 /* iOS CityFit Project Background.md in Resources */,
+				CB31134B2FD924D8007BFF65 /* PROJECT_BACKGROUND.md in Resources */,
 				DF0EEE5B20F84D1C918A14BA /* PressStart2P-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

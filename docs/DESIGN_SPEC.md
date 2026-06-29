@@ -149,5 +149,3 @@ MainTabView  ← the main app
   components above).
 - No iOS 17+ MapKit, no `#Preview` macro, no `@Observable`.
 - Designs should assume **dark mode only** (no light theme implemented).
-
-> See `DESIGN_BRAINSTORM.md` for open design questions / ideas to explore.

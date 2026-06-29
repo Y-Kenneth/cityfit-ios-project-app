@@ -50,9 +50,12 @@ The CoreML slot in the code exists for future extensibility only.
 
 `VisionService` works today with Apple's built-in image classifier
 (`VNClassifyImageRequest`) — photo missions detect common objects untrained,
-fully on-device (no backend; the old DeepSeek/Groq "Snap" path was removed
-because DeepSeek is text-only). Tier 2 "Snap" re-runs the same classifier at a
-higher confidence bar.
+fully on-device for Tier 1 (live hover detection, auto-completes at high
+confidence). Tier 2 ("Snap" button, only shown when Tier 1 confidence is too
+low to auto-complete) calls the backend Vision Crew — `deepseek-v4-flash`
+accepts image input directly, so DeepSeek Vision describes the photo and the
+Object Detection Specialist agent gives a strict verdict — with a stricter
+on-device re-check as fallback if the backend is unreachable.
 
 To use your own trained model (the project's "train real data" deliverable):
 

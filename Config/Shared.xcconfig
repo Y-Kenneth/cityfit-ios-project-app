@@ -1,5 +1,5 @@
 // Canonical default identity (Kenneth / lab Mac). Each machine overrides this
-// via a gitignored Config/Local.xcconfig — see SETUP_NEW_MAC.md. Do not put a
+// via a gitignored Config/Local.xcconfig — see docs/HOW_TO_RUN.md. Do not put a
 // machine-specific bundle ID or team here; that defeats the point of this file.
 PRODUCT_BUNDLE_IDENTIFIER = com.kenneth.cityfit
 DEVELOPMENT_TEAM = MGUFYQ4S2L

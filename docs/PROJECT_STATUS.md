@@ -37,17 +37,23 @@ with an AI coach. **iOS app** (SwiftUI, MVVM, iOS 16 SDK) + **Python AI backend*
   progress ring): user's dot moves in real time, walked path draws as a trail,
   distance missions show a destination pin, compact progress bar + stats.
 
-### Photo Mission Verification — **working, on-device**
-- Two-tier, **fully on-device** (no cloud):
-  - Tier 1 (live): Apple Vision `VNClassifyImageRequest` auto-completes at high
-    confidence.
-  - Tier 2 ("Snap"): re-runs Vision at a stricter confidence bar to confirm.
+### Photo Mission Verification — **working, two-tier (on-device + backend Vision Crew)**
+- Tier 1 (live): Apple Vision `VNClassifyImageRequest` auto-completes at high
+  confidence (≥0.85), on-device.
+- Tier 2 ("Snap"): only triggered when Tier 1 confidence is too low to
+  auto-complete (0.50–0.85, "possible" band). Tapping Snap sends the captured
+  frame to the backend Vision Crew (DeepSeek Vision describes the photo, the
+  Object Detection Specialist agent gives a strict detected/rejected verdict).
+  Falls back to a stricter on-device re-check (≥0.65) if the backend is
+  unreachable, so the feature still works offline.
 - **CreateML-ready:** drop a trained `ImageClassifier.mlmodel` into the project
   and `VisionService` uses it automatically — no code change. See `AI_AND_ML.md`.
 
 ### Backend
-- Flask app with 3 endpoints (`/chat`, `/route`, `/verify-photo`), 3 crews.
-- Runs on DeepSeek (`deepseek-v4-flash`, OpenAI-compatible API). Exposed via ngrok.
+- Flask app with 4 endpoints (`/chat`, `/route`, `/plan-trip`, `/verify-photo`),
+  4 crews / 6 agents — all 4 crews are now called by the app (see `AI_AND_ML.md`).
+- Runs on DeepSeek (`deepseek-v4-flash`, OpenAI-compatible API, also accepts
+  image input for Vision Crew). Exposed via ngrok.
 
 ### Robustness / docs
 - AIService now reports the real failure cause (tunnel offline / backend error /
@@ -59,10 +65,6 @@ with an AI coach. **iOS app** (SwiftUI, MVVM, iOS 16 SDK) + **Python AI backend*
 
 ## ⚠️ Not done / known gaps / decisions pending
 
-- **Photo Tier 2 is no longer a cloud LLM.** DeepSeek is **text-only** (confirmed
-  via its `/models`), so it cannot verify images. Tier 2 was moved on-device.
-  DECISION PENDING: keep on-device, OR add a Groq vision model for free-form
-  descriptions, OR add a second on-device CoreML detector. (See `AI_AND_ML.md`.)
 - **`ImageClassifier.mlmodel` not yet trained.** Photo missions fall back to
   Apple's built-in `VNClassifyImageRequest` until a trained model is dropped in.
   Collecting ~25+ photos per class (bottle, bicycle, plant, bench) and training
@@ -84,23 +86,10 @@ with an AI coach. **iOS app** (SwiftUI, MVVM, iOS 16 SDK) + **Python AI backend*
 
 ---
 
-## How to run (quick reference)
+## How to run
 
-**Backend (the "AI laptop"):**
-```bash
-cd cityfit_backend
-source venv/bin/activate        # macOS; venv\Scripts\activate on Windows
-python app.py                    # terminal 1  (or: venv/bin/python app.py)
-ngrok http 5000                  # terminal 2  -> copy URL into Constants.swift
-```
-- DeepSeek key lives in `cityfit_backend/.env` (gitignored). Rotate if leaked.
-
-**iOS app:**
-```bash
-xcodebuild -scheme "CityFit iOS Project" -sdk iphonesimulator \
-  -destination 'generic/platform=iOS Simulator' build
-```
-- Simulator GPS: Features → Location → City Run. Steps/movement auto-mock.
+See [`HOW_TO_RUN.md`](HOW_TO_RUN.md) for full setup steps (Firebase, backend
+`.env`/ngrok, Xcode build, troubleshooting).
 
 ---
 

@@ -1,20 +1,23 @@
 import Foundation
 import SwiftUI
 
-/// Drives the two-tier photo mission detection — fully on-device:
-/// Tier 1 — Apple Vision live classification (auto-complete at high confidence).
-/// Tier 2 — a deliberate, higher-bar Vision re-check of the captured frame when
-///          the user taps "Snap" on a medium-confidence hit. No network/cloud
-///          dependency (works offline; GFW-safe). Uses the same VisionService,
-///          which automatically prefers a trained CreateML model when bundled.
+/// Drives the two-tier photo mission detection:
+/// Tier 1 — Apple Vision live classification, on-device (auto-complete at high
+///          confidence). Uses VisionService, which automatically prefers a
+///          trained CreateML model when bundled.
+/// Tier 2 — the captured frame is sent to the backend Vision Crew (DeepSeek
+///          Vision + the Object Detection Specialist agent) when the user taps
+///          "Snap" on a medium-confidence hit. Falls back to a stricter
+///          on-device re-check if the backend is unreachable, so the feature
+///          still works offline.
 final class CameraViewModel: ObservableObject {
 
     enum DetectionState: Equatable {
         case scanning
         case possible      // medium confidence — Snap button shown
-        case detected      // confirmed (Tier 1 auto or Tier 2 Groq)
-        case verifying     // Groq round-trip in flight
-        case rejected      // Groq said no
+        case detected      // confirmed (Tier 1 auto, or Tier 2 backend/on-device)
+        case verifying     // Tier 2 backend round-trip in flight
+        case rejected      // Tier 2 said no
     }
 
     @Published var state: DetectionState = .scanning
@@ -96,16 +99,20 @@ final class CameraViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Tier 2: deliberate on-device verification
+    // MARK: - Tier 2: Vision Crew (backend) verification, on-device fallback
 
-    /// Confidence the captured frame must clear to confirm a "Snap".
+    /// Confidence the captured frame must clear to confirm a "Snap" when the
+    /// backend Vision Crew is unreachable (degrade gracefully, per CLAUDE.md).
     private let snapConfirmThreshold: Float = 0.65
 
-    /// `aiViewModel` is accepted for source compatibility with the view but is
-    /// no longer used — verification is fully on-device.
+    /// Medium-confidence "Snap" goes to the backend Vision Crew (DeepSeek
+    /// Vision describes the photo, the Object Detection Specialist agent
+    /// gives a strict verdict) for a stronger check than the live Tier-1
+    /// scan. Falls back to a stricter on-device re-check if the backend is
+    /// unreachable, so the feature still works offline.
     @MainActor
     func snap(userID: String, aiViewModel: AIViewModel) async {
-        guard let buffer = camera.latestPixelBuffer() else {
+        guard camera.latestPixelBuffer() != nil, let imageBase64 = camera.snapBase64() else {
             statusMessage = "Couldn't capture a photo — try again"
             return
         }
@@ -113,12 +120,37 @@ final class CameraViewModel: ObservableObject {
         statusMessage = "Verifying…"
 
         let target = targetObject
+        do {
+            let response = try await AIService.verifyPhoto(
+                VerifyPhotoRequest(image_base64: imageBase64, target_object: target, user_id: userID))
+            if response.detected {
+                state = .detected
+                statusMessage = "✅ \(target.capitalized) confirmed!"
+                onObjectFound?()
+                beginCooldown(4)
+            } else {
+                state = .rejected
+                statusMessage = "Not quite — try getting closer"
+                beginCooldown(2)
+            }
+        } catch {
+            await fallbackOnDeviceSnap(target: target)
+        }
+    }
+
+    /// Used only when the backend Vision Crew can't be reached.
+    private func fallbackOnDeviceSnap(target: String) async {
+        guard let buffer = camera.latestPixelBuffer() else {
+            state = .rejected
+            statusMessage = "Not quite — try getting closer"
+            beginCooldown(2)
+            return
+        }
         let confidence: Float = await withCheckedContinuation { continuation in
             vision.detect(target: target, in: buffer) { value in
                 continuation.resume(returning: value)
             }
         }
-
         if confidence >= snapConfirmThreshold {
             state = .detected
             statusMessage = "✅ \(target.capitalized) confirmed!"

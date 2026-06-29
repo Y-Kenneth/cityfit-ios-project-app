@@ -111,10 +111,11 @@ final class AIViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Photo verification (legacy cloud path — UNUSED)
-    // Photo missions now verify fully on-device via VisionService (DeepSeek is
-    // text-only and can't accept images). Kept only so the /verify-photo
-    // backend endpoint has a client if a vision-capable provider is added later.
+    // MARK: - Photo verification (Tier 2 "Snap" — Vision Crew)
+    // Not currently called directly — CameraViewModel.snap() calls
+    // AIService.verifyPhoto itself so it can fall back to an on-device
+    // re-check on failure. Kept here for any other caller that wants the
+    // same graceful-failure (-> nil) convenience as chat/route/trip.
 
     func verifyPhoto(base64: String, target: String, userID: String) async -> VerifyPhotoResponse? {
         let request = VerifyPhotoRequest(image_base64: base64,
