@@ -1,11 +1,8 @@
 import Foundation
 import CoreMotion
 
-/// Classifies the user's current activity (walking / running / stationary)
-/// from accelerometer + gyroscope data and exposes the EXP multiplier.
-///
-/// Uses a motion-magnitude heuristic over a rolling 50-sample window.
-/// This is the permanent implementation — no CoreML model is planned.
+// Detects if user is walking, running, or stationary using accelerometer data.
+// Uses a simple magnitude heuristic over a rolling window of samples.
 final class ActivityService: ObservableObject {
     enum Activity: String {
         case walking, running, stationary
@@ -72,7 +69,7 @@ final class ActivityService: ObservableObject {
         update(classifyWithHeuristic())
     }
 
-    /// Average user-acceleration magnitude separates still / walk / run well enough.
+    // classify based on average acceleration magnitude across the sample window
     private func classifyWithHeuristic() -> Activity {
         let magnitudes = samples.suffix(windowSize).map {
             sqrt($0.accel.x * $0.accel.x + $0.accel.y * $0.accel.y + $0.accel.z * $0.accel.z)
@@ -94,10 +91,7 @@ final class ActivityService: ObservableObject {
         }
     }
 
-    /// Only the transitions worth interrupting the user for: speeding up to a
-    /// run (bonus EXP kicks in) and dropping back out of one (it ends). Plain
-    /// stationary <-> walking transitions stay silent so it doesn't nag every
-    /// time the user pauses at a crossing.
+    // only announce when starting/stopping a run, not every small change
     private func announce(from previous: Activity, to current: Activity) {
         guard previous != current else { return }
         switch current {

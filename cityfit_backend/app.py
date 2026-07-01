@@ -1,8 +1,9 @@
-"""CityFit AI backend — Flask + CrewAI + Groq.
+"""
+CityFit backend - Flask + CrewAI + DeepSeek
 
-Run on the AI laptop:
-    python app.py          # terminal 1
-    ngrok http 5000        # terminal 2 -> paste URL into iOS Constants.swift
+How to run:
+    python app.py       (terminal 1)
+    ngrok http 5000     (terminal 2, copy URL into Constants.swift)
 """
 
 from dotenv import load_dotenv
@@ -26,7 +27,7 @@ def health():
 
 @app.post("/chat")
 def chat():
-    """Chat Crew (1 agent) -> short conversational coach response."""
+    """sends user message to chat crew, returns coach reply"""
     data = request.get_json(force=True)
     try:
         reply = run_chat_crew(
@@ -46,7 +47,7 @@ def chat():
 
 @app.post("/route")
 def route():
-    """Route Crew (2 agents, sequential) -> waypoints + fitness metrics."""
+    """generates a walking route with waypoints and fitness info"""
     data = request.get_json(force=True)
     try:
         result = run_route_crew(
@@ -64,9 +65,8 @@ def route():
 
 @app.post("/plan-trip")
 def plan_trip():
-    """Trip Crew (2 agents, sequential) -> steps/time/calories for walk & run
-    between two user-chosen points. The distance is measured on-device via
-    MapKit (the backend can't call Apple's MapKit) and passed in as ground truth."""
+    """calculates steps, time, and calories for a trip between two map points.
+    distance is measured on the phone using MapKit and sent here."""
     data = request.get_json(force=True)
     try:
         result = run_trip_crew(
@@ -86,7 +86,7 @@ def plan_trip():
 
 @app.post("/verify-photo")
 def verify_photo():
-    """Vision Crew (1 agent) -> object detection verdict for a photo mission."""
+    """checks if the photo contains the mission target object"""
     data = request.get_json(force=True)
     try:
         result = run_vision_crew(

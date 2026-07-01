@@ -1,7 +1,7 @@
 import Foundation
 
-/// URLSession client for the Flask + CrewAI backend (exposed via Ngrok).
-/// Every call can fail when the backend is offline — callers must degrade gracefully.
+// Handles all HTTP calls to the Flask backend (exposed via Ngrok).
+// All calls fail gracefully if the backend is offline.
 enum AIService {
 
     enum AIServiceError: LocalizedError {
@@ -36,9 +36,7 @@ enum AIService {
         do {
             return try await post(path: "/route", body: request, timeout: Constants.routeRequestTimeout)
         } catch {
-            // Route Crew already retries once server-side; this is the last-resort
-            // safety net for a tunnel/network blip on top of that. One extra try
-            // here catches most of what's left without making the user tap again.
+            // retry once more on the client side, route crew can be slow
             return try await post(path: "/route", body: request, timeout: Constants.routeRequestTimeout)
         }
     }
@@ -63,7 +61,7 @@ enum AIService {
         urlRequest.httpMethod = "POST"
         urlRequest.timeoutInterval = timeout
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        // Ngrok free tier shows an interstitial page unless this header is set
+        // ngrok blocks requests without this header
         urlRequest.setValue("true", forHTTPHeaderField: "ngrok-skip-browser-warning")
         urlRequest.httpBody = try JSONEncoder().encode(body)
 
@@ -79,14 +77,12 @@ enum AIService {
             throw AIServiceError.badResponse(status: -1)
         }
 
-        // Ngrok returns its own HTML error page (HTTP 404, ERR_NGROK_3200) when the
-        // tunnel is offline — i.e. the URL in Constants.swift is stale. Detect it so
-        // the failure is actionable instead of a generic "bad response".
+        // ngrok returns an HTML page with this string when the tunnel is down
         if let body = String(data: data, encoding: .utf8), body.contains("ERR_NGROK") {
             throw AIServiceError.tunnelOffline
         }
 
-        // Flask surfaces crew failures as 503 {"error": "..."}.
+        // backend sends error message inside JSON body on failure
         if let errorBody = try? JSONDecoder().decode(BackendError.self, from: data) {
             throw AIServiceError.backendError(message: errorBody.error)
         }

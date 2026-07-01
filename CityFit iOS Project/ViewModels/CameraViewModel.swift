@@ -1,23 +1,18 @@
 import Foundation
 import SwiftUI
 
-/// Drives the two-tier photo mission detection:
-/// Tier 1 — Apple Vision live classification, on-device (auto-complete at high
-///          confidence). Uses VisionService, which automatically prefers a
-///          trained CreateML model when bundled.
-/// Tier 2 — the captured frame is sent to the backend Vision Crew (DeepSeek
-///          Vision + the Object Detection Specialist agent) when the user taps
-///          "Snap" on a medium-confidence hit. Falls back to a stricter
-///          on-device re-check if the backend is unreachable, so the feature
-///          still works offline.
+// Handles photo mission detection.
+// On-device runs first (Tier 1). If confidence is too low, user taps Snap to
+// send the photo to the backend for a stronger check (Tier 2).
+// Falls back to on-device again if backend is not reachable.
 final class CameraViewModel: ObservableObject {
 
     enum DetectionState: Equatable {
         case scanning
-        case possible      // medium confidence — Snap button shown
-        case detected      // confirmed (Tier 1 auto, or Tier 2 backend/on-device)
-        case verifying     // Tier 2 backend round-trip in flight
-        case rejected      // Tier 2 said no
+        case possible      // not sure yet, show Snap button
+        case detected      // mission complete
+        case verifying     // waiting for backend response
+        case rejected      // backend said no
     }
 
     @Published var state: DetectionState = .scanning
@@ -29,12 +24,11 @@ final class CameraViewModel: ObservableObject {
     private(set) var targetObject = ""
     private var cooldownUntil = Date.distantPast
 
-    /// When the current `state` was entered — used to tell a sustained "not
-    /// finding it" from a one-off noisy frame before speaking a voice hint.
+    // tracks how long we've been in the current state, for voice hints
     private var stateEnteredAt = Date()
     private var voiceCooldownUntil = Date.distantPast
 
-    /// Wired to MissionViewModel.incrementPhotoProgress by the view.
+    // set by the view to trigger mission progress on detection
     var onObjectFound: (() -> Void)?
 
     func start(target: String) {
@@ -64,7 +58,7 @@ final class CameraViewModel: ObservableObject {
         case 0.85...1.0:
             state = .detected
             statusMessage = "✅ \(targetObject.capitalized) detected!"
-            onObjectFound?()        // auto-complete, no Groq call needed
+            onObjectFound?()        // high confidence, auto-complete
             beginCooldown(4)
         case 0.50..<0.85:
             state = .possible
@@ -77,13 +71,7 @@ final class CameraViewModel: ObservableObject {
         announceFramingHintIfNeeded()
     }
 
-    /// Speaks a framing hint once a confidence band has been sustained for a
-    /// bit — a one-off noisy frame shouldn't trigger a voice line, but a real
-    /// "can't quite see it" should. Confidence here has no notion of distance
-    /// (it's a single whole-frame score, not a bounding box), so this is a
-    /// best-effort proxy: sustained medium confidence usually means the object
-    /// is there but small/angled/partial; sustained zero match usually means
-    /// it's just not in frame.
+    // gives the user a voice tip if the same low-confidence state lasts too long
     private func announceFramingHintIfNeeded() {
         guard Date() >= voiceCooldownUntil else { return }
         let sustained = Date().timeIntervalSince(stateEnteredAt)
@@ -99,17 +87,12 @@ final class CameraViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Tier 2: Vision Crew (backend) verification, on-device fallback
+    // MARK: - Snap (backend check)
 
-    /// Confidence the captured frame must clear to confirm a "Snap" when the
-    /// backend Vision Crew is unreachable (degrade gracefully, per CLAUDE.md).
+    // minimum confidence needed to confirm on-device when backend is offline
     private let snapConfirmThreshold: Float = 0.65
 
-    /// Medium-confidence "Snap" goes to the backend Vision Crew (DeepSeek
-    /// Vision describes the photo, the Object Detection Specialist agent
-    /// gives a strict verdict) for a stronger check than the live Tier-1
-    /// scan. Falls back to a stricter on-device re-check if the backend is
-    /// unreachable, so the feature still works offline.
+    // sends photo to backend for a stronger check. falls back to on-device if backend is down.
     @MainActor
     func snap(userID: String, aiViewModel: AIViewModel) async {
         guard camera.latestPixelBuffer() != nil, let imageBase64 = camera.snapBase64() else {
@@ -138,7 +121,7 @@ final class CameraViewModel: ObservableObject {
         }
     }
 
-    /// Used only when the backend Vision Crew can't be reached.
+    // runs on-device check only when backend is not reachable
     private func fallbackOnDeviceSnap(target: String) async {
         guard let buffer = camera.latestPixelBuffer() else {
             state = .rejected
@@ -163,8 +146,7 @@ final class CameraViewModel: ObservableObject {
         }
     }
 
-    /// Simulator helper — the camera doesn't exist there, so the demo
-    /// button drives the same state machine.
+    // for testing on Simulator since there's no real camera there
     func simulateDetection(confidence: Float) {
         handle(confidence: confidence)
     }

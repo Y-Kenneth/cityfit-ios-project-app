@@ -1,6 +1,7 @@
-"""Route Crew — 2 agents collaborating sequentially:
-Route Planner picks the waypoints, Fitness Calculator estimates metrics
-using the planner's output as context."""
+"""
+Route Crew - Route Planner picks the waypoints first,
+then Fitness Calculator estimates the metrics based on that route.
+"""
 
 import json
 import time
@@ -29,9 +30,7 @@ fitness_calculator_agent = Agent(
     verbose=False,
 )
 
-# 2 sequential DeepSeek calls with a strict JSON contract occasionally drift
-# off-format (or hit a transient API hiccup) — retry the whole crew once
-# before surfacing a 503 to the app.
+# retry once if the crew fails, sometimes the JSON comes back malformed
 ROUTE_ATTEMPTS = 2
 
 
@@ -84,7 +83,7 @@ def run_route_crew(current_lat: float, current_lng: float, level: int,
         try:
             result = _run_once(current_lat, current_lng, level, pins_json, preferred_distance)
             break
-        except Exception as exc:  # noqa: BLE001 — malformed JSON or a transient API hiccup
+        except Exception as exc:  # noqa: BLE001
             last_error = exc
             if attempt < ROUTE_ATTEMPTS:
                 time.sleep(1)

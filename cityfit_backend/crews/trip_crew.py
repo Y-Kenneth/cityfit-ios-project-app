@@ -1,10 +1,8 @@
-"""Trip Crew — 2 agents collaborating sequentially:
-Distance Analyst frames the real MapKit-measured distance between two points
-the user picked on the Home map, Pace Estimator turns it into steps/time/
-calories for both walking and running. The actual distance is measured
-on-device via MKDirections (CrewAI agents can't call Apple's MapKit) and
-passed in as ground truth — these agents reason on top of it, they don't
-recompute the geometry."""
+"""
+Trip Crew - Distance Analyst judges how hard the trip is,
+Pace Estimator calculates steps, time, and calories.
+The real distance comes from MapKit on the phone, not from the AI.
+"""
 
 import time
 
@@ -35,9 +33,7 @@ pace_estimator_agent = Agent(
     verbose=False,
 )
 
-# Same rationale as Route Crew: 2 sequential DeepSeek calls with a strict
-# JSON contract occasionally drift off-format — retry the whole crew once
-# before surfacing a 503 to the app.
+# retry once if the JSON comes back wrong format
 TRIP_ATTEMPTS = 2
 
 
@@ -82,12 +78,8 @@ No markdown, no code fences, no explanation before or after the JSON.""",
 
 
 def _coerce_mode(raw) -> dict:
-    """Force a {steps, minutes, calories} block into the integer shape the iOS
-    TripResponse decoder expects. The Pace Estimator's MET arithmetic
-    (calories = MET * weight * hours) routinely yields floats like 32.4 — or
-    the model quotes them as strings — and a Swift `Int` field rejects both,
-    which surfaced in the app as "unexpected response (HTTP 200)" (a decode
-    failure on an otherwise-successful call)."""
+    """converts steps/minutes/calories to int so Swift can decode them.
+    the model sometimes returns floats or strings which breaks decoding."""
     raw = raw if isinstance(raw, dict) else {}
     out = {}
     for key in ("steps", "minutes", "calories"):
@@ -108,15 +100,14 @@ def run_trip_crew(origin_lat: float, origin_lng: float, destination_lat: float,
             result = _run_once(origin_lat, origin_lng, destination_lat,
                                destination_lng, distance_meters, level, weight_kg)
             break
-        except Exception as exc:  # noqa: BLE001 — malformed JSON or a transient API hiccup
+        except Exception as exc:  # noqa: BLE001
             last_error = exc
             if attempt < TRIP_ATTEMPTS:
                 time.sleep(1)
     if result is None:
         raise last_error
 
-    # Rebuild the payload in exactly the shape iOS decodes, coercing whatever
-    # the model produced — never pass the raw LLM dict straight through.
+    # make sure all values are the right type before sending to iOS
     return {
         "walk": _coerce_mode(result.get("walk")),
         "run": _coerce_mode(result.get("run")),

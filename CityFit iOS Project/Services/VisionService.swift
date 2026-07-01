@@ -3,22 +3,12 @@ import Vision
 import CoreVideo
 import CoreML
 
-/// On-device object detection for photo missions.
-///
-/// Two-stage model resolution (no code change needed when you train your own):
-///   1. If a Core ML model named `ImageClassifier.mlmodelc` is bundled
-///      (drag your CreateML-trained `ImageClassifier.mlmodel` into the Xcode
-///      project), Vision runs that model.
-///   2. Otherwise it falls back to Apple's built-in general image classifier
-///      (`VNClassifyImageRequest`), so the feature works today untrained.
-///
-/// See `CLAUDE.md` → "Training the photo-mission model" for how to train and
-/// drop in the model.
+// On-device photo detection for missions.
+// Uses the trained ImageClassifier.mlmodel if it's bundled in the project.
+// Falls back to Apple's built-in image classifier if the model is missing.
 final class VisionService {
 
-    /// Synonyms that count as a match for each mission target — used to map a
-    /// model's label vocabulary onto our mission targets. Add the exact labels
-    /// you trained in CreateML here if they differ from the target word.
+    // maps mission target names to the actual labels used in the trained model
     private static let synonyms: [String: [String]] = [
         "bottle":   ["bottle", "flask", "jug", "water bottle", "plastic bottle"],
         "bicycle":  ["bicycle", "bike", "cycle", "tandem"],
@@ -31,18 +21,17 @@ final class VisionService {
         "cat":      ["cat", "kitten", "feline", "tabby"],
     ]
 
-    /// Loaded once. nil means "no trained model bundled — use the built-in."
+    // nil if no trained model found, will use built-in classifier instead
     private let customModel: VNCoreMLModel?
 
     init() {
         customModel = Self.loadCustomModel()
     }
 
-    /// Whether a trained CreateML model is in use (vs. the built-in classifier).
+    // true if the trained CoreML model loaded successfully
     var isUsingTrainedModel: Bool { customModel != nil }
 
-    /// Classifies a camera frame and reports the best confidence (0...1) that
-    /// the target object is present.
+    // runs classification on a camera frame and returns confidence score 0-1
     func detect(target: String, in pixelBuffer: CVPixelBuffer,
                 completion: @escaping (Float) -> Void) {
         let keywords = Self.synonyms[target.lowercased()] ?? [target.lowercased()]
@@ -69,7 +58,7 @@ final class VisionService {
 
     // MARK: - Helpers
 
-    /// Best confidence among classification results whose label matches any keyword.
+    // finds the highest confidence score from results that match the target keywords
     private static func bestConfidence(in results: [VNObservation]?,
                                        matching keywords: [String]) -> Float {
         let observations = (results as? [VNClassificationObservation]) ?? []
@@ -82,8 +71,7 @@ final class VisionService {
             .max() ?? 0
     }
 
-    /// Looks for a bundled CreateML image classifier. Returns nil if none is
-    /// present (the common case until you train one).
+    // tries to load the trained model from the app bundle
     private static func loadCustomModel() -> VNCoreMLModel? {
         guard let url = Bundle.main.url(forResource: "ImageClassifier", withExtension: "mlmodelc") else {
             return nil

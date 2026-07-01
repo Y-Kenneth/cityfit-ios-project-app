@@ -1,9 +1,7 @@
-"""Vision Crew — 1 agent: the Object Detection Specialist.
-
-Two steps:
-1. DeepSeek Vision looks at the photo and describes it (OpenAI-compatible API).
-2. The CrewAI Object Detection Specialist turns that description into a
-   strict detected/rejected verdict (Tier 2 of the app's detection system).
+"""
+Vision Crew - checks if the user's photo contains the mission target.
+Step 1: DeepSeek Vision describes the photo.
+Step 2: Object Detection Specialist gives a detected/rejected verdict.
 """
 
 import os
@@ -29,7 +27,7 @@ vision_agent = Agent(
 
 
 def _describe_photo(image_base64: str, target_object: str) -> str:
-    """Step 1 — DeepSeek Vision describes what is in the photo."""
+    """sends the photo to DeepSeek Vision and gets a description back"""
     completion = deepseek_client.chat.completions.create(
         model=DEEPSEEK_VISION_MODEL,
         messages=[{

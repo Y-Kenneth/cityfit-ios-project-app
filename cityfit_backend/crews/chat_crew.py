@@ -1,4 +1,4 @@
-"""Chat Crew — 1 agent: the CityFit Personal Coach."""
+"""Chat Crew - handles the AI coach chat feature"""
 
 from crewai import Agent, Crew, Process, Task
 

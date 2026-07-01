@@ -2,7 +2,7 @@ import Foundation
 import MapKit
 import SwiftUI
 
-/// A unified map annotation item: mission pins + mock game event pins.
+// represents a pin on the map, either a mission or a game event
 struct MapPinItem: Identifiable {
     enum Kind { case mission, event }
 
@@ -49,7 +49,7 @@ final class MapViewModel: ObservableObject {
 
     // MARK: - AI route drawing
 
-    /// Connects AI waypoints with MKDirections walking segments.
+    // draws a walking polyline between each pair of AI-generated waypoints
     func drawRoute(waypoints: [RouteResponse.Waypoint]) {
         routeOverlays = []
         routeWaypoints = waypoints
@@ -93,8 +93,7 @@ final class MapViewModel: ObservableObject {
         tripDistanceMeters = nil
     }
 
-    /// First tap while planning sets the origin, second sets the destination
-    /// and kicks off the real MapKit walking-distance lookup.
+    // first tap = origin, second tap = destination, then fetch real walking distance
     func handleTripTap(_ coordinate: CLLocationCoordinate2D) {
         guard isPlanningTrip else { return }
         if tripOrigin == nil {
@@ -105,10 +104,7 @@ final class MapViewModel: ObservableObject {
         }
     }
 
-    /// The backend's Trip Crew agents can't call Apple's MapKit themselves —
-    /// only the device can — so the real walking distance is measured here,
-    /// on-device, and handed to the AI as ground truth (same MKDirections
-    /// pattern as drawRoute() above).
+    // measure real walking distance on-device and pass it to the AI backend
     private func fetchTripDistance() {
         guard let origin = tripOrigin, let destination = tripDestination else { return }
         let request = MKDirections.Request()

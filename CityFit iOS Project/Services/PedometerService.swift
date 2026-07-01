@@ -1,8 +1,7 @@
 import Foundation
 import CoreMotion
 
-/// Step + distance source. CMPedometer does NOT work on the Simulator,
-/// so a mock timer feeds fake data there instead.
+// tracks steps and distance. on Simulator, sends fake data since CMPedometer doesn't work there.
 final class PedometerService: ObservableObject {
     @Published var stepCount: Int = 0
     @Published var distance: Double = 0.0
@@ -30,22 +29,15 @@ final class PedometerService: ObservableObject {
     private var cmStepCount: Int = 0
 
     #if DEBUG
-    // CMPedometer's stride-cadence detector frequently reports 0 steps when
-    // testing in place in a small room (e.g. pacing without covering ground) —
-    // it's tuned for real walking displacement, not in-place stepping. This
-    // fallback derives a step count from raw accelerometer peaks instead, so
-    // testing indoors doesn't look broken. Real CMPedometer stays authoritative
-    // whenever it actually reports steps; the fallback only fills in while it
-    // reads exactly 0.
+    // CMPedometer often reads 0 when walking in place indoors.
+    // this fallback counts steps from accelerometer peaks when CMPedometer reports 0.
     private let motionManager = CMMotionManager()
     private var fallbackStepCount: Int = 0
     private var recentMagnitudes: [Double] = []
     private var lastStepAt: Date?
 
-    /// Minimum acceleration magnitude (g) above resting noise to count as a footfall.
-    private let stepThreshold = 0.18
-    /// Debounce so one footfall's bounce isn't counted twice (typical cadence is well under 2.5 steps/sec).
-    private let minStepInterval: TimeInterval = 0.25
+    private let stepThreshold = 0.18        // min acceleration to count as a step
+    private let minStepInterval: TimeInterval = 0.25  // prevents counting the same step twice
     #endif
 
     func startTracking() {
@@ -96,9 +88,7 @@ final class PedometerService: ObservableObject {
         lastStepAt = nil
     }
 
-    /// Simple peak-detection pedometer: smooths magnitude over a short window,
-    /// then counts a step when it rises through `stepThreshold` from below,
-    /// debounced by `minStepInterval`.
+    // counts steps from raw accelerometer using peak detection + debounce
     private func processAccelerometerSample(_ accel: CMAcceleration) {
         let magnitude = sqrt(accel.x * accel.x + accel.y * accel.y + accel.z * accel.z) - 1.0 // subtract gravity
         recentMagnitudes.append(abs(magnitude))

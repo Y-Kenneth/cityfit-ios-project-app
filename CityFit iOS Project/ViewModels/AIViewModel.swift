@@ -1,8 +1,8 @@
 import Foundation
 import CoreLocation
 
-/// All AI backend interactions (chat, route generation, photo verification).
-/// Every call degrades gracefully when the backend is offline.
+// Handles chat, route, trip, and photo verification calls to the backend.
+// All functions fail gracefully when the backend is not available.
 @MainActor
 final class AIViewModel: ObservableObject {
 
@@ -44,7 +44,7 @@ final class AIViewModel: ObservableObject {
             let reply = try await AIService.chat(request)
             chatMessages.append(ChatMessage(role: .assistant, text: reply))
         } catch {
-            // User sees a friendly message; the developer sees the real cause in the console.
+            // show friendly message to user, log real error to console
             print("⚠️ AI chat failed: \(error.localizedDescription)")
             chatMessages.append(ChatMessage(role: .assistant,
                                             text: "I'm offline right now 😴 — but keep moving! Walking any mission still earns you EXP."))
@@ -70,10 +70,7 @@ final class AIViewModel: ObservableObject {
                                     lng: coordinate.longitude,
                                     exp: mission.expReward)
         }
-        // Shuffle so missions and real landmarks are interleaved in a different
-        // order each call. Listed missions-first (their old fixed order), the
-        // low-temperature planner deterministically picked the same 3 mission
-        // pins every time and ignored the landmarks further down the list.
+        // shuffle so the route picks different pins each time instead of always the same ones
         let candidatePins = (missionPins + landmarkPins).shuffled()
         let request = RouteRequest(current_lat: location.latitude,
                                    current_lng: location.longitude,
@@ -111,11 +108,9 @@ final class AIViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Photo verification (Tier 2 "Snap" — Vision Crew)
-    // Not currently called directly — CameraViewModel.snap() calls
-    // AIService.verifyPhoto itself so it can fall back to an on-device
-    // re-check on failure. Kept here for any other caller that wants the
-    // same graceful-failure (-> nil) convenience as chat/route/trip.
+    // MARK: - Photo verification
+    // CameraViewModel.snap() calls AIService directly so it can handle the fallback.
+    // This is a convenience wrapper in case other screens need it later.
 
     func verifyPhoto(base64: String, target: String, userID: String) async -> VerifyPhotoResponse? {
         let request = VerifyPhotoRequest(image_base64: base64,
