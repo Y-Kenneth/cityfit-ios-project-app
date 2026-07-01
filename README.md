@@ -105,17 +105,15 @@ If on-device confidence lands in the uncertain middle band, the user can tap **S
 
 ## 📸 Screenshots
 
-> Replace the placeholders below with real PNGs (e.g. add them under `docs/screenshots/`).
-
 <div align="center">
 
-| Login | Home Map | AI Chat Coach |
-|:---:|:---:|:---:|
-| <img src="docs/screenshots/login.png" width="220" alt="Login screen"/> | <img src="docs/screenshots/home.png" width="220" alt="Home map"/> | <img src="docs/screenshots/ai-chat.png" width="220" alt="AI chat coach"/> |
-| **AI Generated Route** | **AI Trip Planner** | **Photo Mission** |
-| <img src="docs/screenshots/route.png" width="220" alt="AI generated route"/> | <img src="docs/screenshots/trip.png" width="220" alt="AI trip planner"/> | <img src="docs/screenshots/photo-mission.png" width="220" alt="Photo mission detection"/> |
-| **Missions** | **Leaderboard** | **Profile** |
-| <img src="docs/screenshots/missions.png" width="220" alt="Missions list"/> | <img src="docs/screenshots/leaderboard.png" width="220" alt="Leaderboard"/> | <img src="docs/screenshots/profile.png" width="220" alt="Profile"/> |
+| Login | Home Map | AI Chat Coach | AI Generated Route |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/login.png" width="180" alt="Login screen"/> | <img src="docs/screenshots/home.png" width="180" alt="Home map"/> | <img src="docs/screenshots/ai-chat.png" width="180" alt="AI chat coach"/> | <img src="docs/screenshots/route.png" width="180" alt="AI generated route"/> |
+| **AI Trip Planner** | **Photo Missions** | **Camera Detection** | **Walk / Run Missions** |
+| <img src="docs/screenshots/trip.png" width="180" alt="AI trip planner"/> | <img src="docs/screenshots/photo-missions.png" width="180" alt="Photo missions"/> | <img src="docs/screenshots/camera-vision.jpeg" width="180" alt="Camera object detection"/> | <img src="docs/screenshots/walk-missions.png" width="180" alt="Walk and run missions"/> |
+| **Leaderboard** | **Communities** | **Community Chat** | **Profile** |
+| <img src="docs/screenshots/leaderboard.png" width="180" alt="Leaderboard"/> | <img src="docs/screenshots/communities.png" width="180" alt="Communities"/> | <img src="docs/screenshots/community-chat.png" width="180" alt="Community chat"/> | <img src="docs/screenshots/profile.png" width="180" alt="Profile"/> |
 
 </div>
 
